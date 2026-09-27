@@ -1,0 +1,31 @@
+name: Host contracts
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  source-contracts:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+      - name: Set up pinned Node.js runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: .node-version
+      - name: Verify Node.js runtime
+        run: node --version
+      - name: Run source-only product contracts
+        run: node tools/run-source-contracts.cjs
+
+  harmony-build:
+    if: ${{ false }}
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "HarmonyOS SDK/signing is intentionally unavailable on the hosted runner; installed-SDK builds remain a documented device lab gate."

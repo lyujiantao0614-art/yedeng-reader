@@ -1,0 +1,112 @@
+{
+  "float": [
+    {
+      "name": "page_text_font_size",
+      "value": "50fp"
+    },
+    {
+      "name": "product_page_title_size",
+      "value": "29fp"
+    },
+    {
+      "name": "product_section_title_size",
+      "value": "20fp"
+    },
+    {
+      "name": "product_surface_title_size",
+      "value": "18fp"
+    },
+    {
+      "name": "product_body_size",
+      "value": "16fp"
+    },
+    {
+      "name": "product_body_small_size",
+      "value": "14fp"
+    },
+    {
+      "name": "product_label_size",
+      "value": "13fp"
+    },
+    {
+      "name": "product_caption_size",
+      "value": "12fp"
+    },
+    {
+      "name": "product_space_4",
+      "value": "4vp"
+    },
+    {
+      "name": "product_space_8",
+      "value": "8vp"
+    },
+    {
+      "name": "product_space_12",
+      "value": "12vp"
+    },
+    {
+      "name": "product_space_16",
+      "value": "16vp"
+    },
+    {
+      "name": "product_space_20",
+      "value": "20vp"
+    },
+    {
+      "name": "product_space_24",
+      "value": "24vp"
+    },
+    {
+      "name": "product_space_32",
+      "value": "32vp"
+    },
+    {
+      "name": "product_target_min",
+      "value": "48vp"
+    },
+    {
+      "name": "product_radius_control",
+      "value": "4vp"
+    },
+    {
+      "name": "product_radius_card",
+      "value": "4vp"
+    },
+    {
+      "name": "product_radius_modal",
+      "value": "4vp"
+    },
+    {
+      "name": "product_radius_cover",
+      "value": "0vp"
+    },
+    {
+      "name": "product_modal_max_width",
+      "value": "340vp"
+    },
+    {
+      "name": "reader_assistance_panel_max_width",
+      "value": "520vp"
+    },
+    {
+      "name": "reader_transient_panel_height",
+      "value": "520vp"
+    },
+    {
+      "name": "library_grid_cover_height",
+      "value": "188vp"
+    },
+    {
+      "name": "library_list_cover_width",
+      "value": "72vp"
+    },
+    {
+      "name": "library_list_cover_height",
+      "value": "96vp"
+    },
+    {
+      "name": "library_book_menu_width",
+      "value": "184vp"
+    }
+  ]
+}

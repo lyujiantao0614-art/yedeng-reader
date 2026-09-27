@@ -1,0 +1,49 @@
+{
+  "apiType": "stageMode",
+  "buildOption": {
+    "sourceOption": {
+      "workers": ["./src/main/ets/workers/EpubInspectionWorker.ets"]
+    },
+    "resOptions": {
+      "copyCodeResource": {
+        "enable": false
+      }
+    }
+  },
+  "buildOptionSet": [
+    {
+      "name": "release",
+      "arkOptions": {
+        "obfuscation": {
+          "ruleOptions": {
+            "enable": false,
+            "files": [
+              "./obfuscation-rules.txt"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "benchmark",
+      "copyFrom": "release",
+      "debuggable": false
+    }
+  ],
+  "buildModeBinder": [
+    {
+      "buildModeName": "benchmark",
+      "mappings": [
+        {
+          "targetName": "default",
+          "buildOptionName": "benchmark"
+        }
+      ]
+    }
+  ],
+  "targets": [
+    {
+      "name": "default"
+    }
+  ]
+}

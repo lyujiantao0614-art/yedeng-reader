@@ -1,0 +1,33 @@
+/node_modules/
+/oh_modules/
+/.idea/
+/.hvigor/
+/.appanalyzer/
+**/build/
+**/local.properties
+/.test/
+__pycache__/
+*.pyc
+*.log
+*.tmp
+
+# Signing and machine-local configuration.
+/build-profile.json5
+*.p12
+*.p7b
+*.cer
+*.keystore
+*.pem
+*.key
+
+# Generated packages and imported books.
+*.hap
+*.app
+*.epub
+!/entry/src/main/resources/rawfile/demo/under-the-lamp.epub
+
+# Local diagnostics and editor files.
+.cxx/
+.clangd/
+.DS_Store
+Thumbs.db

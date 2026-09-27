@@ -1,0 +1,51 @@
+{
+  "outputs": {
+    "THIRD_PARTY_NOTICES.txt": {
+      "bytes": 4552,
+      "sha256": "0be042f3249e8c895d0978dbe45bd3643ae5d1d91dfc1d6c204d10f4b9ac1669"
+    },
+    "cc-cedict-en-fallback.sqlite3": {
+      "bytes": 2031616,
+      "headwords": 30650,
+      "meaning_rows": 93852,
+      "sha256": "2991435614002faa1e1fb479da28730f3e843b62a51ca8d1f115e70bdb0a68d3"
+    },
+    "omw-en-zh.sqlite3": {
+      "bytes": 3977216,
+      "headwords": 32646,
+      "inflection_rows": 4445,
+      "meaning_rows": 100545,
+      "sha256": "86121325ddd847ee9b77073672e8d4acaef9567af4805a98d87984783d2215b2"
+    }
+  },
+  "runtime": {
+    "cedict": {
+      "bytes": 2031616,
+      "name": "cc-cedict-en-fallback.sqlite3",
+      "sha256": "2991435614002faa1e1fb479da28730f3e843b62a51ca8d1f115e70bdb0a68d3"
+    },
+    "omw": {
+      "bytes": 3977216,
+      "name": "omw-en-zh.sqlite3",
+      "sha256": "86121325ddd847ee9b77073672e8d4acaef9567af4805a98d87984783d2215b2"
+    }
+  },
+  "schemaVersion": 1,
+  "sources": {
+    "ccCedict": {
+      "sha256": "d0f9d375de2973e5c6e665a96c38e17832d91660ebec1bc918cbc6df80fb2801",
+      "snapshotRetrieved": "2026-08-14",
+      "url": "https://www.mdbg.net/chinese/export/cedict/cedict_1_0_ts_utf-8_mdbg.txt.gz"
+    },
+    "chineseOpenWordnet": {
+      "sha256": "7d07af60a6ced0cedc4ca114d0b60a796d3f138df0f3be21f6322e53d004e91c",
+      "url": "https://github.com/omwn/omw-data/releases/download/v2.0/omw-cmn-2.0.tar.xz",
+      "version": "2.0"
+    },
+    "omwEnglishWordnet": {
+      "sha256": "0e09dfb7f096bc3f10b9de68ffecf13839fa22ae46fd9b227cec890d204ca1dc",
+      "url": "https://github.com/omwn/omw-data/releases/download/v2.0/omw-en-2.0.tar.xz",
+      "version": "2.0"
+    }
+  }
+}

@@ -1,0 +1,1234 @@
+{
+  "version": 1,
+  "node": "22.20.0",
+  "scope": "entry/src/main",
+  "policy": "No new fingerprint, category, deprecation warning, occurrence, or total increase; reductions pass.",
+  "total": 258,
+  "entries": [
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const meaning = result.getString(0);",
+      "count": 1,
+      "fingerprint": "4331ed51f21bbb9c29801ea7f2345bc74f77e9067b439013dca2e5bd4347abd2"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const meaning = result.getString(2);",
+      "count": 1,
+      "fingerprint": "9338e1345b44edef1778a9605e157cbe21e01f14220756523472aeb1938db0c0"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const partOfSpeech = result.getString(0);",
+      "count": 1,
+      "fingerprint": "4d0fe46f78c463ac7947989c935dca8cee5b55fad08c422256702c82a4fb7110"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await store.querySql('SELECT value FROM metadata WHERE key=?', [key]);",
+      "count": 1,
+      "fingerprint": "6b1bcdcde5cce113edcee8b4ae45f96fbdfa4df724d1e09fe11aa4608e223540"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireFallback().querySql(",
+      "count": 1,
+      "fingerprint": "f0365a320d1cba53536217352961b7f8868d01888423df5bf5949a52b75a04e4"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requirePrimary().querySql(",
+      "count": 2,
+      "fingerprint": "36bef55d4d20786262ff6883ab301363bf7151138a1f1ca8f7e349df7a25623c"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const senseOrder = result.getLong(1);",
+      "count": 1,
+      "fingerprint": "a81f5699aec083deedfd474075b3d302aa5a2fdb7e2b7805ef90883912fe017f"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const value = result.getString(0);",
+      "count": 1,
+      "fingerprint": "6df5449bae49975588879722026e7eb5346cf0bd2d3848501636b57a845652be"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "result.close();",
+      "count": 4,
+      "fingerprint": "ace0bfe4bcc09d889952fdfe904e2899120c72af8aa7bbbbd7ca23173484c5c9"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "return result.goToNextRow() ? result.getString(0) : undefined;",
+      "count": 2,
+      "fingerprint": "7582b2d916f1ca0581e56cc467435fcc92619c8a4e20216863c5256b72f05921"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) {",
+      "count": 3,
+      "fingerprint": "dadb33ec38854912cf6762b196f0c16e42a4b30d858e197e2ad65f0a554959e8"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await digest.update({ data: new Uint8Array(chunk) });",
+      "count": 1,
+      "fingerprint": "9dfd43194726849f172d344b79d170417f3c3077b3677710e2c485729af3aca9"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.rename(backup, destination);",
+      "count": 1,
+      "fingerprint": "e16c7ad35e33d550b44dbfa5abb8e0131be3bc74fcfd2d24598bbde37deebbcd"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.rename(destination, backup);",
+      "count": 1,
+      "fingerprint": "74963b9ac504631a729870cefcb1111c8fa84b16e43c89ba7053bd890ba1bdb1"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.rename(staging, this.statePath);",
+      "count": 1,
+      "fingerprint": "825e4326fdc91c4a5d51b1600a6f31dee807d9d0c8f6af93c721d2801a7f525d"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.write(file.fd, JSON.stringify(state));",
+      "count": 1,
+      "fingerprint": "7f651c09a7ac55b4b4ab61760703128e33b95b073a3a5f939e864c6c73cbf2e1"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.context.resourceManager.closeRawFd(rawPath);",
+      "count": 1,
+      "fingerprint": "58aafb20d66bb00634967c92612593d50488845b956ff9a7acca956044e78963"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const bytes = await this.context.resourceManager.getRawFileContent(MANIFEST_RAWFILE);",
+      "count": 1,
+      "fingerprint": "00a73ac8c205f60b8b737415e79ec68dff9967e1144ba1b9b5e252fbbb80c744"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const count = await fs.read(descriptor.fd, buffer);",
+      "count": 1,
+      "fingerprint": "81df89fcf7f37798de729976de7edd4c60b2bbd389905235f7c6a365430945ce"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const descriptor = await this.context.resourceManager.getRawFd(rawPath);",
+      "count": 1,
+      "fingerprint": "0b625514c9545a4a7451b23c567e1e87005cc83df052d9962785baf9728bf75c"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const digest = cryptoFramework.createMd('SHA256');",
+      "count": 1,
+      "fingerprint": "694a663ee6b0ae6479d19e93b44abeac4a12c1222a0b4385c1e28f66a4e251e4"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const file = await fs.open(staging, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC);",
+      "count": 1,
+      "fingerprint": "e3573604b8e3c21f504e51363ef14f798241481eeb65d943903e1d747c01a3ca"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const hash = bytesToHex((await digest.digest()).data);",
+      "count": 1,
+      "fingerprint": "ff357faeee4f72ca3f9e457598238fae14454a684c7c5c8a91be9bf4713f3c94"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const next = await fs.write(target.fd, remaining,",
+      "count": 1,
+      "fingerprint": "c3377e4c0fb0936e5083b51fb0a57ebbfed70ae274ff35d4f0cd46eebd453e9a"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "fs.closeSync(file);",
+      "count": 1,
+      "fingerprint": "6fc2c66e3cad535dc5ea85dee76198c4e131b6d7a7be3fd99536160df0f69102"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "fs.closeSync(target);",
+      "count": 1,
+      "fingerprint": "6a6d4ae658868858bfe254a2f40bed0b3a3da4af8d09272d80ec34447d0ae3e4"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "fs.lseek(descriptor.fd, descriptor.offset, fs.WhenceType.SEEK_SET);",
+      "count": 1,
+      "fingerprint": "842f528f055c7608acba3da6ca4d892dad27b797ff3a6f4603be45e4d6f56bf9"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "target = await fs.open(destination, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC);",
+      "count": 1,
+      "fingerprint": "ef68b9f24a80a701a47627d39591bca125370d39cdf924dbe574309338b20f17"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: '当前选区无法保存，请缩短选区。' });",
+      "count": 1,
+      "fingerprint": "91c2428957db148631ee877f68646fd7daafc7d29d096691ef0137cafdad366b"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: '复制失败，请重试。' });",
+      "count": 1,
+      "fingerprint": "10dd8c75bc27f2c23a7db0f608e98a512edfc1f0bb317ece8d64c6aa930656bb"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: '修改失败，原标记已保留。' });",
+      "count": 1,
+      "fingerprint": "bc292d55ff59a7a13f09632d2011ae216360490e3a395bac292d58665f9994ce"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: '选区已经变化，请重新选择单词。' });",
+      "count": 1,
+      "fingerprint": "44e3e2a983e82c8af90c56ad124b95bc19b581675f393d5edf1e0d6293a35343"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: '长按选出新范围，再点 ✓ 保存。' });",
+      "count": 1,
+      "fingerprint": "236853ae6f22951c01da89e4b63552013e9f8411045d528a674c12e5e4a25ed9"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: message });",
+      "count": 1,
+      "fingerprint": "7232739f3b23f5a7388623833884065bd3ec5cd1130f39df360f3720e846f8f2"
+    },
+    {
+      "path": "entry/src/main/ets/pages/ReaderPage.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: this.bookmarkMessage });",
+      "count": 2,
+      "fingerprint": "61d0ec48b0e7d79a16e0008adb720c2dabfcd70726d9450fca4568163a2465ed"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} catch (_) { opened.close(); throw new Error('Record store creation failed'); }",
+      "count": 1,
+      "fingerprint": "0de2a0796df9f6e63e09384d283f29c37f988f9ce8fd744df7f3be103d120acc"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Page excerpt migration failed'); }",
+      "count": 1,
+      "fingerprint": "6ce705086c7816004c42f473086809f15c997db51cf66c644085ed4bf7d1efc4"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Record copy failed'); }",
+      "count": 1,
+      "fingerprint": "9173c1ef4567244ebe3c702969a1a9e9136775a3fed37cba6a9deb8fd6158867"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Record deletion failed'); }",
+      "count": 1,
+      "fingerprint": "0dc8792fe149644236316968fb67cfdcc5ffdf4ab3d5ebf38045680ad40b7f8e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Text record migration failed'); }",
+      "count": 1,
+      "fingerprint": "7b044c891f9b6c34d6309675b89f751276a7bed79ec2853b578ebffac7fe1537"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} finally { result.close(); }",
+      "count": 5,
+      "fingerprint": "bbf74c4e77a02c303f3bb53915c6b2af93089e832007bcbc0ba566c92969db32"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "anchorVersion: result.getLong(2), engine: result.getString(3), resourceHref: result.getString(4),",
+      "count": 3,
+      "fingerprint": "16d0a15098569d2b0f48c7dfd4f4fe0463c4710c0b2a7b715f46bd1e9edc453b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await store.executeSql('UPDATE text_marks SET cfi=?,exact_text=?,prefix=?,suffix=?,kind=?,chapter_title=?,note_text=? ' +",
+      "count": 1,
+      "fingerprint": "357d32c4de5459deeefd3cfafe2fffb21081c987e543c5e712a2f64aa47d6697"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await store.executeSql('UPDATE text_marks SET cfi=?,prefix=?,suffix=?,chapter_title=? ' +",
+      "count": 1,
+      "fingerprint": "ed06cd878fc4d5d0c8249022a7a132828e0b516b526ac710a9aace871963ad16"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('DELETE FROM bookmarks WHERE book_id=? AND bookmark_id=?',",
+      "count": 1,
+      "fingerprint": "5142c45251634cba8fc8ccd72b16cdbf7850493d33a8de7db62fb85535541f54"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('DELETE FROM page_excerpts WHERE book_id=? AND bookmark_id=?',",
+      "count": 1,
+      "fingerprint": "8fd484400d78acf3a8bf4380fbe2031593a570cc4a94e331a5ffad23c58efb6f"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('DELETE FROM text_marks WHERE book_id=? AND mark_id=?',",
+      "count": 1,
+      "fingerprint": "55976bd4f4b9fe560031be240b24409242a5447b3ed2f1c99f61b42e12aebdbe"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('INSERT INTO bookmarks ' +",
+      "count": 1,
+      "fingerprint": "fceca68189aba5c7e9dbe68730c114cca1644398096c04d86bb1fa8f58b02413"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('INSERT INTO page_excerpts(bookmark_id,book_id,excerpt) ' +",
+      "count": 1,
+      "fingerprint": "9a4254c4fd211b20c98ebb7217834203fba5c8462aa4bba9918bf0d470627c7b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('INSERT INTO text_marks ' +",
+      "count": 1,
+      "fingerprint": "d6c8c423b9c8785e8cbd1af3f5e400a3b044b0e2aa65015a95aded95c7dce378"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "bookId: result.getString(1), anchorVersion: result.getLong(2), engine: result.getString(3),",
+      "count": 3,
+      "fingerprint": "2b9d2a8683d95efa13ba5156969a8ac55348b513599259f862719eb85c4daaef"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "bookId: result.getString(1), excerpt: result.getString(2) });",
+      "count": 2,
+      "fingerprint": "39130601e0e29d5261ee35ca09a8bfe62a9770cbc803ea6943ffca288adf80f8"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "cfi: result.getString(5), exactText: result.getString(6), prefix: result.getString(7),",
+      "count": 3,
+      "fingerprint": "192869c7c65af3b1d28b5fe2537ebaeffe248ad9628ab83c1678688383494310"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "chapterTitle: result.getString(10), noteText: result.getString(11), createdAt: result.getLong(12) });",
+      "count": 3,
+      "fingerprint": "1aa7f87b95ec685499387e1f03e12b59933da59d7b663f0243c2ee1fb487e539"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const files = await fs.listFile(`${context.databaseDir}/rdb`);",
+      "count": 1,
+      "fingerprint": "3a943e19e0e6dd29a27034459486c651e832690b0e9d1c645ed800f6b8bec116"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const opened = await relationalStore.getRdbStore(context, {",
+      "count": 1,
+      "fingerprint": "c9618e98e9fed043da0b147e180adab0354fd7cd39f74a855398c1171d44cbff"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await store.querySql('SELECT bookmark_id,book_id,anchor_version,engine,' +",
+      "count": 1,
+      "fingerprint": "2d458518c44889822dd68bd21949039a8e8f2d6e79a0b336fb25dedbb1fdfa6c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await store.querySql('SELECT cfi,prefix,suffix,chapter_title FROM text_marks ' +",
+      "count": 1,
+      "fingerprint": "4a70be39a3b20f99e126df2f646de56428f2ca9d449870c45bdb0396436aaef7"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql(",
+      "count": 1,
+      "fingerprint": "1fa841a0b7bc2649959bdbfd62da9b3111c1bd51d907fb71364a3e8e08ab9025"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT bookmark_id,book_id,anchor_version,' +",
+      "count": 1,
+      "fingerprint": "015054b3d57fb5d1b0093cb3084991911e578ef37aaa9e0674ce6d62581cc682"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT mark_id,book_id,anchor_version,engine,' +",
+      "count": 1,
+      "fingerprint": "f0cadbdeab020e0461bea9e2fd3cc52f759074d890a486162af5f849eb734bfb"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "createdAt: result.getLong(7) });",
+      "count": 1,
+      "fingerprint": "0d4cc13c085773eff22024335eac9ffd3096b26b743ad4dd67d470dc1cf6ccc7"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!result.goToNextRow() || result.getString(0) !== mark.cfi ||",
+      "count": 2,
+      "fingerprint": "e61e1dd1e83e35c776287078b0c11fff47b82f58485a878b9ba3216953c6547b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (point === undefined || point.bookId !== result.getString(1) ||",
+      "count": 1,
+      "fingerprint": "3eaee1564868588e4911f698da166a62f61c8f0b326b42a42064810e38fb196b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "opened?.close();",
+      "count": 1,
+      "fingerprint": "e5979b0410c0e38928d3639214db6a65967d069abeb6d91604ca723900d97959"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "point.anchorVersion !== result.getLong(2) || point.engine !== result.getString(3) ||",
+      "count": 2,
+      "fingerprint": "a56eda535b4127bc891430befa2c9d99eb73d69c64154956c945c0ac0a5ad704"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "point.label !== result.getString(6) || point.createdAt !== result.getLong(7)) {",
+      "count": 2,
+      "fingerprint": "3200cba4885e23a0ac54c75ae6cfe18d3a04626f6193c86a05cd7b21a104bd90"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "point.resourceHref !== result.getString(4) || point.cfi !== result.getString(5) ||",
+      "count": 2,
+      "fingerprint": "a03ad2aeb162d9a2210cbe1734423444e89955fb577dae99b579bc624aa9b270"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "resourceHref: result.getString(4), cfi: result.getString(5), label: result.getString(6),",
+      "count": 3,
+      "fingerprint": "9b81d3df27d085889fa36fd125c7c8a4779e2fee3a6b4bea4af5736dc1a31114"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "result.getString(1) !== mark.prefix || result.getString(2) !== mark.suffix ||",
+      "count": 2,
+      "fingerprint": "cb2992307e1b175ac7f1f2d201695aae24534ce4c7bb3fe669506cbf6d2dba20"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "result.getString(3) !== mark.chapterTitle) {",
+      "count": 1,
+      "fingerprint": "8bc104a8d56060a729ec4565c6dafdb56afd14334b01011e805396be8c47835e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "store.beginTransaction();",
+      "count": 4,
+      "fingerprint": "60470be90aa3a17326bfc85498fb5775ba4aabc633164e477d71cf4f338f7fff"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "suffix: result.getString(8), kind: result.getString(9) === 'note' ? 'note' : 'highlight',",
+      "count": 2,
+      "fingerprint": "d8ae7ca87a652ad0385857772dba14d50c56502241682ca5b6e1a933634f2a90"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store?.close();",
+      "count": 1,
+      "fingerprint": "df0a89c6e1ff88a868f7cc1e274f09b2a5f2f92b8a6bac7f3e469f7f5bf1c790"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) {",
+      "count": 1,
+      "fingerprint": "a85e7e437575644f3c6b898e2b111ac1a408e64715ffad8278ba5c03dd757c0f"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) excerpts.push({ bookmarkId: result.getString(0),",
+      "count": 2,
+      "fingerprint": "e52772d63bc32e8a6ef834f6681e54e3ae723dc8e037f83277a9dda6e8591163"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) marks.push({ markId: result.getString(0), bookId: result.getString(1),",
+      "count": 3,
+      "fingerprint": "6e55e48e3d3d76abd09a776c61f9a69eecabf95795716695e23108925f094050"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) points.push({ bookmarkId: result.getString(0),",
+      "count": 2,
+      "fingerprint": "b8de7692ca0aa05f37177115c33dfeb0367a8fc02de3e02052ff3f44940f04d5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const value = this.store.getSync('bookshelf_default_mode', 'system');",
+      "count": 1,
+      "fingerprint": "550083405bd21aa2795311e2d0083fce96dbb0e5d75067c0a2d9898482f7aad5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const value = this.store.getSync('bookshelf_theme', 'default');",
+      "count": 1,
+      "fingerprint": "01079c19b81b83c241c8885000290417bee090621a9d2065d8eaed585f865b95"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const value = this.store.getSync('view_mode', 'grid');",
+      "count": 1,
+      "fingerprint": "fe712d32976a09240bf915537049756ac8865740c34ab3389f80d30cd4c109b2"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store = preferences.getPreferencesSync(context, { name: this.storeName });",
+      "count": 1,
+      "fingerprint": "ce22c169f2ccff5f218e7efcbdcde6f6512ab723f4642d8cde29732084ef493c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.flushSync();",
+      "count": 2,
+      "fingerprint": "45844be132b3ed0175d2e5934fc1fdbd8bdd0d1b9d4e0adf08428b2f67472531"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('bookshelf_default_mode', normalizeBookshelfDefaultMode(mode));",
+      "count": 1,
+      "fingerprint": "9b12d11921d18cf33ab11070e382774f47b41dc88ebbec02d0720faab276dc57"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('bookshelf_theme', normalizeBookshelfTheme(theme));",
+      "count": 1,
+      "fingerprint": "edd702ce135bc3250d352caf6169837a23500f3b9685e29b77dbb19e1314109c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('view_mode', normalizeLibraryViewMode(mode));",
+      "count": 1,
+      "fingerprint": "3937d41a1b48cf64ff7fd70b24762d8ab43440ea9d1b68c332df2f9d8605b3b9"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} finally { check.close(); }",
+      "count": 1,
+      "fingerprint": "b242b00fc12784a955c7964e2c53b26d0cfd8cd6e50efde0ef7da6610bfa6d93"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} finally { result.close(); }",
+      "count": 3,
+      "fingerprint": "94472627394f5c46827f63bbf8eb90a76f7219b8924adbf91e50aaf594eceeaa"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "anchorVersion: result.getLong(2), engine: result.getString(3),",
+      "count": 2,
+      "fingerprint": "74cc5651a8ab7a65df8e730bf0f4716e69a33348c11d8496dcf55b4a79d23aa6"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "author: author.length > 0 ? author : undefined, epubRelativePath: result.getString(4),",
+      "count": 1,
+      "fingerprint": "338cd202337042a4078878efa7975d4e8ab367150a11e5fcb2dd18f4338dfcbb"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await store.executeSql(",
+      "count": 1,
+      "fingerprint": "851920da0d6dd70ec1c8461762cbf1f8b05a1035ef55d7f6ed96f6b3eaa1b56f"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql(",
+      "count": 3,
+      "fingerprint": "a0595d41e205f3c230a10561e2ff6272254b9ed24667158bd8258b9f3162bb7e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('DELETE FROM library_operations WHERE operation_id=?', [operationId]);",
+      "count": 1,
+      "fingerprint": "daae59798951b969e16c1f765ef015bcf5a9054530782cbe00932398f709f7a9"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE books SET last_opened_at=? WHERE book_id=?', [openedAt, bookId]);",
+      "count": 1,
+      "fingerprint": "c3074e7bddf4b0e5a641322227edf4d86dad661009a4b07d068e7844a9b47639"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE books SET source_state=? WHERE book_id=?', [state, bookId]);",
+      "count": 1,
+      "fingerprint": "dddb976f8635f9f7d6919e34d7c93c1ac35b6fec90c271cf6733ed8d8d3d67bc"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE books SET title=?,author=? WHERE book_id=?',",
+      "count": 1,
+      "fingerprint": "9abb085f8552a1ffd94e50d71d0840c5ae3b6904314b65fb4855ae27ae3cbbfc"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql(\"DELETE FROM bookmarks WHERE book_id=? AND bookmark_id=? AND EXISTS \" +",
+      "count": 1,
+      "fingerprint": "730ef0310215fd5f05854ef0b56a64db37ccbffff638d5566e8e806e1d68f7d5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql(\"UPDATE books SET cover_relative_path='' WHERE book_id=?\", [bookId]);",
+      "count": 1,
+      "fingerprint": "45e5f96742187480042090dcc5fcee220d9719be7f4ade9afccd116089d513ca"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().insert('books', {",
+      "count": 1,
+      "fingerprint": "3896db9f755f3f1d61e0ef4424f0033b742400dba851a39cdae37c93123cf14c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().insert('library_operations', {",
+      "count": 1,
+      "fingerprint": "74fe740124b955424f23ae7ccdddc98b351f4c5569dab54bc5f9bfea9a4fdaaf"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "bookId: result.getString(0),",
+      "count": 1,
+      "fingerprint": "4049f62ebc2f0e81a993912f2e758468f36e8ec7cad457962ac373eda01a731e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "bookId: result.getString(0), fileHash: result.getString(1), title: result.getString(2),",
+      "count": 3,
+      "fingerprint": "a2b4b12a81216d2d04cd0af6fca6581a8eb85e160162b96dfd496f562f349b82"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "bookId: result.getString(3),",
+      "count": 2,
+      "fingerprint": "e63358f221cdb108f2076bccd0b70b8e6c7f155190392b0704126ca608a272c4"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "bookmarkId: result.getString(0), bookId: result.getString(1),",
+      "count": 2,
+      "fingerprint": "f5cb4cdd52edd679dc4cedc24a3109be3f02027a8bc94b144c163c2cde5eaf2f"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const author = result.getString(3);",
+      "count": 2,
+      "fingerprint": "c2227d2a0811119ea3ef3ba678c091f226e0fc197ea81194e65ea7d9e8d0865e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const chapter = result.getString(3);",
+      "count": 1,
+      "fingerprint": "132de41c396f370747295df195da141574f5699a37bbc8af40ec45d715a4de69"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const check = await store.querySql(",
+      "count": 1,
+      "fingerprint": "4683828cad31a93d50f6a02c2d62d20096c4efd9184dc567980dd5086d49e5c9"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const cover = result.getString(5);",
+      "count": 2,
+      "fingerprint": "a495409753a9b0a6b888190ce99ccb1809c4d721b9041f4c9b5d7ef188b9c2fa"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const lastOpened = result.getLong(7);",
+      "count": 2,
+      "fingerprint": "3a711f023ed0ec1c2808dde47f159b2e0091d27624c2fae1cc130c93e5d3bfdd"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const owner = result.getString(0);",
+      "count": 1,
+      "fingerprint": "d32f6406eae5f59c8059a4f8a05272ef771c73d6d82d81a2e2701d3ab06324a5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const percentage = result.getDouble(2);",
+      "count": 1,
+      "fingerprint": "4f186045b70f2df601074d1ff29308d7614146d810a1beeadf127132ecb323de"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql(",
+      "count": 7,
+      "fingerprint": "d67aab6988ebe126542e43feeb072b359ff7eacbfc6e3803363760779eb7b42d"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT owner FROM reading_record_authority WHERE id=1');",
+      "count": 1,
+      "fingerprint": "33ddbeebcf01dfae9ca00055d711d4de872427e2198a7d45842512713f1ee7c6"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const token = result.getString(4);",
+      "count": 2,
+      "fingerprint": "e1705f05df13edf223b19498dd9024d06fcbfbcaa52ae6b658921952641227e3"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const value = result.getLong(0);",
+      "count": 1,
+      "fingerprint": "e3e70746a95943b760d6fe43e3addf9ec22696d67e266224165403e9f91428ce"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "coverRelativePath: cover.length > 0 ? cover : undefined, importedAt: result.getLong(6),",
+      "count": 1,
+      "fingerprint": "38dcca9c6be83444805a323cc61f74a3cf7d250a5ccd6795420b647eb69aadac"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "createdAt: result.getLong(5),",
+      "count": 2,
+      "fingerprint": "8da4746172f94d7515790a46d13687573b4f8927ae2993561d5a8dd0489bc79e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "engine: result.getString(0), locator: result.getString(1),",
+      "count": 2,
+      "fingerprint": "3cc67af99337c7e0ea1f7021bb655593779e4f6830639585244b8c118fc1fc94"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "epubRelativePath: result.getString(4),",
+      "count": 1,
+      "fingerprint": "0349a354e8d366b0c3b7e9e795cab3ad28aaf8f922dc984e41e6189cb602a9c1"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "fileHash: result.getString(1),",
+      "count": 1,
+      "fingerprint": "8fad6ee38070f352a43ccdd1c3114f08a2f3c1b36ee12f8d6dd8f59fa7e859f5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!check.goToNextRow()) throw new Error('Bookmark book unavailable or deletion pending');",
+      "count": 1,
+      "fingerprint": "4f237bc381560d53107ae0cc9b14e63151b2246b073aee7be78c5f52dbf4cd29"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!result.goToNextRow()) {",
+      "count": 2,
+      "fingerprint": "867af3ecb90319cbfcf90f2a54b875fdab09db71a9dad97b639dbad0f552a753"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!result.goToNextRow()) return undefined;",
+      "count": 1,
+      "fingerprint": "ca3d92e4b4acac5180ac51e005b24f1b02e6e56760b05e1071e3b4da158ef6ec"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!result.goToNextRow()) throw new Error('Bookmark authority marker missing');",
+      "count": 1,
+      "fingerprint": "e4179de185abaac88d0047b4342669626f3c41703820d0abd90620d498dcfe07"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!result.goToNextRow()) throw new Error('Record authority marker missing');",
+      "count": 1,
+      "fingerprint": "a48e41433c4a835b93a82182e2db90a5449320bfeac2d7535db556880093104d"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "importedAt: result.getLong(6),",
+      "count": 1,
+      "fingerprint": "f3519fa2baebc47c90ae4c5c82fcea2b8e984f904a1d273c9d51f4cdce2fac24"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "kind: result.getString(1) as LibraryOperationKind,",
+      "count": 2,
+      "fingerprint": "9aae44d0b9fb219cb199e7380d46b6b59e8bc65a61675819c3994071b0c90947"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "label: result.getString(6), createdAt: result.getLong(7)",
+      "count": 2,
+      "fingerprint": "3d06f4adf4c0ec8f75993118d614dc31dd0a7439677017623e4c40b822cd1100"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "operationId: result.getString(0),",
+      "count": 2,
+      "fingerprint": "5337c94bbb257ab404e65ad57ae90c3700330828cf688f37476e99dcf2516796"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "resourceHref: result.getString(4), cfi: result.getString(5),",
+      "count": 2,
+      "fingerprint": "c74815ca46e809f02d92a0f7d7f54f9777f1751ee2f7cf3015afbf44452e999c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "result.close();",
+      "count": 5,
+      "fingerprint": "dfca08c029f810bccdfaa4313c72fd9f002777984fec0f86123fc8ede460253c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "return { bookId: bookId, location: location, updatedAt: result.getLong(4) };",
+      "count": 1,
+      "fingerprint": "35c6cb0961398b2a8524fd5688fb608e26c0f898e560d9112afebfcb7422341b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "sourceState: result.getString(8) as BookSourceState",
+      "count": 2,
+      "fingerprint": "60b61f59493371176381bf499fc90b8744aa1cfa5bb22f9f5616de223c1c3765"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "state: result.getString(2) as LibraryOperationState,",
+      "count": 2,
+      "fingerprint": "a03cd5175bfe7a405c45c9f4fb2bb571f21754be0050c07297e3baeda6c0e672"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "store.beginTransaction();",
+      "count": 6,
+      "fingerprint": "528a87e579f6c209f5c8c2ed0e2a87f8528b9d921ffab239b42db7e068e9d7d6"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "store.rollBack();",
+      "count": 6,
+      "fingerprint": "57ff4a79d9cb25d2b4bc0f2ce60d248b14b1c009ca80afd5be0bf08b8827bf79"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store = await relationalStore.getRdbStore(context, {",
+      "count": 1,
+      "fingerprint": "72ef679b88a8408c8b065b547563c237cc47949687fe0565a2fc2df23952e6a0"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store?.close();",
+      "count": 1,
+      "fingerprint": "a4aa4d816a22c1f7b68e03ebadbae57fc8938601d75b4d9ff0e27bf2ead0a11c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "title: result.getString(2),",
+      "count": 1,
+      "fingerprint": "472a996b23418077398fd1342d42c021a92e4191151fdc9ca7823085fe868ab5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "updatedAt: result.getLong(6)",
+      "count": 2,
+      "fingerprint": "caeb4ce7ce67cf84e119dc44c4a0f2660dd0c02b99f02c7e4511d9359b1164f3"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) {",
+      "count": 2,
+      "fingerprint": "06416b5137a6a8379bc9eefb61a44e345651a847dca0328720c843aa5850399e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "while (result.goToNextRow()) points.push({",
+      "count": 1,
+      "fingerprint": "097897e2d477ba32dba1989c4f59d347b57e60da791b47f296b5c3fe26e5b51f"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "columnMode: this.store.getSync('column_mode', DEFAULT_READER_SETTINGS.columnMode) === 'single' ?",
+      "count": 1,
+      "fingerprint": "d36dd62179c21108823cb45dc0e17ee3428cc3be328c98a289a5e46ac90b167c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const value = this.store.getSync('theme', 'system');",
+      "count": 1,
+      "fingerprint": "1ca16a955d1a1d48a051f8a81014bbd48a7cf08147ff7481331ef09a9204501f"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "fontScale: Number(this.store.getSync('font_scale', DEFAULT_READER_SETTINGS.fontScale)),",
+      "count": 1,
+      "fingerprint": "9c72d2aa8f93c47a2790cf1d4a339c40a7d1cf2e8a20918d27b634f6cadcbd71"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "lineSpacing: Number(this.store.getSync('line_spacing', DEFAULT_READER_SETTINGS.lineSpacing)),",
+      "count": 1,
+      "fingerprint": "0acad44c4d02b2db708041969002d20f55653d7e5a0116abef3603b105559214"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "pageMarginVp: Number(this.store.getSync('page_margin_vp', DEFAULT_READER_SETTINGS.pageMarginVp)),",
+      "count": 1,
+      "fingerprint": "14ede710681547eefab20fa6b3cc2a95b4584e406d4c716620b08a50c2d9e6ac"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store = preferences.getPreferencesSync(context, { name: this.storeName });",
+      "count": 1,
+      "fingerprint": "15e97a97ed0453715da56b0e4d899903e76d8ffc5b401f566e98b71d6ba377ae"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.flushSync();",
+      "count": 2,
+      "fingerprint": "2d46e43cc493241e39fa45bd9382409d8a98b1a16eb07733db0d4df79891701c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('column_mode', settings.columnMode);",
+      "count": 1,
+      "fingerprint": "b51373b5c7ffcf64dc45b80ff4f31f1977965b47d70a048c959c44d2cf6b86a2"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('font_scale', settings.fontScale);",
+      "count": 1,
+      "fingerprint": "72e9986b19bf4edd7309928505f12c20684cc1069f62aa679877787a9cdcf768"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('line_spacing', settings.lineSpacing);",
+      "count": 1,
+      "fingerprint": "a90f8e48555753ff3dbef6d44d2f59a77db26b9720c4345ea49552b66cf7d5e0"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('page_margin_vp', settings.pageMarginVp);",
+      "count": 1,
+      "fingerprint": "941f46a17172002bea8922f2612dc0438934ada8987c0a8b7b809292d2a3dd57"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('theme', normalizeReaderThemePreference(preference));",
+      "count": 1,
+      "fingerprint": "42952f51d818da3863818c8b952bda22efac49696971640d3a15aec80e93541a"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await digest.update({ data: new Uint8Array(chunk) });",
+      "count": 1,
+      "fingerprint": "6e7f42abaf62f1a28ae50afa704dc6483896649dd1def894e8ee4eda88b27902"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.rename(source, destination);",
+      "count": 1,
+      "fingerprint": "2d303cfc86f4b8fc091c781e089f7c50be841dbe17c525367a31c490f9aef1c5"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const count = await fs.read(source.fd, buffer);",
+      "count": 1,
+      "fingerprint": "0fd0492ccc0fcf38193b5de870331c65efbbbf0ca932a4cf2374add6a9d5fcd9"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const digest = cryptoFramework.createMd('SHA256');",
+      "count": 1,
+      "fingerprint": "c910e5af14882d5fcf19e4f270505f14834c257d3b827f54e384a38eb1d7eda0"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const entries = await fs.listFile(this.booksRoot);",
+      "count": 1,
+      "fingerprint": "43937a049f7db7ab4491fd547e9d33c7ae1c58b304fb8bd392a798027bed4bd8"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const entries = await fs.listFile(this.orphanRoot);",
+      "count": 2,
+      "fingerprint": "e58ca7d1f60b6accd8a7ddd38c0cc66da540ad4608e57146001849141538cb15"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const entries = await fs.listFile(this.stagingRoot);",
+      "count": 1,
+      "fingerprint": "bf836383de7a57fb934d61277a056c2b056e91e0a5caefff6eec014661c23d07"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const output = await digest.digest();",
+      "count": 1,
+      "fingerprint": "5d96d663d0f2aee4eeca8e473e1d36a9413a7e26feafef63f762d894adb5d507"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const source = await fs.open(uri, fs.OpenMode.READ_ONLY);",
+      "count": 1,
+      "fingerprint": "845dac990098ae73419a0b0fffe16acc06f9e024bf07b345eb9484be583a11c6"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const written = await fs.write(target.fd, remaining,",
+      "count": 1,
+      "fingerprint": "e251b49beb8f3ee3a936ab1cccd4088756ce16b5a132f66a5d2c925394b35f91"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "finally { if (target !== undefined) fs.closeSync(target); }",
+      "count": 1,
+      "fingerprint": "16f045acfb1d95ef8ce4e3fe09e146ea5f5f1c0d0222064f358a29e4de4b5aeb"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (storage !== undefined) await storage.beforeWrite((await fs.stat(coverAbsolutePath)).size, 'final-cover');",
+      "count": 1,
+      "fingerprint": "6945abca82704fd73867df6299d0dbbf93054f7e6b9d524996c2dfd443b39edf"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (storage !== undefined) await storage.beforeWrite((await fs.stat(this.stagedEpubPath(token))).size, 'final-epub');",
+      "count": 1,
+      "fingerprint": "e434555b492e2571fe7fcde9117cab6e98677c5c35d0e19e960d2960abe41fa4"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "return fs.statSync(`${this.finalPath(bookId)}/book.epub`).size;",
+      "count": 1,
+      "fingerprint": "7b7c14da320967bab1f0978b33f35e64bbd48f0b7a60ab37c8b2bbab18f4f830"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "target = await fs.open(this.stagedEpubPath(token),",
+      "count": 1,
+      "fingerprint": "03f01c5be17b7ac4669bc3ce3f4e86a97d17d390233e1e1dc5a2b2d7809cbd27"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { fs.closeSync(source); }",
+      "count": 1,
+      "fingerprint": "4892c343651196b2c93ad7dcdea194bdd143092b4c3eb1bc6890f2cd3f4aee33"
+    },
+    {
+      "path": "entry/src/main/ets/utils/FileUtils.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.rmdir(path);",
+      "count": 1,
+      "fingerprint": "92f0547c73948fcfb9e5d231f26a0dbe47c97342258ac86c1d8a5c03c5f39ebb"
+    },
+    {
+      "path": "entry/src/main/ets/utils/FileUtils.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await fs.unlink(path);",
+      "count": 1,
+      "fingerprint": "6e7c26b099b6ddf99e06411658b8408fe73bd7a928fe8964b55beaf59848647a"
+    },
+    {
+      "path": "entry/src/main/ets/utils/FileUtils.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const children = await fs.listFile(path);",
+      "count": 1,
+      "fingerprint": "e1ad630b54fdb9987f129b7aa19173b3bc87e65405a1c031c9f95a92904022e6"
+    },
+    {
+      "path": "entry/src/main/ets/utils/FileUtils.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const info = await fs.stat(path);",
+      "count": 1,
+      "fingerprint": "d0fe38be1e02aed561c4ecad417da66933f41f71d9d5375d16399631394955ae"
+    },
+    {
+      "path": "entry/src/main/ets/utils/FileUtils.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (!info.isDirectory()) {",
+      "count": 1,
+      "fingerprint": "f85e6217e31fcfc420d240f83792223294da85fb5211cfd4bb6c3403ad5db9c9"
+    }
+  ]
+}

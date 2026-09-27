@@ -1,0 +1,764 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "EPUB 与 TXT 阅读器"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "页灯 EPUB 与 TXT 阅读器"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "页灯"
+    },
+    {
+      "name": "brand_name",
+      "value": "页灯"
+    },
+    {
+      "name": "library_title",
+      "value": "书库"
+    },
+    {
+      "name": "library_subtitle",
+      "value": "把时间留给阅读"
+    },
+    {
+      "name": "library_settings",
+      "value": "打开设置"
+    },
+    {
+      "name": "library_import",
+      "value": "导入书籍"
+    },
+    {
+      "name": "library_search_placeholder",
+      "value": "搜索书名或作者"
+    },
+    {
+      "name": "library_view_grid",
+      "value": "书架视图"
+    },
+    {
+      "name": "library_view_list",
+      "value": "列表视图"
+    },
+    {
+      "name": "library_sort_recent",
+      "value": "最近阅读"
+    },
+    {
+      "name": "library_sort_title",
+      "value": "书名"
+    },
+    {
+      "name": "library_sort_imported",
+      "value": "导入时间"
+    },
+    {
+      "name": "library_loading_title",
+      "value": "正在整理书库"
+    },
+    {
+      "name": "library_loading_body",
+      "value": "请稍候，正在载入你的书籍。"
+    },
+    {
+      "name": "library_empty_title",
+      "value": "从一本书开始"
+    },
+    {
+      "name": "library_empty_body",
+      "value": "导入 EPUB 或 TXT，开始阅读。"
+    },
+    {
+      "name": "library_empty_action",
+      "value": "选择书籍"
+    },
+    {
+      "name": "library_no_results_title",
+      "value": "没有匹配的书"
+    },
+    {
+      "name": "library_no_results_body",
+      "value": "试试其他书名或作者。"
+    },
+    {
+      "name": "library_clear_search",
+      "value": "清除搜索"
+    },
+    {
+      "name": "library_missing_source",
+      "value": "找不到书籍文件"
+    },
+    {
+      "name": "library_repair",
+      "value": "重新选择文件"
+    },
+    {
+      "name": "library_cleanup",
+      "value": "清理"
+    },
+    {
+      "name": "library_more_actions",
+      "value": "更多操作"
+    },
+    {
+      "name": "library_details",
+      "value": "详细信息"
+    },
+    {
+      "name": "library_rename",
+      "value": "编辑书名和作者"
+    },
+    {
+      "name": "library_rename_save",
+      "value": "保存"
+    },
+    {
+      "name": "library_delete",
+      "value": "删除"
+    },
+    {
+      "name": "library_delete_title",
+      "value": "删除这本书？"
+    },
+    {
+      "name": "library_delete_body",
+      "value": "将删除书架中的书籍、封面和阅读进度。导入时选取的文件不会被删除。"
+    },
+    {
+      "name": "common_cancel",
+      "value": "取消"
+    },
+    {
+      "name": "common_close",
+      "value": "关闭"
+    },
+    {
+      "name": "library_unknown_author",
+      "value": "未知作者"
+    },
+    {
+      "name": "library_details_title",
+      "value": "书籍详细信息"
+    },
+    {
+      "name": "library_details_original_title",
+      "value": "书名"
+    },
+    {
+      "name": "library_details_author",
+      "value": "作者"
+    },
+    {
+      "name": "library_details_size",
+      "value": "文件大小"
+    },
+    {
+      "name": "library_details_imported",
+      "value": "导入时间"
+    },
+    {
+      "name": "library_details_last_opened",
+      "value": "最近打开"
+    },
+    {
+      "name": "library_details_progress",
+      "value": "阅读进度"
+    },
+    {
+      "name": "library_details_source",
+      "value": "来源状态"
+    },
+    {
+      "name": "library_source_available",
+      "value": "可阅读"
+    },
+    {
+      "name": "library_source_missing",
+      "value": "文件缺失，可重新选择"
+    },
+    {
+      "name": "settings_title",
+      "value": "设置"
+    },
+    {
+      "name": "settings_subtitle",
+      "value": "阅读与应用偏好"
+    },
+    {
+      "name": "settings_appearance_title",
+      "value": "书库与设置主题"
+    },
+    {
+      "name": "settings_reading_title",
+      "value": "阅读设置"
+    },
+    {
+      "name": "settings_reading_body",
+      "value": "分栏与动效"
+    },
+    {
+      "name": "settings_back",
+      "value": "返回"
+    },
+    {
+      "name": "settings_privacy_title",
+      "value": "隐私与数据"
+    },
+    {
+      "name": "settings_privacy_body",
+      "value": "隐私政策与本地数据"
+    },
+    {
+      "name": "settings_about_title",
+      "value": "关于与法律"
+    },
+    {
+      "name": "settings_about_body",
+      "value": "版本、许可与声明"
+    },
+    {
+      "name": "legal_project_license",
+      "value": "项目许可"
+    },
+    {
+      "name": "legal_third_party_notices",
+      "value": "第三方声明"
+    },
+    {
+      "name": "legal_development_identity_title",
+      "value": "页灯"
+    },
+    {
+      "name": "legal_development_identity_body",
+      "value": "EPUB 与 TXT 阅读器。"
+    },
+    {
+      "name": "privacy_books_title",
+      "value": "应用管理的书籍与阅读进度"
+    },
+    {
+      "name": "privacy_policy_link",
+      "value": "查看完整隐私政策（联网）"
+    },
+    {
+      "name": "privacy_policy_local_link",
+      "value": "查看完整隐私政策（离线）"
+    },
+    {
+      "name": "privacy_policy_title",
+      "value": "页灯隐私政策"
+    },
+    {
+      "name": "privacy_policy_local_copy",
+      "value": "随应用提供的完整政策"
+    },
+    {
+      "name": "privacy_policy_open_failed",
+      "value": "无法使用系统浏览器打开隐私政策。"
+    },
+    {
+      "name": "privacy_books_body",
+      "value": "书籍副本、封面和阅读进度保存在本机。删除书籍不会删除原始文件。"
+    },
+    {
+      "name": "privacy_derived_title",
+      "value": "可重建数据"
+    },
+    {
+      "name": "privacy_derived_body",
+      "value": "字典索引等派生数据可以从本地资源重建，不属于用户原始内容。"
+    },
+    {
+      "name": "privacy_absent_title",
+      "value": "当前未提供"
+    },
+    {
+      "name": "diagnostic_export_title",
+      "value": "诊断信息"
+    },
+    {
+      "name": "diagnostic_export_body",
+      "value": "导出当前会话中经过脱敏的错误类别、次数和阅读器打开耗时摘要。不会包含书名、作者、正文、路径、选择位置、账号密钥或设备标识，也不会上传。"
+    },
+    {
+      "name": "diagnostic_export_action",
+      "value": "导出诊断信息"
+    },
+    {
+      "name": "diagnostic_exporting",
+      "value": "正在导出…"
+    },
+    {
+      "name": "diagnostic_export_saved",
+      "value": "诊断信息已保存。"
+    },
+    {
+      "name": "diagnostic_export_cancelled",
+      "value": "已取消导出，没有写入文件。"
+    },
+    {
+      "name": "diagnostic_export_failed",
+      "value": "导出失败，没有取得可写目标。"
+    },
+    {
+      "name": "diagnostic_export_partial",
+      "value": "导出失败；所选目标可能是不完整文件，请在文件管理中检查。"
+    },
+    {
+      "name": "privacy_absent_body",
+      "value": "当前没有账号、云同步、云备份或一键清除全部数据入口。"
+    },
+    {
+      "name": "legal_local_copy",
+      "value": "许可与声明全文"
+    },
+    {
+      "name": "library_progress_approx",
+      "value": "约 %d%%"
+    },
+    {
+      "name": "reader_library_short",
+      "value": "书库"
+    },
+    {
+      "name": "reader_back_to_library",
+      "value": "返回书库"
+    },
+    {
+      "name": "reader_previous_chapter",
+      "value": "上一章"
+    },
+    {
+      "name": "reader_next_chapter",
+      "value": "下一章"
+    },
+    {
+      "name": "reader_open_toc",
+      "value": "打开目录"
+    },
+    {
+      "name": "reader_open_appearance",
+      "value": "打开阅读外观"
+    },
+    {
+      "name": "reader_appearance_glyph",
+      "value": "Aa"
+    },
+    {
+      "name": "reader_progress_calculating",
+      "value": "正在计算全书进度"
+    },
+    {
+      "name": "reader_progress_approximate",
+      "value": "全书约 "
+    },
+    {
+      "name": "reader_toc_title",
+      "value": "目录"
+    },
+    {
+      "name": "reader_toc_empty",
+      "value": "目录尚未加载"
+    },
+    {
+      "name": "reader_toc_current",
+      "value": "当前"
+    },
+    {
+      "name": "reader_appearance_title",
+      "value": "阅读外观"
+    },
+    {
+      "name": "reader_appearance_subtitle",
+      "value": "调整后立即应用，并保存为全局阅读默认"
+    },
+    {
+      "name": "reader_column_mode",
+      "value": "阅读分栏"
+    },
+    {
+      "name": "reader_column_mode_auto",
+      "value": "自动"
+    },
+    {
+      "name": "reader_column_mode_single",
+      "value": "始终单栏"
+    },
+    {
+      "name": "reader_font_scale",
+      "value": "字号"
+    },
+    {
+      "name": "reader_font_scale_decrease",
+      "value": "减小字号"
+    },
+    {
+      "name": "reader_font_scale_increase",
+      "value": "增大字号"
+    },
+    {
+      "name": "reader_font_scale_decrease_glyph",
+      "value": "A−"
+    },
+    {
+      "name": "reader_font_scale_increase_glyph",
+      "value": "A+"
+    },
+    {
+      "name": "reader_line_spacing",
+      "value": "行距"
+    },
+    {
+      "name": "reader_line_spacing_decrease",
+      "value": "减小行距"
+    },
+    {
+      "name": "reader_line_spacing_increase",
+      "value": "增大行距"
+    },
+    {
+      "name": "reader_page_margin",
+      "value": "页边距"
+    },
+    {
+      "name": "reader_page_margin_decrease",
+      "value": "缩小页边距"
+    },
+    {
+      "name": "reader_page_margin_increase",
+      "value": "增大页边距"
+    },
+    {
+      "name": "reader_decrease_glyph",
+      "value": "−"
+    },
+    {
+      "name": "reader_increase_glyph",
+      "value": "+"
+    },
+    {
+      "name": "reader_percent_unit",
+      "value": "%"
+    },
+    {
+      "name": "reader_vp_unit",
+      "value": " vp"
+    },
+    {
+      "name": "reader_theme_section",
+      "value": "阅读主题"
+    },
+    {
+      "name": "reader_theme_selected_prefix",
+      "value": "已选择："
+    },
+    {
+      "name": "reader_theme_default_prefix",
+      "value": "全局默认 · "
+    },
+    {
+      "name": "reader_theme_effective_prefix",
+      "value": "（当前"
+    },
+    {
+      "name": "reader_theme_effective_suffix",
+      "value": "）"
+    },
+    {
+      "name": "reader_theme_current_prefix",
+      "value": "当前显示："
+    },
+    {
+      "name": "reader_theme_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "reader_theme_light",
+      "value": "浅色"
+    },
+    {
+      "name": "reader_theme_dark",
+      "value": "深色"
+    },
+    {
+      "name": "reader_theme_eye_comfort",
+      "value": "护眼"
+    },
+    {
+      "name": "reader_theme_selected_marker",
+      "value": "已选"
+    },
+    {
+      "name": "reader_theme_system_selected",
+      "value": "跟随系统，已选择"
+    },
+    {
+      "name": "reader_theme_light_selected",
+      "value": "浅色，已选择"
+    },
+    {
+      "name": "reader_theme_dark_selected",
+      "value": "深色，已选择"
+    },
+    {
+      "name": "reader_theme_eye_comfort_selected",
+      "value": "护眼，已选择"
+    },
+    {
+      "name": "library_more_actions_for_book",
+      "value": "更多操作，%s"
+    },
+    {
+      "name": "library_list_status",
+      "value": "%s · %s"
+    },
+    {
+      "name": "library_source_missing_short",
+      "value": "来源缺失"
+    },
+    {
+      "name": "library_source_available_short",
+      "value": "可阅读"
+    },
+    {
+      "name": "library_orphan_notice",
+      "value": "发现 %d 份未关联的书籍数据，可以清理。"
+    },
+    {
+      "name": "legal_notice_heading",
+      "value": "NOTICE"
+    },
+    {
+      "name": "legal_project_load_error",
+      "value": "无法显示项目许可，请稍后重试。"
+    },
+    {
+      "name": "legal_notices_load_error",
+      "value": "无法显示第三方声明，请稍后重试。"
+    },
+    {
+      "name": "reader_close_glyph",
+      "value": "×"
+    },
+    {
+      "name": "reader_toc_close",
+      "value": "关闭目录"
+    },
+    {
+      "name": "reader_appearance_close",
+      "value": "关闭阅读外观"
+    },
+    {
+      "name": "reader_dictionary_title",
+      "value": "词典"
+    },
+    {
+      "name": "reader_dictionary_offline_label",
+      "value": "离线英汉速查"
+    },
+    {
+      "name": "reader_dictionary_close",
+      "value": "关闭词典"
+    },
+    {
+      "name": "reader_dictionary_source_cc_cedict",
+      "value": "CC-CEDICT 释义"
+    },
+    {
+      "name": "reader_dictionary_source_omw",
+      "value": "OMW 释义"
+    },
+    {
+      "name": "reader_dictionary_match_inflection",
+      "value": "原形匹配"
+    },
+    {
+      "name": "reader_dictionary_match_suffix",
+      "value": "词形推断"
+    },
+    {
+      "name": "reader_dictionary_match_exact",
+      "value": "精确匹配"
+    },
+    {
+      "name": "reader_dictionary_pos_noun",
+      "value": "名词"
+    },
+    {
+      "name": "reader_dictionary_pos_verb",
+      "value": "动词"
+    },
+    {
+      "name": "reader_dictionary_pos_adjective",
+      "value": "形容词"
+    },
+    {
+      "name": "reader_dictionary_pos_adverb",
+      "value": "副词"
+    },
+    {
+      "name": "reader_dictionary_pos_definition",
+      "value": "释义"
+    },
+    {
+      "name": "reader_dictionary_not_found_title",
+      "value": "暂未收录此词"
+    },
+    {
+      "name": "reader_dictionary_not_found_body",
+      "value": "词典未收录此词，可尝试选择其他词形。"
+    },
+    {
+      "name": "reader_dictionary_invalid_title",
+      "value": "请选择一个英文单词"
+    },
+    {
+      "name": "reader_dictionary_invalid_body",
+      "value": "句子和多词选区不会触发单词释义。"
+    },
+    {
+      "name": "reader_dictionary_unavailable_title",
+      "value": "词典暂时不可用"
+    },
+    {
+      "name": "reader_dictionary_unavailable_body",
+      "value": "阅读不受影响，可以稍后重试。"
+    },
+    {
+      "name": "reader_dictionary_loading",
+      "value": "正在查词…"
+    },
+    {
+      "name": "reader_dictionary_copy",
+      "value": "复制"
+    },
+    {
+      "name": "reader_dictionary_collapse",
+      "value": "收起"
+    },
+    {
+      "name": "reader_dictionary_more",
+      "value": "更多"
+    },
+    {
+      "name": "reader_passage_title",
+      "value": "段落操作"
+    },
+    {
+      "name": "reader_passage_too_long_title",
+      "value": "选区过长"
+    },
+    {
+      "name": "reader_passage_unavailable_title",
+      "value": "选区已变化"
+    },
+    {
+      "name": "reader_passage_mark_conflict_title",
+      "value": "已有标记"
+    },
+    {
+      "name": "reader_passage_mark_unavailable_title",
+      "value": "暂时无法检查标记"
+    },
+    {
+      "name": "reader_passage_count_prefix",
+      "value": "当前选区 "
+    },
+    {
+      "name": "reader_passage_count_suffix",
+      "value": " 个字符"
+    },
+    {
+      "name": "reader_passage_selection_label",
+      "value": "当前段落选区"
+    },
+    {
+      "name": "reader_passage_close",
+      "value": "关闭段落操作"
+    },
+    {
+      "name": "reader_passage_too_long_body",
+      "value": "请选择不超过 4,000 个字符的较短段落。"
+    },
+    {
+      "name": "reader_passage_loading",
+      "value": "正在读取选中的文字…"
+    },
+    {
+      "name": "reader_passage_unavailable_body",
+      "value": "请重新选择段落后再试。"
+    },
+    {
+      "name": "reader_passage_copy",
+      "value": "复制所选段落"
+    },
+    {
+      "name": "reader_show_controls",
+      "value": "显示阅读控制"
+    },
+    {
+      "name": "reader_motion_title",
+      "value": "阅读动效"
+    },
+    {
+      "name": "reader_motion_system",
+      "value": "跟随系统"
+    },
+    {
+      "name": "reader_motion_enabled",
+      "value": "开启动画"
+    },
+    {
+      "name": "reader_motion_reduced",
+      "value": "减少动态效果"
+    },
+    {
+      "name": "reader_select_text_short",
+      "value": "选文"
+    },
+    {
+      "name": "reader_select_text",
+      "value": "进入正文，使用系统选文"
+    },
+    {
+      "name": "reader_publication_content",
+      "value": "书籍正文；可使用系统焦点和选文操作"
+    },
+    {
+      "name": "reader_return_from_footnote",
+      "value": "返回正文"
+    },
+    {
+      "name": "reader_return_from_link",
+      "value": "返回上一阅读位置"
+    },
+    {
+      "name": "reader_external_link_title",
+      "value": "打开外部链接？"
+    },
+    {
+      "name": "reader_external_link_body",
+      "value": "此链接将离开阅读器，并由系统浏览器打开：%s"
+    },
+    {
+      "name": "reader_external_link_open",
+      "value": "打开"
+    },
+    {
+      "name": "library_checking_book",
+      "value": "正在检查书籍…"
+    },
+    {
+      "name": "reader_preparing_text",
+      "value": "正在准备正文…"
+    },
+    {
+      "name": "library_cancel_open",
+      "value": "取消打开"
+    }
+  ]
+}

@@ -1,0 +1,20 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "Local EPUB reader"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "Yedeng EPUB reader"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Yedeng"
+    },
+    {
+      "name": "brand_name",
+      "value": "Yedeng"
+    }
+  ]
+}
