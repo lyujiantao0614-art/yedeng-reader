@@ -1,6 +1,7 @@
 import { common } from '@kit.AbilityKit';
 import { webview } from '@kit.ArkWeb';
 import { AnimatorResult } from '@ohos.animator';
+import { SafeLog } from '../diagnostics/SafeLog';
 import { Book, BookmarkPoint, Chapter, ReaderSettings, ReadingLocation, WEB_READER_ENGINE_ID } from '../domain/Models';
 import { createProductionImportPolicy } from '../services/ProductionImportPolicy';
 import { ReaderCommand, ReaderEngineCallbacks, ReaderEngineController, ReaderInternalLinkKind,
@@ -34,6 +35,11 @@ interface SourceInfo {
 interface SignalWait {
   token: number;
   done: Promise<void>;
+}
+
+interface SurfaceConfigureResult {
+  token: number;
+  state: ReaderSurfaceState;
 }
 
 interface SavedLocator {
@@ -71,6 +77,7 @@ interface ReaderReturnEntry { location: ReadingLocation; kind?: ReaderInternalLi
 
 const SOURCE_LIMIT: number = 6 * 1024 * 1024;
 const SIGNAL_TIMEOUT_MS: number = 20000;
+const RELAYOUT_TIMEOUT_MS: number = 3000;
 
 async function runSurfaceScript(controller: webview.WebviewController, script: string): Promise<string> {
   try { return await controller.runJavaScript(script); }
@@ -129,6 +136,11 @@ export struct ReaderFourSurfaceView {
   private sourceSizes: number[] = [0, 0, 0, 0];
   private units: number[] = [1, 1, 1, 1];
   private layoutWidths: number[] = [1, 1, 1, 1];
+  private layoutHeights: number[] = [1, 1, 1, 1];
+  private webViewportWidths: number[] = [0, 0, 0, 0];
+  private webViewportHeights: number[] = [0, 0, 0, 0];
+  private slotLayoutRevisions: number[] = [0, 0, 0, 0];
+  private configureTokens: Array<number | undefined> = [undefined, undefined, undefined, undefined];
   private positions: number[] = [0, 0, 0, 0];
   private available: boolean[] = [false, false, false, false];
   private loadTasks: Array<Promise<void> | undefined> = [undefined, undefined, undefined, undefined];
@@ -160,10 +172,17 @@ export struct ReaderFourSurfaceView {
   private gestureBaseOffset: number = 0;
   private gestureDx: number = 0;
   private gesturePeak: number = 0;
+  private gestureStartRevision: number = 0;
+  private gestureActive: boolean = false;
+  private gestureDuringRelayout: boolean = false;
   private layoutRevision: number = 0;
-  private relayouting: boolean = false;
+  @State private relayouting: boolean = false;
+  @State private relayoutFailed: boolean = false;
+  private relayoutPassRunning: boolean = false;
   private pendingRelayout: boolean = false;
-  private activeRelayoutSignal: number = 0;
+  private queuedRelayoutTurn: string = '';
+  private relayoutSignals: Set<number> = new Set();
+  @State private stagingSlots: boolean[] = [false, false, false, false];
   @State private currentSlot: number = 0;
   @State private chapterIndex: number = 0;
   @State private pageUnit: number = 0;
@@ -183,6 +202,14 @@ export struct ReaderFourSurfaceView {
       this.finishSignal(token, ready);
     this.bridge.onLayoutDone = (_slot: number, token: number, ready: boolean): void =>
       this.finishSignal(token, ready);
+    this.bridge.onViewportChanged = (slot: number, width: number, height: number): void => {
+      if (slot < 0 || slot >= 4 || !Number.isFinite(width) || !Number.isFinite(height)) return;
+      this.webViewportWidths[slot] = width;
+      this.webViewportHeights[slot] = height;
+      if (!this.ready || this.relayoutPassRunning || slot !== this.currentSlot ||
+        Math.abs(width - this.viewportWidth) > 2 || Math.abs(height - this.viewportHeight) > 2) return;
+      if (!this.slotLayoutCurrent(slot)) this.requestRelayout();
+    };
     this.bridge.onSelection = (slot: number, selected: boolean): void => {
       if (slot < 0 || slot >= 4) return;
       const wasSelected = this.selectedSlots[slot];
@@ -250,6 +277,14 @@ export struct ReaderFourSurfaceView {
     this.motion = undefined;
     this.moving = false;
     this.dragging = false;
+    this.gestureActive = false;
+    this.gestureDuringRelayout = false;
+    this.queuedRelayoutTurn = '';
+    this.stagingSlots = [false, false, false, false];
+    this.configureTokens = [undefined, undefined, undefined, undefined];
+    this.relayoutSignals.clear();
+    this.relayouting = false;
+    this.relayoutFailed = false;
     this.intraChapterMotion = false;
     this.settleSurface(this.currentSlot);
     this.pendingNavigation = 0;
@@ -268,13 +303,13 @@ export struct ReaderFourSurfaceView {
     }
   }
 
-  private awaitSignal(session: number): SignalWait {
+  private awaitSignal(session: number, timeoutMs: number = SIGNAL_TIMEOUT_MS): SignalWait {
     const token = ++this.nextSignal;
     const done = new Promise<void>((resolve, reject): void => {
       const timer = setTimeout((): void => {
         this.signals.delete(token);
         reject(new Error('Reader readiness timeout'));
-      }, SIGNAL_TIMEOUT_MS);
+      }, timeoutMs);
       this.signals.set(token, { session, resolve, reject, timer });
     });
     return { token, done };
@@ -428,8 +463,16 @@ export struct ReaderFourSurfaceView {
 
   private async load(slot: number, index: number, priority: number,
     initialAtEnd: boolean = false): Promise<void> {
+    if (this.relayouting) throw new Error('Reader relayout in progress');
     if (!this.sourceInfo || index < 0 || index >= this.sourceInfo.chapterHrefs.length) return;
-    if (this.available[slot] && this.chapterIndices[slot] === index) return;
+    if (this.available[slot] && this.chapterIndices[slot] === index) {
+      if (this.slotLayoutCurrent(slot)) return;
+      // A background resize may be waiting on an offscreen Web viewport. A turn
+      // takes ownership of this slot instead of inheriting that wait.
+      await this.configureSlot(slot, this.layoutRevision, this.viewportWidth, this.viewportHeight, '');
+      if (this.slotLayoutCurrent(slot)) return;
+      throw new Error('Reader surface has stale viewport');
+    }
     if (this.requestedIndices[slot] === index && this.loadTasks[slot]) {
       this.jobs.forEach((job: ReaderPreparationJob): void => {
         if (job.slot === slot && job.index === index) job.priority = Math.min(job.priority, priority);
@@ -524,6 +567,8 @@ export struct ReaderFourSurfaceView {
     }
     this.units[slot] = state.units;
     this.layoutWidths[slot] = state.viewport;
+    this.layoutHeights[slot] = state.height;
+    this.slotLayoutRevisions[slot] = this.layoutRevision;
     this.chapterIndices[slot] = job.index;
     this.positions[slot] = state.unit;
     this.available[slot] = true;
@@ -636,25 +681,123 @@ export struct ReaderFourSurfaceView {
     this.controllers[position.slot].runJavaScript(`Surface.seek(${position.unit})`).catch((): void => {});
   }
 
+  private slotLayoutCurrent(slot: number): boolean {
+    return this.slotLayoutRevisions[slot] === this.layoutRevision &&
+      Math.abs(this.layoutWidths[slot] - this.viewportWidth) <= 2 &&
+      Math.abs(this.layoutHeights[slot] - this.viewportHeight) <= 2;
+  }
+
   private requestRelayout(): void {
     if (!this.ready) return;
-    if (this.relayouting) {
+    this.relayouting = true;
+    this.relayoutFailed = false;
+    for (const token of this.relayoutSignals) this.finishSignal(token, false);
+    if (this.relayoutPassRunning) {
       this.pendingRelayout = true;
-      if (this.activeRelayoutSignal > 0) this.finishSignal(this.activeRelayoutSignal, false);
       return;
     }
-    this.relayouting = true;
+    this.relayoutPassRunning = true;
+    const generation = this.generation;
     this.performRelayout().catch((): void => {
-      // A resize can supersede an in-flight four-surface pass. The queued pass
-      // will verify the settled viewport before a layout failure is terminal.
-      if (this.alive && !this.pendingRelayout) this.callbacks.onError(this.activeSession, 'navigation');
+      if (this.alive && generation === this.generation && !this.pendingRelayout) {
+        this.relayoutFailed = true;
+      }
     }).finally((): void => {
-      this.relayouting = false;
+      this.relayoutPassRunning = false;
       if (this.pendingRelayout) {
         this.pendingRelayout = false;
         this.requestRelayout();
+      } else if (this.alive) {
+        this.relayouting = false;
+        const queued = generation === this.generation ? this.queuedRelayoutTurn : '';
+        this.queuedRelayoutTurn = '';
+        if (!this.relayoutFailed) {
+          if (queued === 'nextPage') this.page(1);
+          else if (queued === 'previousPage') this.page(-1);
+          else if (queued === 'nextChapter') this.jump(this.chapterIndex + 1);
+          else if (queued === 'previousChapter') this.jump(this.chapterIndex - 1);
+        }
       }
     });
+  }
+
+  private async configureSlot(slot: number, revision: number, width: number, height: number,
+    anchor: string): Promise<void> {
+    const generation = this.generation;
+    const startedAt = Date.now();
+    let phase = 0;
+    let validation = 0;
+    const previous = this.configureTokens[slot];
+    if (previous !== undefined) this.finishSignal(previous, false);
+    const signal = this.awaitSignal(generation, RELAYOUT_TIMEOUT_MS);
+    this.configureTokens[slot] = signal.token;
+    if (slot !== this.currentSlot) {
+      this.stagingSlots = this.stagingSlots.map((staged: boolean, index: number): boolean =>
+        index === slot ? true : staged);
+    }
+    // A superseding fold can reject this signal before the script call settles.
+    signal.done.catch((): void => {});
+    this.relayoutSignals.add(signal.token);
+    try {
+      await runSurfaceScript(this.controllers[slot],
+        `Surface.beginConfigure(${JSON.stringify(this.settings)},${JSON.stringify(anchor)},${revision},` +
+        `${width},${height},${signal.token})`);
+      phase = 1;
+      await signal.done;
+      phase = 2;
+      if (!this.alive || generation !== this.generation || revision !== this.layoutRevision ||
+        this.pendingRelayout || this.configureTokens[slot] !== signal.token) return;
+      const raw = await runSurfaceScript(this.controllers[slot],
+        'JSON.stringify({token:Surface.configureResultToken,state:Surface.configureResult})');
+      phase = 3;
+      const result = JSON.parse(JSON.parse(raw) as string) as SurfaceConfigureResult;
+      const state = result.state;
+      phase = 4;
+      if (result.token !== signal.token || this.configureTokens[slot] !== signal.token) validation = 1;
+      else if (!state) validation = 2;
+      else if (!state.complete) validation = 3;
+      else if (state.index !== this.chapterIndices[slot]) validation = 4;
+      else if (!Number.isInteger(state.units) || state.units < 1) validation = 5;
+      else if (!Number.isInteger(state.unit) || state.unit < 0 || state.unit >= state.units) validation = 6;
+      else if (Math.abs(state.viewport - width) > 2) validation = 7;
+      else if (Math.abs(state.height - height) > 2) validation = 8;
+      if (validation !== 0) {
+        throw new Error('Reader relayout failed');
+      }
+      this.units[slot] = state.units;
+      this.layoutWidths[slot] = state.viewport;
+      this.layoutHeights[slot] = state.height;
+      this.webViewportWidths[slot] = state.viewport;
+      this.webViewportHeights[slot] = state.height;
+      this.slotLayoutRevisions[slot] = revision;
+      this.positions[slot] = state.unit;
+      if (slot === this.currentSlot) this.pageUnit = state.unit;
+      SafeLog.readerRelayout('ready', slot, revision, width, height, state.viewport,
+        state.height, Date.now() - startedAt);
+    } catch (error) {
+      this.finishSignal(signal.token, false);
+      if (this.alive && generation === this.generation && revision === this.layoutRevision &&
+        !this.pendingRelayout && this.configureTokens[slot] === signal.token) {
+        let webPhase = 0;
+        try {
+          webPhase = Number(await runSurfaceScript(this.controllers[slot],
+            'Surface.configureFailureCode || 0'));
+        } catch (_) {}
+        SafeLog.readerRelayoutFailureDetail(slot, revision, phase, validation, webPhase);
+        SafeLog.readerRelayout('failed', slot, revision, width, height,
+          this.webViewportWidths[slot], this.webViewportHeights[slot], Date.now() - startedAt);
+      }
+      throw error as Error;
+    } finally {
+      this.relayoutSignals.delete(signal.token);
+      if (this.configureTokens[slot] === signal.token) {
+        this.configureTokens[slot] = undefined;
+        if (this.stagingSlots[slot]) {
+          this.stagingSlots = this.stagingSlots.map((staged: boolean, index: number): boolean =>
+            index === slot ? false : staged);
+        }
+      }
+    }
   }
 
   private async performRelayout(): Promise<void> {
@@ -665,7 +808,27 @@ export struct ReaderFourSurfaceView {
     const expectedWidth = this.viewportWidth;
     const expectedHeight = this.viewportHeight;
     if (expectedWidth <= 0 || expectedHeight <= 0) return;
+    const committedPosition = this.committedPosition;
+    SafeLog.readerRelayoutPosition(revision, this.currentSlot, committedPosition?.slot ?? -1,
+      committed.chapterId === this.sourceInfo.chapterHrefs[this.chapterIndex],
+      this.chapterIndices[this.currentSlot] === this.chapterIndex);
     this.navigationEpoch++;
+    if (this.gestureActive || this.moving) {
+      SafeLog.readerRelayoutInput(revision, this.gestureActive, this.gestureDx,
+        this.gesturePeak, this.moving ? this.motionDirection : 0);
+    }
+    if (this.gestureActive) {
+      const interruptedTurn = this.interruptedGestureDirection();
+      if (interruptedTurn !== 0) {
+        this.queuedRelayoutTurn = interruptedTurn > 0 ? 'nextPage' : 'previousPage';
+      }
+      this.gestureActive = false;
+      this.gestureDuringRelayout = false;
+    }
+    // Reflow cancels the old-width animation; finish its accepted turn on the new layout.
+    if (this.moving && this.motionDirection !== 0 && this.queuedRelayoutTurn.length === 0) {
+      this.queuedRelayoutTurn = this.motionDirection > 0 ? 'nextPage' : 'previousPage';
+    }
     this.motionGeneration++;
     this.motion?.cancel();
     this.motion = undefined;
@@ -675,34 +838,46 @@ export struct ReaderFourSurfaceView {
     this.settleSurface(this.currentSlot);
     this.pendingNavigation = 0;
     if (this.selectionToken.length > 0) this.dispatch({ type: 'clearSelection' });
-    const cfi = this.parseLocator(committed.locator).cfi;
-    for (let slot = 0; slot < 4; slot++) {
-      if (!this.available[slot]) continue;
-      const anchor = slot === this.currentSlot ? cfi : '';
-      const signal = this.awaitSignal(generation);
-      this.activeRelayoutSignal = signal.token;
-      try {
-        await runSurfaceScript(this.controllers[slot],
-          `Surface.beginConfigure(${JSON.stringify(this.settings)},${JSON.stringify(anchor)},${revision},` +
-          `${expectedWidth},${expectedHeight},${signal.token})`);
-        await signal.done;
-      } finally {
-        if (this.activeRelayoutSignal === signal.token) this.activeRelayoutSignal = 0;
+    // A turn can finish visually while its locator commit is still waiting for Web.
+    // Reflow from the last verified chapter, then replay that accepted turn.
+    const verified = this.committedPosition;
+    if (verified && (this.currentSlot !== verified.slot || this.chapterIndex !== verified.index ||
+      this.pageUnit !== verified.unit)) {
+      const delta = this.chapterIndex !== verified.index ?
+        this.chapterIndex - verified.index : this.pageUnit - verified.unit;
+      if (Math.abs(delta) === 1 && this.queuedRelayoutTurn.length === 0) {
+        this.queuedRelayoutTurn = delta > 0 ? 'nextPage' : 'previousPage';
       }
-      if (!this.alive || generation !== this.generation) return;
-      if (this.pendingRelayout) return;
-      const raw = await runSurfaceScript(this.controllers[slot], 'JSON.stringify(Surface.configureResult)');
-      const state = JSON.parse(JSON.parse(raw) as string) as ReaderSurfaceState;
-      if (!state.complete || state.index !== this.chapterIndices[slot] ||
-        !Number.isInteger(state.units) || state.units < 1 || !Number.isInteger(state.unit) ||
-        state.unit < 0 || state.unit >= state.units) throw new Error('Reader relayout failed');
-      this.units[slot] = state.units;
-      this.layoutWidths[slot] = state.viewport;
-      this.positions[slot] = state.unit;
-      if (slot === this.currentSlot) this.pageUnit = state.unit;
+      this.currentSlot = verified.slot;
+      this.chapterIndex = verified.index;
+      this.pageUnit = verified.unit;
+      this.settleSurface(verified.slot);
     }
-    if (revision === this.layoutRevision && !this.pendingRelayout &&
-      expectedWidth === this.viewportWidth && expectedHeight === this.viewportHeight) await this.commit('layout');
+    const activeSlot = this.currentSlot;
+    const cfi = this.parseLocator(committed.locator).cfi;
+    await this.configureSlot(activeSlot, revision, expectedWidth, expectedHeight, cfi);
+    if (!this.alive || generation !== this.generation || this.pendingRelayout ||
+      revision !== this.layoutRevision) return;
+    await this.commit('layout');
+    if (!this.alive || generation !== this.generation || this.pendingRelayout ||
+      revision !== this.layoutRevision) return;
+    const background: Promise<void>[] = [];
+    for (let slot = 0; slot < 4; slot++) {
+      if (slot === activeSlot || !this.available[slot]) continue;
+      const task = this.configureSlot(slot, revision, expectedWidth, expectedHeight, '').catch((): void => {
+        if (revision === this.layoutRevision && !this.slotLayoutCurrent(slot)) {
+          this.slotLayoutRevisions[slot] = -1;
+        }
+      });
+      background.push(task);
+    }
+    this.relayouting = false;
+    this.relayoutFailed = false;
+    this.dispatch({ type: 'requestPageExcerpt', sessionId: this.activeSession });
+    Promise.all(background).then((): void => {
+      if (this.alive && generation === this.generation && !this.pendingRelayout &&
+        revision === this.layoutRevision) this.prepareAround(1);
+    });
   }
 
   private selectionEvent(slot: number, raw: string): void {
@@ -961,6 +1136,10 @@ export struct ReaderFourSurfaceView {
       return;
     }
     if (command.type === 'nextChapter' || command.type === 'previousChapter') {
+      if (this.relayouting) {
+        this.queuedRelayoutTurn = command.type;
+        return;
+      }
       this.jump(this.chapterIndex + (command.type === 'nextChapter' ? 1 : -1));
       return;
     }
@@ -995,7 +1174,11 @@ export struct ReaderFourSurfaceView {
   }
 
   private page(direction: number): void {
-    if (!this.ready || this.relayouting || this.dragging || this.moving ||
+    if (this.ready && this.relayouting && (direction === -1 || direction === 1)) {
+      this.queuedRelayoutTurn = direction > 0 ? 'nextPage' : 'previousPage';
+      return;
+    }
+    if (!this.ready || this.relayoutFailed || this.dragging || this.moving ||
       (direction !== -1 && direction !== 1)) return;
     if (this.selectionToken.length > 0) this.dispatch({ type: 'clearSelection' });
     if (this.navigating) { this.pendingNavigation = direction; return; }
@@ -1148,7 +1331,7 @@ export struct ReaderFourSurfaceView {
 
   private jump(index: number, fragment: string = '', cfi: string = '', afterCommit?: () => void,
     afterSettled?: () => void, mark?: ReaderTextMark): boolean {
-    if (!this.ready || this.relayouting || !this.sourceInfo ||
+    if (!this.ready || this.relayouting || this.relayoutFailed || !this.sourceInfo ||
       index < 0 || index >= this.sourceInfo.chapterHrefs.length) return false;
     this.motionGeneration++;
     this.motion?.cancel();
@@ -1226,6 +1409,7 @@ export struct ReaderFourSurfaceView {
     const target = this.neighborSlot(direction);
     return this.available[target] &&
       this.chapterIndices[target] === index &&
+      this.slotLayoutCurrent(target) &&
       this.positions[target] === (direction < 0 ? this.units[target] - 1 : 0);
   }
 
@@ -1240,7 +1424,17 @@ export struct ReaderFourSurfaceView {
   }
 
   private grab(): void {
-    if (!this.ready || this.relayouting || this.viewportWidth <= 0) return;
+    if (!this.ready || this.relayoutFailed || this.viewportWidth <= 0) return;
+    this.gestureActive = true;
+    this.gestureStartRevision = this.layoutRevision;
+    this.gestureDuringRelayout = this.relayouting;
+    if (this.gestureDuringRelayout) {
+      this.gestureBaseOffset = 0;
+      this.gestureDx = 0;
+      this.gesturePeak = 0;
+      this.dragging = true;
+      return;
+    }
     if (this.moving) {
       this.motionGeneration++;
       this.motion?.cancel();
@@ -1259,6 +1453,7 @@ export struct ReaderFourSurfaceView {
     if (!this.dragging) return;
     this.gestureDx = event.offsetX;
     this.gesturePeak = Math.max(this.gesturePeak, Math.abs(event.offsetX));
+    if (this.gestureDuringRelayout) return;
     if (!this.animateCustomMotion) return;
     const proposed = Math.max(-this.viewportWidth, Math.min(this.viewportWidth,
       this.gestureBaseOffset + event.offsetX));
@@ -1270,12 +1465,27 @@ export struct ReaderFourSurfaceView {
   }
 
   private release(velocity: number): void {
-    if (!this.dragging) return;
+    if (!this.gestureActive) return;
+    this.gestureActive = false;
+    const interruptedByLayout = this.layoutRevision !== this.gestureStartRevision;
+    const wasDragging = this.dragging;
     this.dragging = false;
     const distance = Math.abs(this.gestureDx);
     let direction = distance >= Math.min(80, Math.max(48, this.viewportWidth * 0.14)) ||
       (distance >= 28 && Math.abs(velocity) >= 350) ? -Math.sign(this.gestureDx) : 0;
     if (this.gesturePeak - distance >= Math.max(12, this.gesturePeak * 0.15)) direction = 0;
+    if (interruptedByLayout) {
+      if (direction === 0) direction = this.interruptedGestureDirection();
+      if (direction !== 0) this.page(direction);
+      this.gestureDuringRelayout = false;
+      return;
+    }
+    if (!wasDragging) return;
+    if (this.gestureDuringRelayout) {
+      this.gestureDuringRelayout = false;
+      if (direction !== 0) this.page(direction);
+      return;
+    }
     if (!this.animateCustomMotion) {
       if (direction !== 0) this.page(direction);
       return;
@@ -1287,6 +1497,13 @@ export struct ReaderFourSurfaceView {
       return;
     }
     this.turn(direction, Math.abs(velocity) / 1000);
+  }
+
+  private interruptedGestureDirection(): number {
+    const distance = Math.abs(this.gestureDx);
+    return distance >= 28 &&
+      this.gesturePeak - distance < Math.max(12, this.gesturePeak * 0.15) ?
+      -Math.sign(this.gestureDx) : 0;
   }
 
   private turn(direction: number, speed: number): void {
@@ -1352,8 +1569,8 @@ export struct ReaderFourSurfaceView {
     Web({ src: $rawfile('web-reader-surfaces/index.html'), controller: this.controllers[slot] })
       .id(`reader-chapter-surface-${slot}`)
       .focusable(true)
-      .width('100%')
-      .height('100%')
+      .width(this.viewportWidth > 0 ? this.viewportWidth : '100%')
+      .height(this.viewportHeight > 0 ? this.viewportHeight : '100%')
       .backgroundColor(this.readerBackground)
       .javaScriptAccess(true)
       .fileAccess(false)
@@ -1369,7 +1586,7 @@ export struct ReaderFourSurfaceView {
       })
       .javaScriptProxy({ object: this.bridge, name: 'ChapterBridge',
         methodList: ['catalog', 'selection', 'block', 'tap', 'markTap', 'selectionEvent', 'adjusting', 'link', 'takePacket',
-          'sourceDone', 'packetDone', 'loadDone', 'layoutDone'],
+        'sourceDone', 'packetDone', 'loadDone', 'layoutDone', 'viewportChanged'],
         controller: this.controllers[slot] })
       .onInterceptRequest((event) => {
         const url = event.request.getRequestUrl();
@@ -1383,7 +1600,8 @@ export struct ReaderFourSurfaceView {
           runSurfaceScript(this.controllers[slot], 'Surface.selectionSettled()').catch((): void => {});
         }
       })
-      .translate({ x: this.surfacePosition(slot) })
+      .translate({ x: this.stagingSlots[slot] ? 0 : this.surfacePosition(slot) })
+      .zIndex(this.stagingSlots[slot] ? -1 : 0)
       .opacity(this.ready ? 1 : 0)
   }
 
@@ -1392,6 +1610,15 @@ export struct ReaderFourSurfaceView {
       ForEach([0, 1, 2, 3], (slot: number) => {
         this.surface(slot)
       }, (slot: number) => slot.toString())
+      if (this.ready && (this.relayouting || this.relayoutFailed)) {
+        Row().width('100%').height('100%').backgroundColor(this.readerBackground)
+      }
+      if (this.relayoutFailed) {
+        Button('页面排版未完成，点此重试')
+          .backgroundColor(this.readerBackground)
+          .fontColor('#29343b')
+          .onClick((): void => this.requestRelayout())
+      }
     }
     .width('100%')
     .height('100%')
@@ -1416,11 +1643,23 @@ export struct ReaderFourSurfaceView {
       .onActionUpdate((event: GestureEvent): void => { this.drag(event); })
       .onActionEnd((event: GestureEvent): void => { this.release(event.velocityX); })
       .onActionCancel((): void => {
+        const hadGesture = this.gestureActive;
+        // A fold can cancel PanGesture before its normal release threshold is reached.
+        const interruptedTurn = hadGesture &&
+          this.layoutRevision !== this.gestureStartRevision ?
+          this.interruptedGestureDirection() : 0;
+        this.gestureActive = false;
         this.dragging = false;
+        this.gestureDuringRelayout = false;
+        if (!hadGesture) return;
+        if (interruptedTurn !== 0) {
+          this.page(interruptedTurn);
+          return;
+        }
         if (this.animateCustomMotion) this.turn(0, 0);
       }))
     .onGestureJudgeBegin((): GestureJudgeResult =>
-      this.selectedSlots[this.currentSlot] || this.blockedSlots[this.currentSlot] || this.relayouting ?
+      this.selectedSlots[this.currentSlot] || this.blockedSlots[this.currentSlot] || this.relayoutFailed ?
         GestureJudgeResult.REJECT : GestureJudgeResult.CONTINUE)
   }
 }

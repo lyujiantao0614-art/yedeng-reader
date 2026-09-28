@@ -34,6 +34,14 @@ export class ReaderAppearanceApplication {
     this.repository.saveMotionPreference(preference);
   }
 
+  showControlsButton(): boolean {
+    return this.repository.loadShowControlsButton();
+  }
+
+  saveShowControlsButton(enabled: boolean): void {
+    this.repository.saveShowControlsButton(enabled);
+  }
+
   resolveTheme(): ReaderTheme {
     return resolveReaderTheme(this.persistentPreference(), this.systemColorMode.mode());
   }

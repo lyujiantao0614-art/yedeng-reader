@@ -7,7 +7,8 @@
   var removeBridgeListeners, sourceEpoch = 0;
   var sourceWorker, workerSequence=0, workerPending=new Map(), workerStats;
   var scriptLoads=new Map();
-  var pendingResize;
+  var pendingResize, resizeObserver;
+  var latestConfigureToken = 0;
   var loadEpoch = 0;
   var textMarks = new Map();
   var highlightName = 'harmony-reader-highlight', noteName = 'harmony-reader-note';
@@ -59,7 +60,24 @@
     // epub.js reserves half the gap on both outer edges, including in single-column mode.
     return HarmonyReaderLayoutContract.surfaceColumnGeometry(width,readerSettings);
   }
-  function cancelResize(){if(pendingResize)removeEventListener('resize',pendingResize);pendingResize=null;}
+  function cancelResize(){
+    if(pendingResize){
+      removeEventListener('resize',pendingResize);
+      if(window.visualViewport)window.visualViewport.removeEventListener('resize',pendingResize);
+    }
+    if(resizeObserver){resizeObserver.disconnect();resizeObserver=null;}
+    pendingResize=null;
+  }
+  function watchResize(check){
+    pendingResize=check;
+    addEventListener('resize',check);
+    if(window.visualViewport)window.visualViewport.addEventListener('resize',check);
+    if(window.ResizeObserver){
+      resizeObserver=new ResizeObserver(function(){if(pendingResize)pendingResize();});
+      resizeObserver.observe(document.documentElement);
+    }
+    check();
+  }
   function scripts(names){return Promise.all(names.map(function(name){
     if(!scriptLoads.has(name))scriptLoads.set(name,new Promise(function(resolve,reject){
       var script=document.createElement('script');script.src=name;
@@ -574,14 +592,14 @@
     },
     beginRelayout: function (width,height,revision) {
       cancelResize(); this.relayoutDone=false; this.relayoutResult=null;
-      pendingResize=function(){
+      var check=function(){
         if(Math.abs(innerWidth-width)>2||Math.abs(innerHeight-height)>2)return;
         cancelResize();
         try { Surface.relayoutResult=Surface.relayout(true,revision); }
         catch (_) { Surface.relayoutResult={complete:false}; }
         Surface.relayoutDone=true;
       };
-      addEventListener('resize',pendingResize);pendingResize();
+      watchResize(check);
     },
     relayout: function (restoreAnchor, revision) {
       if (!contents || frame.contentDocument !== firstDocument) throw new Error('Chapter identity lost');
@@ -607,25 +625,44 @@
       return actual;
     },
     configure: function (settings, cfi, revision) {
-      setReaderSettings(settings);
-      if (!contents || !this.state) return null;
-      applyReaderStyle(contents.document);
-      var state=this.relayout(false,revision);
-      var unit=typeof cfi==='string' && cfi ? this.unitForCfi(cfi) :
-        Math.min(this.state.units-1,Math.max(0,this.state.unit||0));
-      if (unit<0) throw new Error('Layout locator failed');
-      return this.seek(unit);
+      this.configureFailureCode = 0;
+      var phase = 1;
+      try {
+        setReaderSettings(settings);
+        phase = 2;
+        if (!contents || !this.state) { this.configureFailureCode = phase; return null; }
+        applyReaderStyle(contents.document);
+        phase = 3;
+        this.relayout(false,revision);
+        phase = 4;
+        var unit=typeof cfi==='string' && cfi ? this.unitForCfi(cfi) :
+          Math.min(this.state.units-1,Math.max(0,this.state.unit||0));
+        if (unit<0) throw new Error('Layout locator failed');
+        phase = 5;
+        return this.seek(unit);
+      } catch (_) {
+        this.configureFailureCode = phase;
+        throw _;
+      }
     },
     beginConfigure: function (settings, cfi, revision, width, height, token) {
-      cancelResize(); this.configureResult = null;
-      pendingResize = function () {
+      this.configureFailureCode = 0;
+      if (token < latestConfigureToken) {
+        ChapterBridge.layoutDone(slot, token, false);
+        return;
+      }
+      latestConfigureToken = token;
+      cancelResize(); this.configureResult = null; this.configureResultToken = 0;
+      var check = function () {
+        if (token !== latestConfigureToken) return;
         if (Math.abs(innerWidth - width) > 2 || Math.abs(innerHeight - height) > 2) return;
         cancelResize();
         try { Surface.configureResult = Surface.configure(settings, cfi, revision); }
         catch (_) { Surface.configureResult = { complete: false }; }
+        Surface.configureResultToken = token;
         ChapterBridge.layoutDone(slot, token, !!Surface.configureResult && !!Surface.configureResult.complete);
       };
-      addEventListener('resize', pendingResize); pendingResize();
+      watchResize(check);
     },
     checkAnchor: function () {
       if (!this.anchor) return false;
@@ -756,4 +793,9 @@
         measuredAfter: contents ? contents.textWidth() : 0 });
     }
   };
+  addEventListener('resize',function(){
+    if(contents && typeof ChapterBridge!=='undefined' && ChapterBridge.viewportChanged){
+      ChapterBridge.viewportChanged(slot,innerWidth,innerHeight);
+    }
+  });
 }());

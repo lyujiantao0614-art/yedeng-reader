@@ -701,6 +701,10 @@
       "value": "显示阅读控制"
     },
     {
+      "name": "reader_show_controls_setting",
+      "value": "显示右下角阅读控制按钮"
+    },
+    {
       "name": "reader_motion_title",
       "value": "阅读动效"
     },
@@ -714,7 +718,7 @@
     },
     {
       "name": "reader_motion_reduced",
-      "value": "减少动态效果"
+      "value": "减少动效"
     },
     {
       "name": "reader_select_text_short",

@@ -360,13 +360,17 @@ export struct LibraryPage {
   }
 
   @Builder
-  private libraryImportButton(fullWidth: boolean) {
-    Button($r('app.string.library_import')).id('library-import')
-      .height($r('app.float.product_target_min')).fontSize($r('app.float.product_label_size'))
-      .fontColor(bookshelfColor(this.bookshelfTheme, 'onAccent', this.bookshelfDefaultMode))
+  private libraryImportButton() {
+    Button() {
+      SymbolGlyph($r('sys.symbol.plus')).fontSize($r('app.float.product_body_size'))
+        .fontColor([bookshelfColor(this.bookshelfTheme, 'onAccent', this.bookshelfDefaultMode)])
+    }
+      .id('library-import').width($r('app.float.product_target_min'))
+      .height($r('app.float.product_target_min')).type(ButtonType.Normal)
       .backgroundColor(bookshelfColor(this.bookshelfTheme, 'accent', this.bookshelfDefaultMode))
       .borderRadius($r('app.float.product_radius_control'))
-      .width(fullWidth ? '100%' : 'auto').onClick(() => this.onImport())
+      .accessibilityText($r('app.string.library_import'))
+      .onClick(() => this.onImport())
   }
 
   @Builder
@@ -932,13 +936,8 @@ export struct LibraryPage {
                 { value: $r('app.string.library_sort_title'), action: (): void => { this.sort = 'title'; } },
                 { value: $r('app.string.library_sort_imported'), action: (): void => { this.sort = 'imported'; } }
               ])
-            if (!this.compactLargeText()) {
-              this.libraryImportButton(false)
-            }
+            this.libraryImportButton()
           }.width('100%')
-          if (this.compactLargeText()) {
-            this.libraryImportButton(true)
-          }
         }.id('library-view-mode').width('100%')
 
         if (this.entries.length > 0) {
@@ -1031,11 +1030,9 @@ export struct LibraryPage {
             bookshelfDefaultMode: this.bookshelfDefaultMode }).layoutWeight(1)
         } else if (this.entries.length === 0) {
           ProductStatePanel({ kind: 'empty', title: $r('app.string.library_empty_title'),
-            body: $r('app.string.library_empty_body'), showAction: true,
-            actionLabel: $r('app.string.library_empty_action'), actionId: 'library-import-empty',
+            body: $r('app.string.library_empty_body'),
             bookshelfTheme: this.bookshelfTheme,
-            bookshelfDefaultMode: this.bookshelfDefaultMode,
-            onAction: (): void => this.onImport() }).layoutWeight(1)
+            bookshelfDefaultMode: this.bookshelfDefaultMode }).layoutWeight(1)
         } else if (this.filteredEntries().length === 0) {
           ProductStatePanel({ kind: 'no-results', title: $r('app.string.library_no_results_title'),
             body: $r('app.string.library_no_results_body'), showAction: true,

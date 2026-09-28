@@ -64,6 +64,7 @@ export struct SettingsPage {
   @State private legalLoading: boolean = false;
   @State private columnMode: ReaderColumnMode = 'auto';
   @State private motionPreference: ReaderMotionPreference = 'system';
+  @State private showControlsButton: boolean = false;
   @State private diagnosticExporting: boolean = false;
   @State private diagnosticExportStatus: DiagnosticExportStatus | undefined = undefined;
 
@@ -72,6 +73,7 @@ export struct SettingsPage {
     this.previewMode = this.bookshelfDefaultMode;
     this.columnMode = this.readerAppearance?.loadSettings().columnMode ?? 'auto';
     this.motionPreference = this.readerAppearance?.motionPreference() ?? 'system';
+    this.showControlsButton = this.readerAppearance?.showControlsButton() ?? false;
     this.pageController.bind((): boolean => this.handleSystemBack(), (): void => this.resetToRoot());
   }
 
@@ -125,6 +127,11 @@ export struct SettingsPage {
     if (this.motionPreference === preference) return;
     this.readerAppearance?.saveMotionPreference(preference);
     this.motionPreference = preference;
+  }
+
+  private setShowControlsButton(enabled: boolean): void {
+    this.readerAppearance?.saveShowControlsButton(enabled);
+    this.showControlsButton = enabled;
   }
 
   private async exportDiagnostics(): Promise<void> {
@@ -337,6 +344,7 @@ export struct SettingsPage {
     Button(label).id(controlId)
       .height($r('app.float.product_target_min')).layoutWeight(1).type(ButtonType.Normal)
       .fontSize($r('app.float.product_body_small_size'))
+      .padding({ left: $r('app.float.product_space_4'), right: $r('app.float.product_space_4') })
       .fontWeight(this.motionPreference === preference ? FontWeight.Bold : FontWeight.Medium)
       .fontColor(this.motionPreference === preference ? bookshelfColor(this.displayTheme(), 'onAccent', this.displayMode()) :
         bookshelfColor(this.displayTheme(), 'text', this.displayMode()))
@@ -352,27 +360,30 @@ export struct SettingsPage {
     Column({ space: $r('app.float.product_space_12') }) {
       Text($r('app.string.reader_motion_title')).fontSize($r('app.float.product_body_size'))
         .fontWeight(FontWeight.Medium).fontColor(bookshelfColor(this.displayTheme(), 'text', this.displayMode())).width('100%')
-      if (this.windowSnapshot.sizeClass === 'compact') {
-        Column({ space: $r('app.float.product_space_8') }) {
-          Row({ space: $r('app.float.product_space_8') }) {
-            this.motionChoice('system', $r('app.string.reader_motion_system'), 'reader-motion-system')
-            this.motionChoice('enabled', $r('app.string.reader_motion_enabled'), 'reader-motion-enabled')
-          }.width('100%')
-          Row() {
-            this.motionChoice('reduced', $r('app.string.reader_motion_reduced'), 'reader-motion-reduced')
-          }.width('100%')
-        }.width('100%')
-      } else {
-        Row({ space: $r('app.float.product_space_8') }) {
-          this.motionChoice('system', $r('app.string.reader_motion_system'), 'reader-motion-system')
-          this.motionChoice('enabled', $r('app.string.reader_motion_enabled'), 'reader-motion-enabled')
-          this.motionChoice('reduced', $r('app.string.reader_motion_reduced'), 'reader-motion-reduced')
-        }.width('100%')
-      }
+      Row({ space: $r('app.float.product_space_8') }) {
+        this.motionChoice('system', $r('app.string.reader_motion_system'), 'reader-motion-system')
+        this.motionChoice('enabled', $r('app.string.reader_motion_enabled'), 'reader-motion-enabled')
+        this.motionChoice('reduced', $r('app.string.reader_motion_reduced'), 'reader-motion-reduced')
+      }.width('100%')
     }
     .id('reader-motion').width('100%').padding({ top: $r('app.float.product_space_16'),
       bottom: $r('app.float.product_space_16') })
     .alignItems(HorizontalAlign.Start)
+  }
+
+  @Builder
+  private showControlsButtonCard() {
+    Row({ space: $r('app.float.product_space_12') }) {
+      Text($r('app.string.reader_show_controls_setting'))
+        .fontSize($r('app.float.product_body_size'))
+        .fontColor(bookshelfColor(this.displayTheme(), 'text', this.displayMode()))
+        .layoutWeight(1)
+      Toggle({ type: ToggleType.Switch, isOn: this.showControlsButton })
+        .id('reader-show-controls-setting')
+        .accessibilityText($r('app.string.reader_show_controls_setting'))
+        .onChange((enabled: boolean): void => this.setShowControlsButton(enabled))
+    }.id('reader-show-controls-row').width('100%')
+      .padding({ top: $r('app.float.product_space_16'), bottom: $r('app.float.product_space_16') })
   }
 
   @Builder
@@ -545,6 +556,8 @@ export struct SettingsPage {
           this.readerColumnModeCard()
           Divider().color(bookshelfColor(this.displayTheme(), 'divider', this.displayMode()))
           this.readerMotionCard()
+          Divider().color(bookshelfColor(this.displayTheme(), 'divider', this.displayMode()))
+          this.showControlsButtonCard()
         }.width('100%').padding({ left: $r('app.float.product_space_16'),
           right: $r('app.float.product_space_16') })
           .backgroundColor(bookshelfColor(this.displayTheme(), 'surface', this.displayMode()))

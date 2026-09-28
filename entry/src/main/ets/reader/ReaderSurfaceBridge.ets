@@ -8,6 +8,7 @@ export interface ReaderSurfaceState {
   baseMatches: boolean;
   units: number;
   viewport: number;
+  height: number;
   unit: number;
 }
 
@@ -34,6 +35,7 @@ export class ReaderSurfaceBridge {
   onPacketDone: (token: number, ready: boolean) => void = (): void => {};
   onLoadDone: (slot: number, token: number, ready: boolean) => void = (): void => {};
   onLayoutDone: (slot: number, token: number, ready: boolean) => void = (): void => {};
+  onViewportChanged: (slot: number, width: number, height: number) => void = (): void => {};
   private stagedSlot: number = -1;
   private stagedToken: number = -1;
   private stagedPacket: string = '';
@@ -50,6 +52,9 @@ export class ReaderSurfaceBridge {
   packetDone(token: number, ready: boolean): void { this.onPacketDone(token, ready); }
   loadDone(slot: number, token: number, ready: boolean): void { this.onLoadDone(slot, token, ready); }
   layoutDone(slot: number, token: number, ready: boolean): void { this.onLayoutDone(slot, token, ready); }
+  viewportChanged(slot: number, width: number, height: number): void {
+    this.onViewportChanged(slot, width, height);
+  }
 
   stagePacket(slot: number, token: number, packet: string): void {
     this.stagedSlot = slot;

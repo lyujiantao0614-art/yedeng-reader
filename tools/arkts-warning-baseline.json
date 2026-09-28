@@ -3,7 +3,7 @@
   "node": "22.20.0",
   "scope": "entry/src/main",
   "policy": "No new fingerprint, category, deprecation warning, occurrence, or total increase; reductions pass.",
-  "total": 258,
+  "total": 271,
   "entries": [
     {
       "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
@@ -1045,8 +1045,8 @@
       "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
       "source": "this.store.flushSync();",
-      "count": 2,
-      "fingerprint": "2d46e43cc493241e39fa45bd9382409d8a98b1a16eb07733db0d4df79891701c"
+      "count": 3,
+      "fingerprint": "4c626ce3a85edcf02fb8e3a0b841f3cf6214fa77caca1ca7872e83da25545878"
     },
     {
       "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
@@ -1079,9 +1079,79 @@
     {
       "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "this.store.putSync('show_controls_button', enabled);",
+      "count": 1,
+      "fingerprint": "e256a8107c19021ae571dc3ecde5b4366e7d92a8b34ca0559161ff3f47364ba2"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "this.store.putSync('theme', normalizeReaderThemePreference(preference));",
       "count": 1,
       "fingerprint": "42952f51d818da3863818c8b952bda22efac49696971640d3a15aec80e93541a"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const bytes = await context.resourceManager.getRawFileContent(SAMPLE_RESOURCE);",
+      "count": 1,
+      "fingerprint": "9af651f5e6f459dd06ce5b3efbc9a1c7f39f62888c6c39305d01b0e94b402f95"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const store = preferences.getPreferencesSync(context, { name: 'bundled_sample' });",
+      "count": 1,
+      "fingerprint": "9a40c044b9f4b8f84a116107f3a61ef1be638fedfccbbf2ca44c8ccbbf538c1e"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const written = await fs.write(file.fd, remaining, { offset: offset, length: bytes.byteLength - offset });",
+      "count": 1,
+      "fingerprint": "dd685c0be0a65740f6183f2e5b78f5e166887239fdea165f20e808e5d20a3173"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "file = await fs.open(path, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC);",
+      "count": 1,
+      "fingerprint": "6699a8b22e99c903bde5bdb3cd2b8e266c52520efdd91a9bc28b95090526c5c3"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "fs.closeSync(file);",
+      "count": 1,
+      "fingerprint": "4436542bc50740c5577a185e911f856a8304bca15558d5d7f4db7277f3ca9723"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (file !== undefined) fs.closeSync(file);",
+      "count": 1,
+      "fingerprint": "dadc17678de1d6f1b6d74f62dd317a536b456527ed4100c076697ca1f36ac96e"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (store.getSync('seeded_v1', false) === true) return 'done';",
+      "count": 1,
+      "fingerprint": "2c539040f1f2be7f9b4033921aca400a9567fbc24d43db98b8caee0af287cfa9"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "store.flushSync();",
+      "count": 2,
+      "fingerprint": "d377c510ce022374cab1d37354f864024760b87961142616eb88cfc5b9114705"
+    },
+    {
+      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "store.putSync('seeded_v1', true);",
+      "count": 2,
+      "fingerprint": "f6e688dd6c1976bf0937f67892ac94dd5d37703683f18612cda825a49baf8332"
     },
     {
       "path": "entry/src/main/ets/services/ManagedBookStore.ets",

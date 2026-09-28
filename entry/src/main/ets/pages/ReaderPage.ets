@@ -1489,22 +1489,24 @@ export struct ReaderPage {
           .transition(this.readerSurfaceTransition())
           .hitTestBehavior(HitTestMode.None)
 
-        Button($r('app.string.reader_show_controls'))
-          .id('reader-show-controls')
-          .constraintSize({
-            minWidth: $r('app.float.product_target_min'),
-            minHeight: $r('app.float.product_target_min')
-          })
-          .padding({ left: $r('app.float.product_space_12'), right: $r('app.float.product_space_12') })
-          .margin({ right: $r('app.float.product_space_8'), bottom: $r('app.float.product_space_8') })
-          .type(ButtonType.Normal)
-          .backgroundColor(Color.Transparent)
-          .fontColor((this.settings.theme === 'dark' ? $r('app.color.reader_text_secondary_dark') : (this.settings.theme === 'eye-comfort' ? $r('app.color.reader_text_secondary_eye_comfort') : $r('app.color.reader_text_secondary_light'))))
-          .fontSize($r('app.float.product_caption_size'))
-          .borderRadius($r('app.float.product_radius_control'))
-          .accessibilityText($r('app.string.reader_show_controls'))
-          .layoutGravity(LocalizedAlignment.BOTTOM_END)
-          .onClick((): void => { this.setControlsVisible(true); })
+        if (this.appearanceApplication?.showControlsButton() ?? false) {
+          Button($r('app.string.reader_show_controls'))
+            .id('reader-show-controls')
+            .constraintSize({
+              minWidth: $r('app.float.product_target_min'),
+              minHeight: $r('app.float.product_target_min')
+            })
+            .padding({ left: $r('app.float.product_space_12'), right: $r('app.float.product_space_12') })
+            .margin({ right: $r('app.float.product_space_8'), bottom: $r('app.float.product_space_8') })
+            .type(ButtonType.Normal)
+            .backgroundColor(Color.Transparent)
+            .fontColor((this.settings.theme === 'dark' ? $r('app.color.reader_text_secondary_dark') : (this.settings.theme === 'eye-comfort' ? $r('app.color.reader_text_secondary_eye_comfort') : $r('app.color.reader_text_secondary_light'))))
+            .fontSize($r('app.float.product_caption_size'))
+            .borderRadius($r('app.float.product_radius_control'))
+            .accessibilityText($r('app.string.reader_show_controls'))
+            .layoutGravity(LocalizedAlignment.BOTTOM_END)
+            .onClick((): void => { this.setControlsVisible(true); })
+        }
       }
 
       if (this.controlsVisible && this.currentSurface === 'none') {

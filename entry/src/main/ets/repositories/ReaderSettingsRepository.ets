@@ -75,6 +75,18 @@ export class ReaderSettingsRepository {
     } catch (_) { throw new Error('Reader motion setting could not be saved'); }
   }
 
+  loadShowControlsButton(): boolean {
+    if (this.store === undefined) return false;
+    try { return this.store.getSync('show_controls_button', false) === true; }
+    catch (_) { return false; }
+  }
+
+  saveShowControlsButton(enabled: boolean): void {
+    if (this.store === undefined) return;
+    this.store.putSync('show_controls_button', enabled);
+    this.store.flushSync();
+  }
+
   saveLayoutDefaults(settings: ReaderSettings): void {
     if (this.store === undefined) {
       return;
