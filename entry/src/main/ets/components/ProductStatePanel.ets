@@ -33,27 +33,27 @@ export struct ProductStatePanel {
       } else {
         SymbolGlyph(this.symbol())
           .fontSize($r('app.float.product_space_32'))
-          .fontColor([this.kind === 'error' ? bookshelfColor(this.bookshelfTheme, 'error', this.bookshelfDefaultMode) : bookshelfColor(this.bookshelfTheme, 'accent', this.bookshelfDefaultMode)])
+          .fontColor([bookshelfColor(this.bookshelfTheme, 'secondary', this.bookshelfDefaultMode)])
       }
       Text(this.title)
-        .fontSize($r('app.float.product_section_title_size'))
+        .fontSize('16fp')
         .fontWeight(FontWeight.Medium)
         .fontColor(bookshelfColor(this.bookshelfTheme, 'text', this.bookshelfDefaultMode))
         .textAlign(TextAlign.Center)
       Text(this.body)
-        .fontSize($r('app.float.product_body_small_size'))
+        .fontSize('14fp').lineHeight('22fp')
         .fontColor(bookshelfColor(this.bookshelfTheme, 'secondary', this.bookshelfDefaultMode))
         .textAlign(TextAlign.Center)
-        .width('100%')
+        .width('100%').constraintSize({ maxWidth: 360 })
       if (this.showAction) {
         Button(this.actionLabel)
           .id(this.actionId)
-          .height($r('app.float.product_target_min'))
+          .height(48).fontSize('16fp').padding({ left: 24, right: 24 }).margin({ top: 8 })
+          .buttonStyle(this.kind === 'empty' ? ButtonStyleMode.EMPHASIZED : ButtonStyleMode.NORMAL)
           .fontColor(this.kind === 'empty' ? bookshelfColor(this.bookshelfTheme, 'onAccent', this.bookshelfDefaultMode) :
             bookshelfColor(this.bookshelfTheme, 'accent', this.bookshelfDefaultMode))
           .backgroundColor(this.kind === 'empty' ? bookshelfColor(this.bookshelfTheme, 'accent', this.bookshelfDefaultMode) :
             bookshelfColor(this.bookshelfTheme, 'muted', this.bookshelfDefaultMode))
-          .borderRadius($r('app.float.product_radius_control'))
           .onClick(() => this.onAction())
       }
     }

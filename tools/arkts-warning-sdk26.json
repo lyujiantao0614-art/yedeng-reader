@@ -1,0 +1,74 @@
+{
+  "sdk": "26.0.0.105",
+  "buildNode": "24.14.1",
+  "analysisNode": "22.20.0",
+  "hvigor": "6.26.8",
+  "declarationSha256": "102115155d5b8de3a0d646734d717e6c829e8495d36118cc3f67bfb713692677",
+  "reason": "Same SHA256 Promise signatures since9/MessageDigest since12; SDK26 merged version syscap annotations. Exact nine pre-existing calls, one occurrence each; failure cleanup and identity algorithm unchanged.",
+  "entries": [
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "The system capacity of this api 'update' is not supported on all devices",
+      "source": "await digest.update({ data: new Uint8Array(chunk) });",
+      "count": 1,
+      "fingerprint": "7dcc7870891249e57018b9dc61da1a0864fc5c04e5d80766c93e71d45572df40"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "The system capacity of this api 'createMd' is not supported on all devices",
+      "source": "const digest = cryptoFramework.createMd('SHA256');",
+      "count": 1,
+      "fingerprint": "e8228b282e513c807da7620eab6472a238bbec1be0f116bc04ff32a174ce2621"
+    },
+    {
+      "path": "entry/src/main/ets/dictionary/DictionaryAssetProvisioner.ets",
+      "warning": "The system capacity of this api 'digest' is not supported on all devices",
+      "source": "const hash = bytesToHex((await digest.digest()).data);",
+      "count": 1,
+      "fingerprint": "3e78508e24aa5a218b07fa0e2b8922ba6f4dac0f101468e115339d960df1eb43"
+    },
+    {
+      "path": "entry/src/main/ets/reader/DerivedSectionTextCache.ets",
+      "warning": "The system capacity of this api 'update' is not supported on all devices",
+      "source": "await md.update({data: new util.TextEncoder().encodeInto(value)});",
+      "count": 1,
+      "fingerprint": "f3b0453432cfc265faa28736d5eb76195e79f49f6801a69c6a2ac39532c7553b"
+    },
+    {
+      "path": "entry/src/main/ets/reader/DerivedSectionTextCache.ets",
+      "warning": "The system capacity of this api 'createMd' is not supported on all devices",
+      "source": "const md = cryptoFramework.createMd('SHA256');",
+      "count": 1,
+      "fingerprint": "8b4dccf8067788b0d3b2c914834411408e84abaddabfcfaefb0b0285e347da8c"
+    },
+    {
+      "path": "entry/src/main/ets/reader/DerivedSectionTextCache.ets",
+      "warning": "The system capacity of this api 'digest' is not supported on all devices",
+      "source": "return Array.from((await md.digest()).data).map((byte: number): string => byte.toString(16).padStart(2, '0')).join('');",
+      "count": 1,
+      "fingerprint": "7ab35dabdced6932316991774670069a6b9ca810d30ae540fce0357ed5a09c7c"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "The system capacity of this api 'update' is not supported on all devices",
+      "source": "await digest.update({ data: new Uint8Array(chunk) });",
+      "count": 1,
+      "fingerprint": "1a52e4b3cf16e583832118df5b092f8d70a68a6a9e9185d10926fd155e0738e3"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "The system capacity of this api 'createMd' is not supported on all devices",
+      "source": "const digest = cryptoFramework.createMd('SHA256');",
+      "count": 1,
+      "fingerprint": "a396edd70fa45d8f417011f25191918ea8e0df7b12f606dcd91f2a3f53b27f42"
+    },
+    {
+      "path": "entry/src/main/ets/services/ManagedBookStore.ets",
+      "warning": "The system capacity of this api 'digest' is not supported on all devices",
+      "source": "const output = await digest.digest();",
+      "count": 1,
+      "fingerprint": "2985f2142ac35855d86ea6322537c7348b82c5c06bbb9885a0d61925cb336686"
+    }
+  ],
+  "scope": "Approved main SDK26 adoption; exact pre-existing SHA256 calls only; original SDK21 baseline retained."
+}

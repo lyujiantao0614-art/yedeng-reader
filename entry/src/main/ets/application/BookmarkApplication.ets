@@ -5,6 +5,7 @@ import { EncryptedBookmarkStore } from '../repositories/EncryptedBookmarkStore';
 import { common } from '@kit.AbilityKit';
 import { createSecureUuid } from '../services/ManagedBookStore';
 import { TextMarkApplication } from './TextMarkApplication';
+import { BookmarkRecordPage, RecordCursor } from '../domain/ReadingRecordQuery';
 
 export interface BookmarkToggleResult {
   added: boolean;
@@ -49,6 +50,13 @@ export class BookmarkApplication {
     });
   }
 
+  async page(cursor?: RecordCursor): Promise<BookmarkRecordPage> {
+    const authority = await this.repository.bookmarkAuthority();
+    const page = authority === 'target' ? await this.encrypted.bookmarkPage(cursor) : await this.repository.bookmarkPage(cursor);
+    if (await this.repository.bookmarkAuthority() !== authority) throw new Error('Bookmark authority changed; reload');
+    return { items: page.items, next: page.next, authority };
+  }
+
   private async bookCanReceiveBookmark(bookId: string): Promise<boolean> {
     if (await this.repository.getBook(bookId) === undefined) return false;
     return !(await this.repository.listOperations()).some((operation): boolean =>
@@ -90,7 +98,11 @@ export class BookmarkApplication {
       } else { await this.repository.deleteBookmark(book.bookId, point.bookmarkId); }
       throw new Error('Encrypted page excerpt unavailable');
     }
-    return { added: true, points: await this.list(book.bookId) };
+    // All writes above have committed. A display refresh must not turn a saved
+    // bookmark into a reported failure; return the committed point and snapshot.
+    if (excerpt.length > 0 && this.textMarks !== undefined) point.label += ` · ${excerpt}`;
+    return { added: true, points: [...existing, point].sort((left: BookmarkPoint, right: BookmarkPoint): number =>
+      left.createdAt - right.createdAt || left.bookmarkId.localeCompare(right.bookmarkId)) };
   }
 
   async remove(bookId: string, bookmarkId: string): Promise<BookmarkPoint[]> {

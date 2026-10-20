@@ -126,7 +126,7 @@
     },
     {
       "name": "library_delete_body",
-      "value": "将删除书架中的书籍、封面和阅读进度。导入时选取的文件不会被删除。"
+      "value": "将删除本机书库中的图书副本、封面、阅读进度、书签、笔记和高亮。导入时选取的原文件不会被删除。"
     },
     {
       "name": "common_cancel",
@@ -422,15 +422,15 @@
     },
     {
       "name": "reader_page_margin",
-      "value": "页边距"
+      "value": "左右留白"
     },
     {
       "name": "reader_page_margin_decrease",
-      "value": "缩小页边距"
+      "value": "缩小左右留白"
     },
     {
       "name": "reader_page_margin_increase",
-      "value": "增大页边距"
+      "value": "增大左右留白"
     },
     {
       "name": "reader_decrease_glyph",

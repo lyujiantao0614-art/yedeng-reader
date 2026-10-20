@@ -50,7 +50,27 @@ function parseWarnings(logPath) {
 
 function readBaseline() {
   if (!fs.existsSync(baselinePath)) throw new Error('ArkTS warning baseline is missing');
-  return JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+  const original = JSON.parse(fs.readFileSync(baselinePath, 'utf8'));
+  // Keep the SDK21 historical registry intact. Explicit source-only rebases
+  // retain each diagnostic/category/count; they cannot add an allowance.
+  const rebases = JSON.parse(fs.readFileSync(path.join(__dirname, 'arkts-warning-m4-source-rebase.json'), 'utf8'));
+  for (const rebase of rebases.entries) {
+    const entry = original.entries.find(item => item.fingerprint === rebase.previousFingerprint);
+    assert.ok(entry, 'Unknown original warning in M4 source rebase');
+    entry.source = rebase.source;
+    entry.fingerprint = fingerprint(entry);
+  }
+  if (process.env.YEDENG_SDK26_WARNING_GATE !== 'exact-nine') return original;
+  const registry = JSON.parse(fs.readFileSync(path.join(__dirname, 'arkts-warning-sdk26.json'), 'utf8'));
+  const sdkRoot = process.env.DEVECO_SDK_HOME;
+  if (!sdkRoot) throw new Error('Explicit SDK26 root required');
+  const metadata = JSON.parse(fs.readFileSync(path.join(sdkRoot, 'default/openharmony/ets/oh-uni-package.json'), 'utf8'));
+  assert.equal(metadata.version, registry.sdk);
+  assert.equal(crypto.createHash('sha256').update(fs.readFileSync(path.join(sdkRoot,
+    'default/openharmony/ets/api/@ohos.security.cryptoFramework.d.ts'))).digest('hex'), registry.declarationSha256);
+  assert.equal(registry.entries.length, 9);
+  assert.ok(registry.entries.every(entry => entry.count === 1));
+  return { ...original, total: original.total + 9, entries: [...original.entries, ...registry.entries] };
 }
 
 function validateBaseline(baseline) {

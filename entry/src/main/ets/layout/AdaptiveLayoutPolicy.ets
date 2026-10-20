@@ -40,10 +40,10 @@ interface NormalizedInsetPair {
 
 export const COMPACT_MAX_WIDTH_VP: number = 600;
 export const MEDIUM_MAX_WIDTH_VP: number = 840;
-export const READER_SIDE_PANEL_MIN_WIDTH_VP: number = 720;
+export const READER_SIDE_PANEL_MIN_WIDTH_VP: number = 840;
 export const SETTINGS_CONTENT_MAX_WIDTH_VP: number = 720;
-export const READER_FOOTER_RESERVE_VP: number = 64;
-export const READER_HEADER_RESERVE_VP: number = 64;
+export const READER_FOOTER_RESERVE_VP: number = 48;
+export const READER_HEADER_RESERVE_VP: number = 48;
 
 const COMPACT_PAGE_INSET_VP: number = 16;
 const MEDIUM_PAGE_INSET_VP: number = 24;
@@ -110,20 +110,25 @@ export function readerUsesSidePanel(snapshot: AdaptiveWindowSnapshot): boolean {
   return !snapshot.foldOccluded && finiteNonNegative(snapshot.usableWidthVp) >= READER_SIDE_PANEL_MIN_WIDTH_VP;
 }
 
-export function readerFooterReserveVp(availableHeightVp: number): number {
-  const height = finiteNonNegative(availableHeightVp);
-  return Math.min(READER_FOOTER_RESERVE_VP, Math.max(0, height - 240));
+export function readerFooterReserveVp(availableHeightVp: number, userMarginVp?: number): number {
+  return stableReaderChromeReserveVp(READER_FOOTER_RESERVE_VP, userMarginVp);
 }
 
-export function readerHeaderReserveVp(availableHeightVp: number): number {
-  const height = finiteNonNegative(availableHeightVp);
-  return Math.min(READER_HEADER_RESERVE_VP,
-    Math.max(0, height - readerFooterReserveVp(height) - 240));
+export function readerHeaderReserveVp(availableHeightVp: number, userMarginVp?: number): number {
+  return stableReaderChromeReserveVp(READER_HEADER_RESERVE_VP, userMarginVp);
 }
 
-export function readerPublicationContentHeightVp(availableHeightVp: number): number {
+function stableReaderChromeReserveVp(chromeHeightVp: number, userMarginVp?: number): number {
+  // A fixed touch target can share the publication's existing vertical padding.
+  // Visibility never changes this reserve; legacy callers without margin keep their measured baseline.
+  // epub.js 0.3.93 retains 20px vertical padding in horizontal writing; vertical
+  // writing uses the requested gap. Reuse only the smaller padding, preserving both.
+  return userMarginVp === undefined ? chromeHeightVp : Math.max(0, chromeHeightVp + 8 - Math.min(20, finiteNonNegative(userMarginVp)));
+}
+
+export function readerPublicationContentHeightVp(availableHeightVp: number, userMarginVp?: number): number {
   const height = finiteNonNegative(availableHeightVp);
-  return height - readerHeaderReserveVp(height) - readerFooterReserveVp(height);
+  return Math.max(0, height - readerHeaderReserveVp(height, userMarginVp) - readerFooterReserveVp(height, userMarginVp));
 }
 
 export function createAdaptiveWindowSnapshot(input: AdaptiveWindowInput): AdaptiveWindowSnapshot {

@@ -105,9 +105,9 @@ export class DictionaryAssetProvisioner {
     const rawPath = `${RAWFILE_ROOT}${name}`;
     const descriptor = await this.context.resourceManager.getRawFd(rawPath);
     let target: fs.File | undefined;
-    const digest = cryptoFramework.createMd('SHA256');
     let copied = 0;
     try {
+      const digest = cryptoFramework.createMd('SHA256');
       target = await fs.open(destination, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC);
       fs.lseek(descriptor.fd, descriptor.offset, fs.WhenceType.SEEK_SET);
       while (copied < descriptor.length) {
@@ -136,10 +136,13 @@ export class DictionaryAssetProvisioner {
         throw new Error('Bundled dictionary asset failed integrity verification');
       }
     } finally {
-      if (target !== undefined) {
-        fs.closeSync(target);
+      try {
+        if (target !== undefined) {
+          fs.closeSync(target);
+        }
+      } finally {
+        await this.context.resourceManager.closeRawFd(rawPath);
       }
-      await this.context.resourceManager.closeRawFd(rawPath);
     }
   }
 
@@ -195,6 +198,7 @@ export class DictionaryAssetProvisioner {
 
   async prepare(force: boolean = false): Promise<ProvisionedDictionaryAssets> {
     const manifest = await this.readManifest();
+    await ensureDirectory(`${this.context.databaseDir}/rdb`);
     await ensureDirectory(this.rootPath);
     if (force || !await this.stateMatches(manifest)) {
       await this.installAsset(OMW_DATABASE_NAME, manifest.runtime.omw);

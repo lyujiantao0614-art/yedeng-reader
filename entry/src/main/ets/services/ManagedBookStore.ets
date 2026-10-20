@@ -36,7 +36,7 @@ function isValidValidationKey(value: string): boolean {
 }
 
 export function isValidBookId(value: string): boolean {
-  return /^[a-f0-9]{64}$/.test(value);
+  return /^[a-f0-9]{64}$/i.test(value);
 }
 
 export function isValidUuid(value: string): boolean {

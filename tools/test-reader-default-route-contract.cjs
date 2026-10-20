@@ -12,9 +12,14 @@ const page = read('entry/src/main/ets/pages/ReaderPage.ets');
 const surface = read('entry/src/main/ets/reader/ReaderFourSurfaceView.ets');
 const shell = read('entry/src/main/resources/rawfile/web-reader-surfaces/index.html');
 
-const selectionAwareOpen = /onClick\(\(\) => this\.selectionMode \? this\.toggleSelection\(entry\.book\.bookId\) :\s*entry\.book\.sourceState === 'missing' \? this\.onRepair\(entry\.book\) : this\.onOpen\(entry\.book\)\)/g;
-assert.ok([...library.matchAll(selectionAwareOpen)].length >= 2,
-  'Grid and list taps must open the four-surface Reader outside selection mode');
+// M4 has one automatic Grid; its current application action still owns selection/repair/Reader routing.
+const activateBook = library.match(/private activateBook[\s\S]*?private rememberBookSource/)?.[0] ?? '';
+assert.match(activateBook, /this\.selectionMode[\s\S]*this\.toggleSelection\(entry\.book\.bookId\)/);
+assert.match(activateBook, /sourceState === 'missing'[\s\S]*this\.onRepair\(entry\.book\).*this\.onOpen\(entry\.book\)/);
+assert.match(library, /private activateBookId\(bookId: string\)[\s\S]*?this\.activateBook\(current\)/);
+assert.match(library, /\.id\('library-source-grid-' \+ entry\.book\.bookId\)[\s\S]{0,260}\.onClick\(\(\): void => this\.activateBookId\(entry\.book\.bookId\)\)/);
+assert.match(library, /onActivate: \(id: string\): void => this\.activateBookId\(id\)/);
+assert.match(library, /library-details-repair[\s\S]{0,400}this\.onRepair\(entry\.book\)/);
 assert.match(index, /onOpen: \(book: Book\): void => \{ this\.openBook\(book\)/);
 assert.match(index, /this\.readerPageController\.openSession\(\{/);
 assert.match(page, /import \{ ReaderFourSurfaceView \} from '\.\.\/reader\/ReaderFourSurfaceView';/);

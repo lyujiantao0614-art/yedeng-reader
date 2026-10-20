@@ -4,6 +4,7 @@ import { LibraryRepository } from '../repositories/LibraryRepository';
 import { EncryptedBookmarkStore } from '../repositories/EncryptedBookmarkStore';
 import { BookDeletionService } from './BookDeletionService';
 import { ManagedBookStore } from './ManagedBookStore';
+import { ReaderSettingsRepository } from '../repositories/ReaderSettingsRepository';
 
 function emptyReport(): ReconciliationReport {
   return {
@@ -25,10 +26,10 @@ export class LibraryReconciliationService {
   private deletionService: BookDeletionService;
 
   constructor(context: common.Context, repository: LibraryRepository,
-    managedStore?: ManagedBookStore, encrypted?: EncryptedBookmarkStore) {
+    managedStore?: ManagedBookStore, encrypted?: EncryptedBookmarkStore, readerSettings?: ReaderSettingsRepository) {
     this.repository = repository;
     this.managedStore = managedStore ?? new ManagedBookStore(context);
-    this.deletionService = new BookDeletionService(context, repository, this.managedStore, encrypted);
+    this.deletionService = new BookDeletionService(context, repository, this.managedStore, encrypted, readerSettings);
   }
 
   async reconcile(): Promise<ReconciliationReport> {

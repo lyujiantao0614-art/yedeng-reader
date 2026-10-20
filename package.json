@@ -1,0 +1,14 @@
+{
+  "name": "yedeng-reader-host-contracts",
+  "private": true,
+  "version": "0.0.0",
+  "engines": {
+    "node": "22.20.0"
+  },
+  "scripts": {
+    "test": "node tools/run-source-contracts.cjs"
+  },
+  "devDependencies": {
+    "typescript": "4.9.5"
+  }
+}

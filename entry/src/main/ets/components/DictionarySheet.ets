@@ -14,6 +14,8 @@ interface DictionarySenseRow {
 
 @Component
 export struct DictionarySheet {
+  @Prop nativeContainer: boolean = false;
+  @Prop maxContentHeight: number = 480;
   @Prop surfaceColor: Resource = $r('app.color.reader_surface_light');
   @Prop surfaceMutedColor: Resource = $r('app.color.reader_surface_muted_light');
   @Prop textPrimaryColor: Resource = $r('app.color.reader_text_primary_light');
@@ -30,6 +32,7 @@ export struct DictionarySheet {
   @Prop expanded: boolean = false;
   @Prop adjusting: boolean = false;
   @Prop darkTheme: boolean = false;
+  @Prop selectionActionsAvailable: boolean = true;
   onCopy: () => void = (): void => {};
   onHighlight: () => void = (): void => {};
   onNote: () => void = (): void => {};
@@ -124,17 +127,21 @@ export struct DictionarySheet {
   }
 
   build() {
-    Column({ space: $r('app.float.product_space_8') }) {
+    Column({ space: 12 }) {
       Row({ space: $r('app.float.product_space_8') }) {
         Column({ space: $r('app.float.product_space_4') }) {
           Text(this.selectedForm.length > 0 ? this.selectedForm : $r('app.string.reader_dictionary_title'))
-            .fontSize($r('app.float.product_surface_title_size')).fontWeight(FontWeight.Bold).fontColor(this.textPrimaryColor)
+            .fontSize(26).fontWeight(FontWeight.Medium).fontColor(this.textPrimaryColor)
             .maxLines(1).textOverflow({ overflow: TextOverflow.Ellipsis })
           Text($r('app.string.reader_dictionary_offline_label')).fontSize($r('app.float.product_caption_size')).fontColor(this.textSecondaryColor)
         }.alignItems(HorizontalAlign.Start).layoutWeight(1)
-        Button($r('app.string.reader_close_glyph'))
+        Button() { SymbolGlyph($r('sys.symbol.square_and_square')).fontSize(18).fontColor([this.accentColor]) }
+          .id('reader-dictionary-copy').type(ButtonType.Circle).width(48).height(48)
+          .accessibilityText($r('app.string.reader_dictionary_copy')).backgroundColor(Color.Transparent)
+          .enabled(this.selectedForm.length > 0).onClick(() => this.onCopy())
+        Button() { SymbolGlyph($r('sys.symbol.xmark')).fontSize(18).fontColor([this.textSecondaryColor]) }
           .id('reader-dictionary-dismiss')
-          .type(ButtonType.Normal).fontColor(this.accentColor)
+          .type(ButtonType.Circle).fontColor(this.accentColor)
           .fontSize($r('app.float.product_surface_title_size'))
           .backgroundColor(Color.Transparent)
           .width($r('app.float.product_target_min')).height($r('app.float.product_target_min'))
@@ -142,17 +149,16 @@ export struct DictionarySheet {
           .onClick(() => this.onDismiss())
       }.width('100%')
 
-      Divider().color(this.dividerColor)
-
+      Scroll() {
+        Column({ space: 12 }) {
       if (this.loading) {
         Row({ space: $r('app.float.product_space_12') }) {
           LoadingProgress().width($r('app.float.product_space_24')).height($r('app.float.product_space_24')).color(this.accentColor)
           Text($r('app.string.reader_dictionary_loading')).fontSize($r('app.float.product_body_small_size')).fontColor(this.textPrimaryColor)
         }
         .id('reader-dictionary-loading')
-        .width('100%').justifyContent(FlexAlign.Center).layoutWeight(1)
+        .width('100%').padding({ top: 12, bottom: 12 })
       } else if (this.result?.status === 'found') {
-        Scroll() {
           Column({ space: $r('app.float.product_space_8') }) {
             ForEach(this.rows(this.expanded), (row: DictionarySenseRow) => {
               Column({ space: $r('app.float.product_space_4') }) {
@@ -160,85 +166,59 @@ export struct DictionarySheet {
                   Row({ space: $r('app.float.product_space_8') }) {
                     Text(row.headword).fontSize($r('app.float.product_body_size')).fontWeight(FontWeight.Medium).fontColor(this.textPrimaryColor)
                     Text(this.matchLabel(row.matchKind)).fontSize($r('app.float.product_caption_size')).fontColor(this.accentColor)
-                      .padding($r('app.float.product_space_4'))
-                      .backgroundColor(this.selectedColor).borderRadius($r('app.float.product_radius_control'))
                   }.width('100%')
                   Text(this.sourceLabel(row.providerId)).fontSize($r('app.float.product_caption_size')).fontColor(this.textSecondaryColor)
                 }
                 Text(this.partOfSpeechLabel(row.partOfSpeech)).fontSize($r('app.float.product_caption_size')).fontColor(this.textSecondaryColor)
-                Text(row.meanings.join('；')).fontSize($r('app.float.product_body_small_size'))
+                Text(row.meanings.join('；')).fontSize(16).lineHeight(24)
                   .fontColor(this.textPrimaryColor).width('100%')
               }.width('100%').alignItems(HorizontalAlign.Start)
             }, (row: DictionarySenseRow) => row.key)
           }.width('100%').alignItems(HorizontalAlign.Start)
-        }
         .id('reader-dictionary-found')
-        .scrollBar(BarState.Auto).layoutWeight(1).width('100%')
+        .width('100%')
+        if (this.hasMore()) {
+          Button(this.expanded ? $r('app.string.reader_dictionary_collapse') : $r('app.string.reader_dictionary_more'))
+            .id('reader-dictionary-more').height(48).fontSize(14).type(ButtonType.Normal)
+            .buttonStyle(ButtonStyleMode.TEXTUAL).fontColor(this.accentColor).backgroundColor(Color.Transparent)
+            .padding({ left: 0, right: 12 }).onClick(() => this.onToggleExpanded())
+        }
 
       } else {
         Column({ space: $r('app.float.product_space_8') }) {
           Text(this.statusTitle()).fontSize($r('app.float.product_body_size')).fontWeight(FontWeight.Medium)
             .fontColor(this.result?.status === 'not-found' ? this.textPrimaryColor : this.errorColor)
-          Text(this.statusDetail()).fontSize($r('app.float.product_body_small_size')).fontColor(this.textSecondaryColor).textAlign(TextAlign.Center)
+          Text(this.statusDetail()).fontSize($r('app.float.product_body_small_size')).fontColor(this.textSecondaryColor)
         }
         .id(this.result?.status === 'not-found' ? 'reader-dictionary-not-found' :
           (this.result?.status === 'invalid-selection' ? 'reader-dictionary-invalid-selection' :
             'reader-dictionary-unavailable'))
-        .width('100%').padding($r('app.float.product_space_8'))
-        .justifyContent(FlexAlign.Center).layoutWeight(1)
-        .backgroundColor(this.result?.status === 'not-found' ? this.surfaceMutedColor : this.errorContainerColor)
-        .borderRadius($r('app.float.product_radius_control'))
+        .width('100%').alignItems(HorizontalAlign.Start).padding({ top: 12, bottom: 16 })
       }
+        }.width('100%').alignItems(HorizontalAlign.Start)
+      }.id('reader-dictionary-scroll').width('100%').constraintSize({ maxHeight: this.maxContentHeight })
+        .align(Alignment.TopStart).scrollBar(BarState.Auto).scrollBarWidth(2)
+        .scrollBarColor(this.darkTheme ? '#40FFFFFF' : '#33182431')
 
-      Row({ space: $r('app.float.product_space_8') }) {
+      if (this.adjusting || this.selectionActionsAvailable) {
+      Row({ space: 8 }) {
         if (this.adjusting) {
-          Button('✓').id('reader-dictionary-save-range')
-            .type(ButtonType.Normal).height($r('app.float.product_target_min'))
-            .accessibilityText('保存调整后的标记范围')
-            .fontColor(this.onAccentColor).backgroundColor(this.accentColor)
-            .layoutWeight(1).onClick(() => this.onSaveRange())
-        } else {
-          Button() {
-            Image(this.darkTheme ? $r('app.media.reader_mark_highlight_dark') :
-              $r('app.media.reader_mark_highlight')).width(24).height(24)
-          }.id('reader-dictionary-highlight').type(ButtonType.Normal)
-            .height($r('app.float.product_target_min')).layoutWeight(1)
-            .accessibilityText('高亮所选单词')
-            .backgroundColor(this.accentColor).borderRadius($r('app.float.product_radius_control'))
-            .onClick(() => this.onHighlight())
-          Button() {
-            Image(this.darkTheme ? $r('app.media.reader_mark_note_dark') :
-              $r('app.media.reader_mark_note')).width(24).height(24)
-          }.id('reader-dictionary-note').type(ButtonType.Normal)
-            .height($r('app.float.product_target_min')).layoutWeight(1)
-            .accessibilityText('给所选单词写笔记')
-            .backgroundColor(this.accentColor).borderRadius($r('app.float.product_radius_control'))
-            .onClick(() => this.onNote())
-        }
-        Button() {
-          SymbolGlyph($r('sys.symbol.square_and_square')).fontSize($r('app.float.product_body_size'))
-            .fontColor([this.accentColor])
-        }.id('reader-dictionary-copy').type(ButtonType.Normal)
-          .constraintSize({ minHeight: $r('app.float.product_target_min') })
-          .width($r('app.float.product_target_min')).height($r('app.float.product_target_min'))
-          .accessibilityText($r('app.string.reader_dictionary_copy'))
-          .backgroundColor(this.surfaceColor)
-          .border({ width: 1, color: this.textSecondaryColor }).borderRadius($r('app.float.product_radius_control'))
-          .enabled(this.selectedForm.length > 0).onClick(() => this.onCopy())
-        if (this.hasMore()) {
-          Button(this.expanded ? $r('app.string.reader_dictionary_collapse') :
-            $r('app.string.reader_dictionary_more'))
-            .id('reader-dictionary-more').type(ButtonType.Normal)
-            .constraintSize({ minHeight: $r('app.float.product_target_min') }).fontColor(this.accentColor)
-            .fontSize($r('app.float.product_label_size')).backgroundColor(this.surfaceColor)
-            .border({ width: 1, color: this.textSecondaryColor }).borderRadius($r('app.float.product_radius_control'))
-            .layoutWeight(1).onClick(() => this.onToggleExpanded())
+          Button('保存范围').id('reader-dictionary-save-range').height(48).layoutWeight(1)
+            .buttonStyle(ButtonStyleMode.EMPHASIZED).backgroundColor(this.accentColor).fontColor(this.onAccentColor)
+            .accessibilityText('保存调整后的标记范围').onClick(() => this.onSaveRange())
+        } else if (this.selectionActionsAvailable) {
+          Button('高亮').id('reader-dictionary-highlight').height(48).layoutWeight(1)
+            .buttonStyle(ButtonStyleMode.NORMAL).backgroundColor(this.surfaceMutedColor).fontColor(this.accentColor)
+            .accessibilityText('高亮所选单词').onClick(() => this.onHighlight())
+          Button('笔记').id('reader-dictionary-note').height(48).layoutWeight(1)
+            .buttonStyle(ButtonStyleMode.NORMAL).backgroundColor(this.surfaceMutedColor).fontColor(this.accentColor)
+            .accessibilityText('给所选单词写笔记').onClick(() => this.onNote())
         }
       }.width('100%')
+      }
     }
-    .id('reader-dictionary-panel').width('100%').height('100%')
-    .padding($r('app.float.product_space_12')).backgroundColor(this.surfaceColor)
-    .border({ width: 1, color: this.dividerColor })
-    .borderRadius($r('app.float.product_radius_modal'))
+    .id('reader-dictionary-panel').width('100%')
+    .padding(this.nativeContainer ? 0 : 16).backgroundColor(this.nativeContainer ? Color.Transparent : this.surfaceColor)
+    .borderRadius(this.nativeContainer ? 0 : 24)
   }
 }

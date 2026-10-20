@@ -60,7 +60,9 @@ export function validateZipLimits(limits: ZipLimits): void {
   }
 }
 
-export async function inspectZip(source: ZipSource, limits: ZipLimits): Promise<ZipEntry[]> {
+// Shared bounded ZIP structure validation. EPUB's required mimetype stays in
+// inspectZip; CBZ must not invent an EPUB header to pass archive validation.
+export async function inspectZipArchive(source: ZipSource, limits: ZipLimits): Promise<ZipEntry[]> {
   validateZipLimits(limits);
   if (!Number.isSafeInteger(source.size) || source.size < 22) throw new EpubInputError('malformed');
   if (source.size > limits.archiveBytes) throw new EpubInputError('resource_limit');
@@ -160,8 +162,14 @@ export async function inspectZip(source: ZipSource, limits: ZipLimits): Promise<
     }
     previousEnd = entry.endOffset;
   }
-  const mimeEntry = ordered[0];
-  if (previousEnd !== centralStart || mimeEntry.name !== 'mimetype' || mimeEntry.method !== 0 ||
+  if (previousEnd !== centralStart) throw new EpubInputError('malformed');
+  return entries;
+}
+
+export async function inspectZip(source: ZipSource, limits: ZipLimits): Promise<ZipEntry[]> {
+  const entries = await inspectZipArchive(source, limits);
+  const mimeEntry = entries.slice().sort((a: ZipEntry, b: ZipEntry): number => a.localOffset - b.localOffset)[0];
+  if (mimeEntry.name !== 'mimetype' || mimeEntry.method !== 0 ||
     mimeEntry.expandedBytes < 20 || mimeEntry.expandedBytes > 22) throw new EpubInputError('malformed');
   const mime = await read(source, mimeEntry.dataOffset, mimeEntry.expandedBytes);
   const mimeText = strictUtf8(new Uint8Array(mime.buffer as ArrayBuffer));

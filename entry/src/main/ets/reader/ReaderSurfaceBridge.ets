@@ -10,6 +10,9 @@ export interface ReaderSurfaceState {
   viewport: number;
   height: number;
   unit: number;
+  positionValid?: boolean;
+  surfaceVersion?: number;
+  paginationMode?: string;
 }
 
 export interface ReaderPreparationJob {

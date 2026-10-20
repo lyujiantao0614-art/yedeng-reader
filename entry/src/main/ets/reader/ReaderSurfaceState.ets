@@ -1,4 +1,4 @@
-export type ReaderSurface = 'none' | 'toc' | 'appearance' | 'dictionary' | 'passage' | 'note-editor' | 'mark-detail';
+export type ReaderSurface = 'none' | 'toc' | 'notes' | 'bookmarks' | 'progress' | 'appearance' | 'dictionary' | 'passage' | 'note-editor' | 'mark-detail';
 
 export type PassageRequestKind = 'none' | 'copy' | 'highlight' | 'note' | 'adjust';
 

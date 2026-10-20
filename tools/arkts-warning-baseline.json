@@ -3,7 +3,7 @@
   "node": "22.20.0",
   "scope": "entry/src/main",
   "policy": "No new fingerprint, category, deprecation warning, occurrence, or total increase; reductions pass.",
-  "total": 271,
+  "total": 310,
   "entries": [
     {
       "path": "entry/src/main/ets/dictionary/BundledDictionaryProvider.ets",
@@ -204,13 +204,6 @@
     {
       "path": "entry/src/main/ets/pages/ReaderPage.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.getUIContext().getPromptAction().showToast({ message: '当前选区无法保存，请缩短选区。' });",
-      "count": 1,
-      "fingerprint": "91c2428957db148631ee877f68646fd7daafc7d29d096691ef0137cafdad366b"
-    },
-    {
-      "path": "entry/src/main/ets/pages/ReaderPage.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "this.getUIContext().getPromptAction().showToast({ message: '复制失败，请重试。' });",
       "count": 1,
       "fingerprint": "10dd8c75bc27f2c23a7db0f608e98a512edfc1f0bb317ece8d64c6aa930656bb"
@@ -218,9 +211,9 @@
     {
       "path": "entry/src/main/ets/pages/ReaderPage.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.getUIContext().getPromptAction().showToast({ message: '修改失败，原标记已保留。' });",
+      "source": "this.getUIContext().getPromptAction().showToast({ message: '当前选区无法保存，请缩短选区。' });",
       "count": 1,
-      "fingerprint": "bc292d55ff59a7a13f09632d2011ae216360490e3a395bac292d58665f9994ce"
+      "fingerprint": "91c2428957db148631ee877f68646fd7daafc7d29d096691ef0137cafdad366b"
     },
     {
       "path": "entry/src/main/ets/pages/ReaderPage.ets",
@@ -228,13 +221,6 @@
       "source": "this.getUIContext().getPromptAction().showToast({ message: '选区已经变化，请重新选择单词。' });",
       "count": 1,
       "fingerprint": "44e3e2a983e82c8af90c56ad124b95bc19b581675f393d5edf1e0d6293a35343"
-    },
-    {
-      "path": "entry/src/main/ets/pages/ReaderPage.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.getUIContext().getPromptAction().showToast({ message: '长按选出新范围，再点 ✓ 保存。' });",
-      "count": 1,
-      "fingerprint": "236853ae6f22951c01da89e4b63552013e9f8411045d528a674c12e5e4a25ed9"
     },
     {
       "path": "entry/src/main/ets/pages/ReaderPage.ets",
@@ -260,6 +246,13 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Original note anchor migration failed'); }",
+      "count": 1,
+      "fingerprint": "c8313ec0a7e73fa7817396567db231f5f078d6ee066e9bad82ce39ef9b6aecb7"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "} catch (_) { store.rollBack(); throw new Error('Page excerpt migration failed'); }",
       "count": 1,
       "fingerprint": "6ce705086c7816004c42f473086809f15c997db51cf66c644085ed4bf7d1efc4"
@@ -267,16 +260,16 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "} catch (_) { store.rollBack(); throw new Error('Record copy failed'); }",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Range copy migration failed'); }",
       "count": 1,
-      "fingerprint": "9173c1ef4567244ebe3c702969a1a9e9136775a3fed37cba6a9deb8fd6158867"
+      "fingerprint": "e936691896dbf57dfe2b597214e7f5e4fe3e563f8f40fa386d0fbdb3cd43f818"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "} catch (_) { store.rollBack(); throw new Error('Record deletion failed'); }",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Record copy failed'); }",
       "count": 1,
-      "fingerprint": "0dc8792fe149644236316968fb67cfdcc5ffdf4ab3d5ebf38045680ad40b7f8e"
+      "fingerprint": "9173c1ef4567244ebe3c702969a1a9e9136775a3fed37cba6a9deb8fd6158867"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -289,8 +282,22 @@
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
       "source": "} finally { result.close(); }",
-      "count": 5,
-      "fingerprint": "bbf74c4e77a02c303f3bb53915c6b2af93089e832007bcbc0ba566c92969db32"
+      "count": 6,
+      "fingerprint": "8b060b5aae81e4747e4d4740265e2e332dc6a336a29f812cf4b03abb1e27e37e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "anchorProvenance: result.getString(15) as NoteAnchorProvenance,anchorStatus: result.getString(16) as RangeAnchorStatus }); }",
+      "count": 2,
+      "fingerprint": "91ea54b83448f272b3d4ce78c091abc50f4937c863795295255ad1c16678e63b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "anchorStatus: result.getString(14) as RangeAnchorStatus,quoteScope: result.getString(15) === 'body' ? 'body' : 'block',",
+      "count": 2,
+      "fingerprint": "432fe17d2036229b8ef4386777ba82823ba7e8b662fad85b3ed400fa80888bd7"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -302,16 +309,23 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "await store.executeSql('UPDATE text_marks SET cfi=?,exact_text=?,prefix=?,suffix=?,kind=?,chapter_title=?,note_text=? ' +",
+      "source": "await store.executeSql('INSERT INTO note_entries(note_id,book_id,range_id,body,created_at,updated_at,revision,' +",
       "count": 1,
-      "fingerprint": "357d32c4de5459deeefd3cfafe2fffb21081c987e543c5e712a2f64aa47d6697"
+      "fingerprint": "52c06f2a142f01ffd1bd9655b094b38b26ab6ec0c2004c7658fbdb3b76520276"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "await store.executeSql('UPDATE text_marks SET cfi=?,prefix=?,suffix=?,chapter_title=? ' +",
+      "source": "await store.executeSql('INSERT INTO range_records(mark_id,book_id,anchor_version,engine,resource_href,cfi,exact_text,prefix,suffix,kind,chapter_title,created_at,revision,highlight_active,anchor_status,quote_scope,highlight_anchors) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)',",
       "count": 1,
-      "fingerprint": "ed06cd878fc4d5d0c8249022a7a132828e0b516b526ac710a9aace871963ad16"
+      "fingerprint": "4d9777ba39ef0d15dd9d82f8ee704558acc328e0056564075b0e17bc71c14c33"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await store.executeSql('UPDATE range_records SET cfi=?,prefix=?,suffix=?,chapter_title=?,revision=revision+1 ' +",
+      "count": 1,
+      "fingerprint": "16bb63d75284efc94e19f01b198ca35bef152550d1d6e866632f40a1e10d6e69"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -330,13 +344,6 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "await this.requireStore().executeSql('DELETE FROM text_marks WHERE book_id=? AND mark_id=?',",
-      "count": 1,
-      "fingerprint": "55976bd4f4b9fe560031be240b24409242a5447b3ed2f1c99f61b42e12aebdbe"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "await this.requireStore().executeSql('INSERT INTO bookmarks ' +",
       "count": 1,
       "fingerprint": "fceca68189aba5c7e9dbe68730c114cca1644398096c04d86bb1fa8f58b02413"
@@ -351,9 +358,9 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "await this.requireStore().executeSql('INSERT INTO text_marks ' +",
+      "source": "await this.requireStore().executeSql('UPDATE range_records SET anchor_status=? WHERE book_id=? AND mark_id=? AND revision=?',",
       "count": 1,
-      "fingerprint": "d6c8c423b9c8785e8cbd1af3f5e400a3b044b0e2aa65015a95aded95c7dce378"
+      "fingerprint": "3fbb4d696b6d03e9e5109b2d14dbb2b8c1ceaaabeb015c6767c188bc065f3515"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -372,6 +379,13 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "cfi: result.getString(10),exactText: result.getString(11),prefix: result.getString(12),suffix: result.getString(13),",
+      "count": 4,
+      "fingerprint": "b271a84a18048793c464ceb880a6ca5f30802c36c35fc804a8ef574e0d49773c"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "cfi: result.getString(5), exactText: result.getString(6), prefix: result.getString(7),",
       "count": 3,
       "fingerprint": "192869c7c65af3b1d28b5fe2537ebaeffe248ad9628ab83c1678688383494310"
@@ -379,16 +393,16 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "chapterTitle: result.getString(10), noteText: result.getString(11), createdAt: result.getLong(12) });",
-      "count": 3,
-      "fingerprint": "1aa7f87b95ec685499387e1f03e12b59933da59d7b663f0243c2ee1fb487e539"
+      "source": "chapterTitle: result.getString(10), noteText: '', createdAt: result.getLong(11),",
+      "count": 2,
+      "fingerprint": "a76bed5f8b63b8a549afc0d9c2d482e5d63b50d979331f31be17d75c886efe4e"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const files = await fs.listFile(`${context.databaseDir}/rdb`);",
+      "source": "const notes = await store.querySql('SELECT verified FROM note_anchor_migration WHERE id=1');",
       "count": 1,
-      "fingerprint": "3a943e19e0e6dd29a27034459486c651e832690b0e9d1c645ed800f6b8bec116"
+      "fingerprint": "048c14c10b54b2fceab80523e0015e1c8bfbf23e1316504ca7ed1bb487c31d94"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -407,9 +421,23 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const result = await store.querySql('SELECT cfi,prefix,suffix,chapter_title FROM text_marks ' +",
+      "source": "const result = await store.querySql('SELECT cfi,prefix,suffix,chapter_title FROM range_records ' +",
       "count": 1,
-      "fingerprint": "4a70be39a3b20f99e126df2f646de56428f2ca9d449870c45bdb0396436aaef7"
+      "fingerprint": "348cef29a6122fd7aa90949ca149bfee5dca1fea9acb5f9d5f17c83f32436223"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await store.querySql('SELECT mark_id,book_id,anchor_version,engine,resource_href,cfi,' +",
+      "count": 1,
+      "fingerprint": "e6b50fc243b1303f6e34367760bfc990fe24be5b59fe3784aa2cf0b6efdb2775"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await store.querySql('SELECT verified FROM range_migration WHERE id=1');",
+      "count": 1,
+      "fingerprint": "5b6fdf4f0f0580941affa5cb8110fca256c2ddae28826d070bbe6f9575331079"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -435,9 +463,58 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT note_id,book_id,range_id,body,created_at,updated_at,revision,' +",
+      "count": 1,
+      "fingerprint": "57f916040375f6a203f2a866945fc0a5793c828eba26cfc616dc6e36e0b28067"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "createdAt: result.getLong(7) });",
       "count": 1,
       "fingerprint": "0d4cc13c085773eff22024335eac9ffd3096b26b743ad4dd67d470dc1cf6ccc7"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "engine: result.getString(3),resourceHref: result.getString(4),cfi: result.getString(5),",
+      "count": 3,
+      "fingerprint": "78cf8f8eda5b1b19dff88ba76f5fd4801256a818bd8d93e130b636b0886b9090"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "exactText: result.getString(6),prefix: result.getString(7),suffix: result.getString(8),",
+      "count": 3,
+      "fingerprint": "fe5e5e230dae848d2ad8670d68a99fd4ee096218a79a8320240926f7a7fdc942"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "finally { notes.close(); }",
+      "count": 1,
+      "fingerprint": "0efda47429a2d288219368baa47ca8917b121bf911563b0c5fd9ffca33c1a024"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "finally { result.close(); }",
+      "count": 2,
+      "fingerprint": "7ddfaae9933aaccf32638fc3d237d2509cfc3c6fe31094558f065f15468bb14a"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "highlightAnchors: JSON.parse(result.getString(16)) as TextRangeAnchor[] });",
+      "count": 1,
+      "fingerprint": "9f6c025f8446c300d879cbe7372dfb4814e2de58357ff0b3cb4a0f4f6de54f45"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "highlights.push({ markId: result.getString(0), bookId: result.getString(1),anchorVersion: result.getLong(2),",
+      "count": 3,
+      "fingerprint": "93495fd234450adbf9596833b490e9026df94fb431173d6cc99c6f2a545cce28"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -456,9 +533,23 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "if (result.getString(9) !== 'highlight' || result.getLong(10) !== 1) continue;",
+      "count": 2,
+      "fingerprint": "b7d6ced0124441c336605b1c7dd78d479d39078e56b14bb3f30c9178896b0935"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "opened?.close();",
       "count": 1,
       "fingerprint": "e5979b0410c0e38928d3639214db6a65967d069abeb6d91604ca723900d97959"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "originalAnchor: {anchorVersion: result.getLong(7),engine: result.getString(8),resourceHref: result.getString(9),",
+      "count": 3,
+      "fingerprint": "cf96ba0290b7e2d29d1789a377eafbbe4f646101a36804273febcae4f1c172b6"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -484,6 +575,27 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "quoteScope: result.getString(11) === 'body' ? 'body' : 'block' });",
+      "count": 1,
+      "fingerprint": "8ca32199727cc0416f2eb778054fe887c5489af9e07352688292ef22961b443b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "quoteScope: result.getString(14) === 'body' ? 'body' : 'block'},",
+      "count": 1,
+      "fingerprint": "151cbab5837c488edc8b52b404244c79535c5d0719bbbd7a1f4c41af7419bff5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "rangeId: result.getString(2), body: result.getString(3), createdAt: result.getLong(4), updatedAt: result.getLong(5), revision: result.getLong(6),",
+      "count": 5,
+      "fingerprint": "31e62aaa75c62ff02fe7064ba1d1b0326b32f82c6cb9ad933876cdaa3173ec47"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "resourceHref: result.getString(4), cfi: result.getString(5), label: result.getString(6),",
       "count": 3,
       "fingerprint": "9b81d3df27d085889fa36fd125c7c8a4779e2fee3a6b4bea4af5736dc1a31114"
@@ -505,9 +617,16 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "revision: result.getLong(12), highlightActive: result.getLong(13) === 1,",
+      "count": 2,
+      "fingerprint": "5bb6ae69288678908f66770294875090bb208455997c6fae220d3525b1019d80"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "store.beginTransaction();",
-      "count": 4,
-      "fingerprint": "60470be90aa3a17326bfc85498fb5775ba4aabc633164e477d71cf4f338f7fff"
+      "count": 5,
+      "fingerprint": "513a89de7a8202edf23395c9088974bb4d84e70d696507a185d8490b9dce6c57"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -526,9 +645,30 @@
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { if (!notes.goToNextRow() || notes.getLong(0) !== 1) throw new Error('Note anchor copy not verified'); }",
+      "count": 2,
+      "fingerprint": "f06d27fef1e78b60f9656dc16f09cbcd467a59968079f09c56769e8c16d58f45"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { if (!result.goToNextRow() || result.getLong(0) !== 1) throw new Error('Range copy not verified'); }",
+      "count": 2,
+      "fingerprint": "012e09aefd009ff66ef381b4d04e2375308ee87cba4a759948dded7d2ab4de54"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { while (result.goToNextRow()) notes.push({ noteId: result.getString(0), bookId: result.getString(1),",
+      "count": 3,
+      "fingerprint": "e3c51a56cf39f29564f9f962c3e2406db4fdc6bb61d403d0a49d9657e2f636ed"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "while (result.goToNextRow()) {",
-      "count": 1,
-      "fingerprint": "a85e7e437575644f3c6b898e2b111ac1a408e64715ffad8278ba5c03dd757c0f"
+      "count": 2,
+      "fingerprint": "e54a508710351dd8acfe4990dcd210bc348473a7a00dd6b167a8c1ea03e23191"
     },
     {
       "path": "entry/src/main/ets/repositories/EncryptedBookmarkStore.ets",
@@ -554,58 +694,16 @@
     {
       "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const value = this.store.getSync('bookshelf_default_mode', 'system');",
-      "count": 1,
-      "fingerprint": "550083405bd21aa2795311e2d0083fce96dbb0e5d75067c0a2d9898482f7aad5"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const value = this.store.getSync('bookshelf_theme', 'default');",
-      "count": 1,
-      "fingerprint": "01079c19b81b83c241c8885000290417bee090621a9d2065d8eaed585f865b95"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const value = this.store.getSync('view_mode', 'grid');",
-      "count": 1,
-      "fingerprint": "fe712d32976a09240bf915537049756ac8865740c34ab3389f80d30cd4c109b2"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "this.store = preferences.getPreferencesSync(context, { name: this.storeName });",
       "count": 1,
       "fingerprint": "ce22c169f2ccff5f218e7efcbdcde6f6512ab723f4642d8cde29732084ef493c"
     },
     {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.flushSync();",
-      "count": 2,
-      "fingerprint": "45844be132b3ed0175d2e5934fc1fdbd8bdd0d1b9d4e0adf08428b2f67472531"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('bookshelf_default_mode', normalizeBookshelfDefaultMode(mode));",
+      "source": "} catch (_) { store.rollBack(); throw new Error('Folder removal failed'); }",
       "count": 1,
-      "fingerprint": "9b12d11921d18cf33ab11070e382774f47b41dc88ebbec02d0720faab276dc57"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('bookshelf_theme', normalizeBookshelfTheme(theme));",
-      "count": 1,
-      "fingerprint": "edd702ce135bc3250d352caf6169837a23500f3b9685e29b77dbb19e1314109c"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/LibraryPresentationRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('view_mode', normalizeLibraryViewMode(mode));",
-      "count": 1,
-      "fingerprint": "3937d41a1b48cf64ff7fd70b24762d8ab43440ea9d1b68c332df2f9d8605b3b9"
+      "fingerprint": "8f5c243d51914421a0c60b817b3b947d870f87f264c44b0b58d03ad9031f34c6"
     },
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
@@ -659,9 +757,30 @@
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('INSERT INTO library_folders(folder_id,parent_id,name) VALUES(?,?,?)',",
+      "count": 1,
+      "fingerprint": "9b9f9c67e3ba9330e71ff80f5803b482513a23ef4143dc9ea16e2758456a4d94"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE books SET folder_id=? WHERE book_id=?', [folderId, bookId]);",
+      "count": 1,
+      "fingerprint": "5357b88666c8d15249a847f5891686b63c0ead8aae4d231037072a61016b889b"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "await this.requireStore().executeSql('UPDATE books SET last_opened_at=? WHERE book_id=?', [openedAt, bookId]);",
       "count": 1,
       "fingerprint": "c3074e7bddf4b0e5a641322227edf4d86dad661009a4b07d068e7844a9b47639"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE books SET series_name=?,volume_order=? WHERE book_id=?',",
+      "count": 1,
+      "fingerprint": "c8ccc88bf370ebe33d822dc7c803c6df0be80043ae84c1576e2d8fc8dc6ead94"
     },
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
@@ -676,6 +795,27 @@
       "source": "await this.requireStore().executeSql('UPDATE books SET title=?,author=? WHERE book_id=?',",
       "count": 1,
       "fingerprint": "9abb085f8552a1ffd94e50d71d0840c5ae3b6904314b65fb4855ae27ae3cbbfc"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE library_folders SET name=? WHERE folder_id=?', [name, folderId]);",
+      "count": 1,
+      "fingerprint": "4160e48f8d6ed2cc0215387421549eb20c50d66a0a8c041aa321ecc48d229c00"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE library_folders SET parent_id=? WHERE folder_id=?', [parentId, folderId]);",
+      "count": 1,
+      "fingerprint": "cc8af0433cd3bc82f057c288b951e1d5523fba98b80c13886893888d6c71e70e"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "await this.requireStore().executeSql('UPDATE reading_record_authority SET range_records_version=4 WHERE id=1');",
+      "count": 1,
+      "fingerprint": "ed0489c9c3dbfeadc924856a399a5614a5c22d11a0978cdbd6c2570319177368"
     },
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
@@ -792,9 +932,30 @@
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT book_id,folder_id,series_name,volume_order FROM books');",
+      "count": 1,
+      "fingerprint": "e6a171260247f25175617e3dab70066a651786299c80101ab2dd09beec654aa8"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT folder_id,parent_id,name FROM library_folders ORDER BY name,folder_id');",
+      "count": 1,
+      "fingerprint": "1278ff23f38b3e06eb4661998f8d2e6a12438f2a61cc1525978e23663b0ad008"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "const result = await this.requireStore().querySql('SELECT owner FROM reading_record_authority WHERE id=1');",
       "count": 1,
       "fingerprint": "33ddbeebcf01dfae9ca00055d711d4de872427e2198a7d45842512713f1ee7c6"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "const result = await this.requireStore().querySql('SELECT range_records_version FROM reading_record_authority WHERE id=1');",
+      "count": 1,
+      "fingerprint": "040a7f16f819be7703feeaa9cf79017541299b9ac26319bad39c355135fee26a"
     },
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
@@ -844,6 +1005,13 @@
       "source": "fileHash: result.getString(1),",
       "count": 1,
       "fingerprint": "8fad6ee38070f352a43ccdd1c3114f08a2f3c1b36ee12f8d6dd8f59fa7e859f5"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "finally { result.close(); }",
+      "count": 3,
+      "fingerprint": "1ce24ad4b5cad4b4acfb0b6a471cc29813947fe35d903a470a79f7e97c467267"
     },
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
@@ -932,6 +1100,13 @@
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "seriesName: result.getString(2), volumeOrder: result.isColumnNull(3) ? undefined : result.getDouble(3) }); }",
+      "count": 3,
+      "fingerprint": "7a166d412b37d39438a6e1d59766cf793702724664e95e6565ec0e0a2ace8981"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "sourceState: result.getString(8) as BookSourceState",
       "count": 2,
       "fingerprint": "60b61f59493371176381bf499fc90b8744aa1cfa5bb22f9f5616de223c1c3765"
@@ -947,8 +1122,8 @@
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
       "source": "store.beginTransaction();",
-      "count": 6,
-      "fingerprint": "528a87e579f6c209f5c8c2ed0e2a87f8528b9d921ffab239b42db7e068e9d7d6"
+      "count": 7,
+      "fingerprint": "ca69af19a1df31b96ce0f0f18cf259b0e47b61464fc313b119c69535a177106b"
     },
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
@@ -981,6 +1156,27 @@
     {
       "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { if (!result.goToNextRow()) throw new Error('Record marker missing'); return result.getLong(0); }",
+      "count": 2,
+      "fingerprint": "2894e8a7dd0bae61ae516bf0c03a68c4967e95be1cb2d867dabca54e29193f50"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { while (result.goToNextRow()) folders.push({ folderId: result.getString(0), parentId: result.getString(1), name: result.getString(2) }); }",
+      "count": 4,
+      "fingerprint": "21d79215ef92680f560856dac6ab5c4bdfbb8f7c200c5aef954cb501814a4fe1"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
+      "source": "try { while (result.goToNextRow()) values.push({ bookId: result.getString(0), folderId: result.getString(1),",
+      "count": 3,
+      "fingerprint": "779d6e2c3d9e5431199ff2e0b125ad48203b38869f4be0f03cef3ac6aecfe5c2"
+    },
+    {
+      "path": "entry/src/main/ets/repositories/LibraryRepository.ets",
+      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "updatedAt: result.getLong(6)",
       "count": 2,
       "fingerprint": "caeb4ce7ce67cf84e119dc44c4a0f2660dd0c02b99f02c7e4511d9359b1164f3"
@@ -1002,156 +1198,9 @@
     {
       "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
       "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "columnMode: this.store.getSync('column_mode', DEFAULT_READER_SETTINGS.columnMode) === 'single' ?",
-      "count": 1,
-      "fingerprint": "d36dd62179c21108823cb45dc0e17ee3428cc3be328c98a289a5e46ac90b167c"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const value = this.store.getSync('theme', 'system');",
-      "count": 1,
-      "fingerprint": "1ca16a955d1a1d48a051f8a81014bbd48a7cf08147ff7481331ef09a9204501f"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "fontScale: Number(this.store.getSync('font_scale', DEFAULT_READER_SETTINGS.fontScale)),",
-      "count": 1,
-      "fingerprint": "9c72d2aa8f93c47a2790cf1d4a339c40a7d1cf2e8a20918d27b634f6cadcbd71"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "lineSpacing: Number(this.store.getSync('line_spacing', DEFAULT_READER_SETTINGS.lineSpacing)),",
-      "count": 1,
-      "fingerprint": "0acad44c4d02b2db708041969002d20f55653d7e5a0116abef3603b105559214"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "pageMarginVp: Number(this.store.getSync('page_margin_vp', DEFAULT_READER_SETTINGS.pageMarginVp)),",
-      "count": 1,
-      "fingerprint": "14ede710681547eefab20fa6b3cc2a95b4584e406d4c716620b08a50c2d9e6ac"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
       "source": "this.store = preferences.getPreferencesSync(context, { name: this.storeName });",
       "count": 1,
       "fingerprint": "15e97a97ed0453715da56b0e4d899903e76d8ffc5b401f566e98b71d6ba377ae"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.flushSync();",
-      "count": 3,
-      "fingerprint": "4c626ce3a85edcf02fb8e3a0b841f3cf6214fa77caca1ca7872e83da25545878"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('column_mode', settings.columnMode);",
-      "count": 1,
-      "fingerprint": "b51373b5c7ffcf64dc45b80ff4f31f1977965b47d70a048c959c44d2cf6b86a2"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('font_scale', settings.fontScale);",
-      "count": 1,
-      "fingerprint": "72e9986b19bf4edd7309928505f12c20684cc1069f62aa679877787a9cdcf768"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('line_spacing', settings.lineSpacing);",
-      "count": 1,
-      "fingerprint": "a90f8e48555753ff3dbef6d44d2f59a77db26b9720c4345ea49552b66cf7d5e0"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('page_margin_vp', settings.pageMarginVp);",
-      "count": 1,
-      "fingerprint": "941f46a17172002bea8922f2612dc0438934ada8987c0a8b7b809292d2a3dd57"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('show_controls_button', enabled);",
-      "count": 1,
-      "fingerprint": "e256a8107c19021ae571dc3ecde5b4366e7d92a8b34ca0559161ff3f47364ba2"
-    },
-    {
-      "path": "entry/src/main/ets/repositories/ReaderSettingsRepository.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "this.store.putSync('theme', normalizeReaderThemePreference(preference));",
-      "count": 1,
-      "fingerprint": "42952f51d818da3863818c8b952bda22efac49696971640d3a15aec80e93541a"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const bytes = await context.resourceManager.getRawFileContent(SAMPLE_RESOURCE);",
-      "count": 1,
-      "fingerprint": "9af651f5e6f459dd06ce5b3efbc9a1c7f39f62888c6c39305d01b0e94b402f95"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const store = preferences.getPreferencesSync(context, { name: 'bundled_sample' });",
-      "count": 1,
-      "fingerprint": "9a40c044b9f4b8f84a116107f3a61ef1be638fedfccbbf2ca44c8ccbbf538c1e"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "const written = await fs.write(file.fd, remaining, { offset: offset, length: bytes.byteLength - offset });",
-      "count": 1,
-      "fingerprint": "dd685c0be0a65740f6183f2e5b78f5e166887239fdea165f20e808e5d20a3173"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "file = await fs.open(path, fs.OpenMode.CREATE | fs.OpenMode.READ_WRITE | fs.OpenMode.TRUNC);",
-      "count": 1,
-      "fingerprint": "6699a8b22e99c903bde5bdb3cd2b8e266c52520efdd91a9bc28b95090526c5c3"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "fs.closeSync(file);",
-      "count": 1,
-      "fingerprint": "4436542bc50740c5577a185e911f856a8304bca15558d5d7f4db7277f3ca9723"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "if (file !== undefined) fs.closeSync(file);",
-      "count": 1,
-      "fingerprint": "dadc17678de1d6f1b6d74f62dd317a536b456527ed4100c076697ca1f36ac96e"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "if (store.getSync('seeded_v1', false) === true) return 'done';",
-      "count": 1,
-      "fingerprint": "2c539040f1f2be7f9b4033921aca400a9567fbc24d43db98b8caee0af287cfa9"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "store.flushSync();",
-      "count": 2,
-      "fingerprint": "d377c510ce022374cab1d37354f864024760b87961142616eb88cfc5b9114705"
-    },
-    {
-      "path": "entry/src/main/ets/services/BundledSampleSeeder.ets",
-      "warning": "Function may throw exceptions. Special handling is required.",
-      "source": "store.putSync('seeded_v1', true);",
-      "count": 2,
-      "fingerprint": "f6e688dd6c1976bf0937f67892ac94dd5d37703683f18612cda825a49baf8332"
     },
     {
       "path": "entry/src/main/ets/services/ManagedBookStore.ets",

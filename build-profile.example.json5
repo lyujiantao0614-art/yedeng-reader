@@ -1,11 +1,13 @@
 {
   "app": {
+    "multiProjects": true,
     "signingConfigs": [],
     "products": [
       {
         "name": "default",
         "signingConfig": "default",
-        "targetSdkVersion": "6.0.1(21)",
+        "compileSdkVersion": "26.0.0",
+        "targetSdkVersion": "26.0.0",
         "compatibleSdkVersion": "6.0.1(21)",
         "runtimeOS": "HarmonyOS",
         "buildOption": {

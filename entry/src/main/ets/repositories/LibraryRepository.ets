@@ -1,5 +1,7 @@
 import { common } from '@kit.AbilityKit';
+import { RecordCursor, RecordPage, recordPageSize } from '../domain/ReadingRecordQuery';
 import { relationalStore } from '@kit.ArkData';
+import { LibraryFolder, BookOrganization, ROOT_FOLDER } from '../domain/LibraryOrganization';
 import {
   Book,
   BookmarkPoint,
@@ -13,11 +15,13 @@ import {
 } from '../domain/Models';
 
 const DB_NAME: string = 'harmony_ai_reader.db';
-export const LIBRARY_DB_VERSION: number = 5;
+export const LIBRARY_DB_VERSION: number = 7;
 
 export interface LibraryRepositoryOptions {
   databaseName?: string;
   failMigrationToVersion?: number;
+  failAfterVersionTo?: number;
+  migrationCancelled?: () => boolean;
 }
 
 export function isValidLibraryOperationTransition(kind: LibraryOperationKind,
@@ -104,13 +108,25 @@ export class LibraryRepository {
         await store.executeSql("INSERT INTO reading_record_authority(id,owner) VALUES(1,'source')");
       } else if (fromVersion === 4 && toVersion === 5) {
         await store.executeSql('ALTER TABLE reading_record_authority ADD COLUMN text_records_enabled INTEGER NOT NULL DEFAULT 0 CHECK(text_records_enabled IN (0,1))');
+      } else if (fromVersion === 5 && toVersion === 6) {
+        await store.executeSql("ALTER TABLE books ADD COLUMN reading_format TEXT NOT NULL DEFAULT 'epub' CHECK(reading_format IN ('epub','pdf','cbz'))");
+        await store.executeSql("ALTER TABLE books ADD COLUMN source_relative_path TEXT NOT NULL DEFAULT ''");
+        await store.executeSql('UPDATE books SET source_relative_path=epub_relative_path');
+      } else if (fromVersion === 6 && toVersion === 7) {
+        await store.executeSql('CREATE TABLE library_folders (folder_id TEXT PRIMARY KEY,parent_id TEXT NOT NULL,name TEXT NOT NULL)');
+        await store.executeSql("ALTER TABLE books ADD COLUMN folder_id TEXT NOT NULL DEFAULT ''");
+        await store.executeSql("ALTER TABLE books ADD COLUMN series_name TEXT NOT NULL DEFAULT ''");
+        await store.executeSql('ALTER TABLE books ADD COLUMN volume_order REAL');
+        await store.executeSql('ALTER TABLE reading_record_authority ADD COLUMN range_records_version INTEGER NOT NULL DEFAULT 0 CHECK(range_records_version IN (0,4))');
       } else {
         throw new Error('Unsupported library database migration');
       }
       if (this.options.failMigrationToVersion === toVersion) {
         await store.executeSql('THIS IS AN INJECTED MIGRATION FAILURE');
       }
+      if (this.options.migrationCancelled?.()) throw new Error('Migration cancelled');
       store.version = toVersion;
+      if (this.options.failAfterVersionTo === toVersion) throw new Error('Injected commit failure');
       store.commit();
     } catch (_) {
       store.rollBack();
@@ -127,6 +143,105 @@ export class LibraryRepository {
 
   databaseVersion(): number {
     return this.requireStore().version;
+  }
+
+  async rangeRecordsVersion(): Promise<number> {
+    const result = await this.requireStore().querySql('SELECT range_records_version FROM reading_record_authority WHERE id=1');
+    try { if (!result.goToNextRow()) throw new Error('Record marker missing'); return result.getLong(0); }
+    finally { result.close(); }
+  }
+
+  async activateRangeRecords(): Promise<void> {
+    await this.requireStore().executeSql('UPDATE reading_record_authority SET range_records_version=4 WHERE id=1');
+  }
+
+  async listFolders(): Promise<LibraryFolder[]> {
+    const result = await this.requireStore().querySql('SELECT folder_id,parent_id,name FROM library_folders ORDER BY name,folder_id');
+    const folders: LibraryFolder[] = [];
+    try { while (result.goToNextRow()) folders.push({ folderId: result.getString(0), parentId: result.getString(1), name: result.getString(2) }); }
+    finally { result.close(); }
+    return folders;
+  }
+
+  async listOrganizations(): Promise<BookOrganization[]> {
+    const result = await this.requireStore().querySql('SELECT book_id,folder_id,series_name,volume_order FROM books');
+    const values: BookOrganization[] = [];
+    try { while (result.goToNextRow()) values.push({ bookId: result.getString(0), folderId: result.getString(1),
+      seriesName: result.getString(2), volumeOrder: result.isColumnNull(3) ? undefined : result.getDouble(3) }); }
+    finally { result.close(); }
+    return values;
+  }
+
+  private async checkParent(parentId: string, movingId: string = ''): Promise<void> {
+    const folders = await this.listFolders();
+    if (parentId && !folders.some((item: LibraryFolder): boolean => item.folderId === parentId)) throw new Error('Parent unavailable');
+    let cursor = parentId, depth = 0;
+    while (cursor) {
+      if (cursor === movingId || ++depth > 32) throw new Error('Folder cycle or depth limit');
+      const node = folders.find((item: LibraryFolder): boolean => item.folderId === cursor);
+      if (!node) throw new Error('Broken folder tree');
+      cursor = node.parentId;
+    }
+    let descendants = [movingId], height = 0;
+    if (movingId) {
+      while (descendants.length) {
+        descendants = folders.filter((item: LibraryFolder): boolean => descendants.includes(item.parentId))
+          .map((item: LibraryFolder): string => item.folderId);
+        if (descendants.length && depth + ++height >= 32) throw new Error('Folder depth limit');
+      }
+    }
+  }
+
+  async createFolder(folder: LibraryFolder): Promise<void> {
+    await this.checkParent(folder.parentId);
+    if ((await this.listFolders()).length >= 2000) throw new Error('Folder limit');
+    await this.requireStore().executeSql('INSERT INTO library_folders(folder_id,parent_id,name) VALUES(?,?,?)',
+      [folder.folderId, folder.parentId, folder.name]);
+  }
+
+  async renameFolder(folderId: string, name: string): Promise<void> {
+    if (!(await this.listFolders()).some((item: LibraryFolder): boolean => item.folderId === folderId)) throw new Error('Folder unavailable');
+    await this.requireStore().executeSql('UPDATE library_folders SET name=? WHERE folder_id=?', [name, folderId]);
+  }
+
+  async moveFolder(folderId: string, parentId: string): Promise<void> {
+    if (!folderId || !(await this.listFolders()).some((item: LibraryFolder): boolean => item.folderId === folderId)) throw new Error('Folder unavailable');
+    await this.checkParent(parentId, folderId);
+    await this.requireStore().executeSql('UPDATE library_folders SET parent_id=? WHERE folder_id=?', [parentId, folderId]);
+  }
+
+  async deleteFolder(folderId: string, expectedIds?: string[]): Promise<void> {
+    const store = this.requireStore();
+    store.beginTransaction();
+    try {
+      const folders = await this.listFolders();
+      if (!folderId || !folders.some((item: LibraryFolder): boolean => item.folderId === folderId)) throw new Error('Folder unavailable');
+      const removed: string[] = [folderId];
+      for (let index = 0; index < removed.length; index++) {
+        for (const item of folders) if (item.parentId === removed[index] && !removed.includes(item.folderId)) removed.push(item.folderId);
+      }
+      if (expectedIds !== undefined && (expectedIds.length !== removed.length || removed.some((id: string): boolean => !expectedIds.includes(id))))
+        throw new Error('Folder contents changed');
+      for (const id of removed) {
+        const rows = await store.querySql('SELECT COUNT(*) AS total FROM books WHERE folder_id=?', [id]);
+        try { if (rows.goToFirstRow() && rows.getLong(0) > 0) throw new Error('Folder still contains books'); }
+        finally { rows.close(); }
+      }
+      for (const id of removed) await store.executeSql('DELETE FROM library_folders WHERE folder_id=?', [id]);
+      store.commit();
+    } catch (_) { store.rollBack(); throw new Error('Folder removal failed'); }
+  }
+
+  async moveBook(bookId: string, folderId: string): Promise<void> {
+    await this.checkParent(folderId);
+    if (!await this.getBook(bookId)) throw new Error('Book unavailable');
+    await this.requireStore().executeSql('UPDATE books SET folder_id=? WHERE book_id=?', [folderId, bookId]);
+  }
+
+  async setSeries(bookId: string, seriesName: string, volumeOrder?: number): Promise<void> {
+    if (!await this.getBook(bookId)) throw new Error('Book unavailable');
+    await this.requireStore().executeSql('UPDATE books SET series_name=?,volume_order=? WHERE book_id=?',
+      [seriesName, volumeOrder ?? null, bookId]);
   }
 
   async bookmarkAuthority(): Promise<'source' | 'target'> {
@@ -259,6 +374,7 @@ export class LibraryRepository {
       title: book.title,
       author: book.author ?? '',
       epub_relative_path: book.epubRelativePath,
+      source_relative_path: book.epubRelativePath,
       cover_relative_path: book.coverRelativePath ?? '',
       imported_at: book.importedAt,
       last_opened_at: book.lastOpenedAt ?? 0,
@@ -368,6 +484,28 @@ export class LibraryRepository {
     return points;
   }
 
+  async bookmarkPage(cursor?: RecordCursor, size: number = 20): Promise<RecordPage<BookmarkPoint>> {
+    try {
+    if (await this.bookmarkAuthority() !== 'source') throw new Error('Source bookmarks are no longer authoritative');
+    const limit = recordPageSize(size);
+    const result = await this.requireStore().querySql('SELECT bookmark_id,book_id,anchor_version,' +
+      'engine,resource_href,cfi,substr(label,1,256),created_at FROM bookmarks ' +
+      (cursor ? 'WHERE created_at<? OR (created_at=? AND bookmark_id<?) ' : '') +
+      'ORDER BY created_at DESC,bookmark_id DESC LIMIT ?',
+      cursor ? [cursor.time, cursor.time, cursor.id, limit + 1] : [limit + 1]);
+    const items: BookmarkPoint[] = [];
+    try {
+      while (result.goToNextRow()) items.push({ bookmarkId: result.getString(0), bookId: result.getString(1),
+        anchorVersion: result.getLong(2), engine: result.getString(3), resourceHref: result.getString(4),
+        cfi: result.getString(5), label: result.getString(6), createdAt: result.getLong(7) });
+    } finally { result.close(); }
+    const more = items.length > limit;
+    if (more) items.pop();
+    const last = items[items.length - 1];
+    return { items, next: more ? { time: last.createdAt, id: last.bookmarkId } : undefined };
+    } catch (_) { throw new Error('Bookmark page unavailable'); }
+  }
+
   async deleteBookmark(bookId: string, bookmarkId: string): Promise<void> {
     if (await this.bookmarkAuthority() !== 'source') throw new Error('Source bookmarks are no longer authoritative');
     await this.requireStore().executeSql("DELETE FROM bookmarks WHERE book_id=? AND bookmark_id=? AND EXISTS " +
@@ -450,7 +588,7 @@ export class LibraryRepository {
     await this.requireStore().executeSql('DELETE FROM library_operations WHERE operation_id=?', [operationId]);
   }
 
-  async commitPreparedImport(operationId: string, book: Book): Promise<void> {
+  async commitPreparedImport(operationId: string, book: Book, targetFolderId: string = ROOT_FOLDER): Promise<void> {
     const store = this.requireStore();
     store.beginTransaction();
     try {
@@ -458,17 +596,22 @@ export class LibraryRepository {
       if (operation?.kind !== 'import' || operation.state !== 'prepared' || operation.bookId !== book.bookId) {
         throw new Error('Prepared import does not match');
       }
-      await store.insert('books', {
-        book_id: book.bookId,
-        file_hash: book.fileHash,
-        title: book.title,
-        author: book.author ?? '',
-        epub_relative_path: book.epubRelativePath,
-        cover_relative_path: book.coverRelativePath ?? '',
-        imported_at: book.importedAt,
-        last_opened_at: book.lastOpenedAt ?? 0,
-        source_state: 'available'
-      });
+      await this.checkParent(targetFolderId);
+      // Membership and book publication share this transaction. Never fall back
+      // to root when a captured target disappears while files are prepared.
+      await store.executeSql(
+        'INSERT INTO books(book_id,file_hash,title,author,epub_relative_path,source_relative_path,' +
+        'cover_relative_path,imported_at,last_opened_at,source_state,folder_id) ' +
+        "SELECT ?,?,?,?,?,?,?,?,?, 'available',? WHERE ?='' OR EXISTS " +
+        '(SELECT 1 FROM library_folders WHERE folder_id=?)',
+        [book.bookId, book.fileHash, book.title, book.author ?? '', book.epubRelativePath,
+          book.epubRelativePath, book.coverRelativePath ?? '', book.importedAt, book.lastOpenedAt ?? 0,
+          targetFolderId, targetFolderId, targetFolderId]);
+      // querySql reads the committed snapshot, so verify through the writer's
+      // affected-row count before publishing this transaction.
+      const published = await store.update({ folder_id: targetFolderId },
+        new relationalStore.RdbPredicates('books').equalTo('book_id', book.bookId).equalTo('folder_id', targetFolderId));
+      if (published !== 1) throw new Error('Import target folder unavailable');
       await store.executeSql('DELETE FROM library_operations WHERE operation_id=?', [operationId]);
       store.commit();
     } catch (_) {

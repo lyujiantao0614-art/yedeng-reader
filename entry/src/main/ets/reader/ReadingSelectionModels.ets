@@ -18,6 +18,7 @@ export interface ReadingRangeCandidate {
   exactText: string;
   prefix: string;
   suffix: string;
+  quoteScope?: 'block' | 'body';
 }
 
 export interface ReadingSelectionContext {
@@ -31,4 +32,10 @@ export interface ReadingSelectionContext {
   nextText?: string;
   rangeAnchor?: ReadingRangeCandidate;
   markConflict?: 'overlap' | 'unavailable';
+  rangeUnion?: VerifiedRangeUnion;
+}
+
+export interface VerifiedRangeMember { markId: string; revision: number; }
+export interface VerifiedRangeUnion extends ReadingRangeCandidate {
+  members: VerifiedRangeMember[];
 }

@@ -24,6 +24,10 @@ export class LibraryPresentationApplication {
     return this.repository.loadDefaultMode();
   }
 
+  saveDefaultMode(mode: BookshelfDefaultMode): void {
+    this.repository.saveDefaultMode(mode);
+  }
+
   saveAppearance(theme: BookshelfTheme, mode: BookshelfDefaultMode): void {
     this.repository.saveAppearance(theme, mode);
   }

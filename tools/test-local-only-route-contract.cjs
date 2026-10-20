@@ -10,6 +10,7 @@ const read = (relative) => fs.readFileSync(path.join(root, relative), 'utf8');
 const manifest = read('entry/src/main/module.json5');
 const runtime = read('entry/src/main/ets/application/ApplicationRuntime.ets');
 const index = read('entry/src/main/ets/pages/Index.ets');
+const privacy = read('entry/src/main/ets/components/PrivacyNotice.ets');
 const settings = read('entry/src/main/ets/pages/SettingsPage.ets');
 const reader = read('entry/src/main/ets/pages/ReaderPage.ets');
 const dictionary = read('entry/src/main/ets/components/DictionarySheet.ets');
@@ -20,7 +21,11 @@ const strings = JSON.parse(read('entry/src/main/resources/base/element/string.js
 
 assert.doesNotMatch(manifest, /ohos\.permission\.INTERNET|requestPermissions/);
 assert.doesNotMatch(runtime, /AISettings|AIHttp|CredentialStore|NetworkKit/);
+assert.doesNotMatch(runtime, /sampleSeed|seedBundledSample|BundledSampleSeeder/);
 assert.doesNotMatch(index, /aiSettings|AIReadingActionSession|aiEnabled/);
+assert.doesNotMatch(index, /sampleSeed|示例书/);
+assert.doesNotMatch(read('entry/src/main/ets/application/LibraryApplication.ets'), /importBundled/);
+assert.ok(!fs.existsSync(path.join(root, 'entry/src/main/ets/services/BundledSampleSeeder.ets')));
 assert.doesNotMatch(settings, /AISettingsPage|AISettingsActions|settings-section-ai|openRoute\('ai'\)/);
 assert.doesNotMatch(reader, /AIReading|aiEnabled|reader-ai-cover|onTranslate|onAsk|onExplainContext/);
 assert.doesNotMatch(dictionary, /aiEnabled|reader-dictionary-context|onExplainContext/);
@@ -43,9 +48,12 @@ assert.match(settings, /https:\/\/litepage\.cn\/s\/yedeng\/yedeng-privacy-policy
 assert.match(index, /this\.preparePrivacy\(\)/);
 assert.match(index, /if \(this\.privacyStatus !== 'accepted'\)/);
 assert.match(index, /if \(this\.privacyStatus === 'accepted'\) this\.startRuntime\(\)/);
-assert.match(index, /privacy-read-policy/);
-assert.match(index, /privacy-accept/);
-assert.match(index, /privacy-decline/);
+assert.match(index, /PrivacyNotice\(\{/);
+assert.match(index, /onAccept:.*this\.acceptPrivacy\(\)/);
+assert.match(index, /onDecline:.*this\.declinePrivacy\(\)/);
+assert.match(privacy, /privacy-read-policy/);
+assert.match(privacy, /privacy-accept/);
+assert.match(privacy, /privacy-decline/);
 const consent = read('entry/src/main/ets/application/PrivacyConsentApplication.ets');
 assert.ok(consent.includes(`'2026-09-28'`));
 assert.ok(hostedPolicy.includes('更新日期：2026 年 9 月 28 日'));

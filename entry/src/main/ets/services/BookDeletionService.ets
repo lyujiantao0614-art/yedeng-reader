@@ -3,17 +3,20 @@ import { Book, LibraryOperation } from '../domain/Models';
 import { LibraryRepository } from '../repositories/LibraryRepository';
 import { EncryptedBookmarkStore } from '../repositories/EncryptedBookmarkStore';
 import { createSecureUuid, ManagedBookStore } from './ManagedBookStore';
+import { ReaderSettingsRepository } from '../repositories/ReaderSettingsRepository';
 
 export class BookDeletionService {
   private repository: LibraryRepository;
   private managedStore: ManagedBookStore;
   private encrypted?: EncryptedBookmarkStore;
+  private readerSettings?: ReaderSettingsRepository;
 
   constructor(context: common.Context, repository: LibraryRepository,
-    managedStore?: ManagedBookStore, encrypted?: EncryptedBookmarkStore) {
+    managedStore?: ManagedBookStore, encrypted?: EncryptedBookmarkStore, readerSettings?: ReaderSettingsRepository) {
     this.repository = repository;
     this.managedStore = managedStore ?? new ManagedBookStore(context);
     this.encrypted = encrypted;
+    this.readerSettings = readerSettings;
   }
 
   async delete(book: Book): Promise<void> {
@@ -47,6 +50,7 @@ export class BookDeletionService {
       await this.repository.updateOperationState(operation.operationId, 'files_removed', Date.now());
     }
     if (targetAuthority) await this.requireEncrypted().deleteBook(operation.bookId);
+    this.readerSettings?.clearBookLayoutOverrides(operation.bookId);
     await this.repository.completeDelete(operation.operationId, operation.bookId);
   }
 

@@ -4,6 +4,12 @@ export type BookshelfColorRole = 'canvas' | 'surface' | 'muted' | 'text' | 'seco
   'divider' | 'accent' | 'onAccent' | 'accentContainer' | 'error' | 'errorContainer' |
   'success' | 'warning' | 'panel' | 'panelText' | 'panelSecondary' | 'panelMuted';
 
+// Native controls share the existing interface preference. SYSTEM remains live;
+// the reader owns its separate nested WithTheme and appearance policy.
+export function bookshelfThemeColorMode(mode: BookshelfDefaultMode): ThemeColorMode {
+  return mode === 'dark' ? ThemeColorMode.DARK : mode === 'light' ? ThemeColorMode.LIGHT : ThemeColorMode.SYSTEM;
+}
+
 // Art themes have fixed palettes. Only the default resolves the product's
 // system light/dark resources, independently of the Reader appearance setting.
 export function bookshelfColor(theme: BookshelfTheme, role: BookshelfColorRole,
@@ -73,44 +79,44 @@ export function bookshelfColor(theme: BookshelfTheme, role: BookshelfColorRole,
   }
   if (defaultMode === 'light') {
     switch (role) {
-      case 'canvas': return '#E0E5E5';
-      case 'surface': return '#F9F7F1';
-      case 'muted': return '#E9ECE9';
-      case 'text': return '#243139';
-      case 'secondary': return '#526168';
-      case 'divider': return '#BEC8CA';
-      case 'accent': return '#805036';
-      case 'onAccent': return '#FFF9EF';
-      case 'accentContainer': return '#E7D8C8';
-      case 'error': return '#9D3530';
-      case 'errorContainer': return '#F9F7F1';
+      case 'canvas': return '#EFF2F5';
+      case 'surface': return '#F8FAFC';
+      case 'muted': return '#E7EDF3';
+      case 'text': return '#18212B';
+      case 'secondary': return '#526171';
+      case 'divider': return '#D6DFE8';
+      case 'accent': return '#185BB5';
+      case 'onAccent': return '#FFFFFF';
+      case 'accentContainer': return '#DCEAFF';
+      case 'error': return '#A72B34';
+      case 'errorContainer': return '#F8FAFC';
       case 'success': return '#32633E';
       case 'warning': return '#79501A';
-      case 'panel': return '#EEF0E9';
-      case 'panelText': return '#263238';
-      case 'panelSecondary': return '#536169';
-      case 'panelMuted': return '#DCE3DD';
+      case 'panel': return '#F8FAFC';
+      case 'panelText': return '#18212B';
+      case 'panelSecondary': return '#526171';
+      case 'panelMuted': return '#E7EDF3';
     }
   }
   if (defaultMode === 'dark') {
     switch (role) {
-      case 'canvas': return '#1C2933';
-      case 'surface': return '#303C44';
-      case 'muted': return '#374650';
-      case 'text': return '#EAE9E3';
-      case 'secondary': return '#BAC5C9';
-      case 'divider': return '#566773';
-      case 'accent': return '#E9BA85';
-      case 'onAccent': return '#2B2925';
-      case 'accentContainer': return '#5A4E42';
-      case 'error': return '#F4B5B0';
-      case 'errorContainer': return '#303C44';
+      case 'canvas': return '#131A21';
+      case 'surface': return '#1B222A';
+      case 'muted': return '#283440';
+      case 'text': return '#EEF3F8';
+      case 'secondary': return '#B1C0CE';
+      case 'divider': return '#435262';
+      case 'accent': return '#A2CAFF';
+      case 'onAccent': return '#122A46';
+      case 'accentContainer': return '#2D4663';
+      case 'error': return '#FFB5BB';
+      case 'errorContainer': return '#1B222A';
       case 'success': return '#B6D8BB';
       case 'warning': return '#F1CE91';
-      case 'panel': return '#30404A';
-      case 'panelText': return '#EFEDE3';
-      case 'panelSecondary': return '#C3CDD1';
-      case 'panelMuted': return '#41535C';
+      case 'panel': return '#1B222A';
+      case 'panelText': return '#EEF3F8';
+      case 'panelSecondary': return '#B1C0CE';
+      case 'panelMuted': return '#283440';
     }
   }
   switch (role) {

@@ -14,6 +14,7 @@ import { createProductionImportPolicy } from '../services/ProductionImportPolicy
 import { readerSessionService, ReaderSessionService } from '../services/ReaderSessionService';
 import { BookmarkApplication } from './BookmarkApplication';
 import { TextMarkApplication } from './TextMarkApplication';
+import { LibraryOrganizationApplication } from './LibraryOrganizationApplication';
 import { DiagnosticExportApplication } from './DiagnosticExportApplication';
 import { LibraryApplication } from './LibraryApplication';
 import { LibraryPresentationApplication } from './LibraryPresentationApplication';
@@ -28,11 +29,10 @@ import {
 import { PlatformDiagnosticMetadata } from '../services/PlatformDiagnosticMetadata';
 import { PrivacyConsentRepository } from '../repositories/PrivacyConsentRepository';
 import { PrivacyConsentApplication } from './PrivacyConsentApplication';
-import { SampleSeedOutcome, seedBundledSample } from '../services/BundledSampleSeeder';
+import { ReadingRecordsApplication } from './ReadingRecordsApplication';
 
 export interface ApplicationInitialization {
   reconciliation: ReconciliationReport;
-  sampleSeed: SampleSeedOutcome | 'failed';
 }
 
 export class ApplicationRuntime {
@@ -43,6 +43,8 @@ export class ApplicationRuntime {
   readonly readerAppearance: ReaderAppearanceApplication;
   readonly bookmarks: BookmarkApplication;
   readonly textMarks: TextMarkApplication;
+  readonly organization: LibraryOrganizationApplication;
+  readonly readingRecords: ReadingRecordsApplication;
   private libraryRepository: LibraryRepository = new LibraryRepository();
   private encryptedBookmarks: EncryptedBookmarkStore = new EncryptedBookmarkStore();
   private libraryPresentationRepository: LibraryPresentationRepository = new LibraryPresentationRepository();
@@ -55,7 +57,9 @@ export class ApplicationRuntime {
     this.libraryPresentation = new LibraryPresentationApplication(this.libraryPresentationRepository);
     this.readerAppearance = new ReaderAppearanceApplication(this.readerSettings, systemColorModeLifecycle);
     this.textMarks = new TextMarkApplication(this.libraryRepository, this.encryptedBookmarks);
+    this.organization = new LibraryOrganizationApplication(this.libraryRepository);
     this.bookmarks = new BookmarkApplication(this.libraryRepository, this.encryptedBookmarks, this.textMarks);
+    this.readingRecords = new ReadingRecordsApplication(this.bookmarks, this.textMarks);
   }
 
   async initialize(context: common.UIAbilityContext): Promise<ApplicationInitialization> {
@@ -63,7 +67,10 @@ export class ApplicationRuntime {
     this.textMarks.initialize(context);
     if (await this.libraryRepository.bookmarkAuthority() === 'target' ||
       await this.libraryRepository.textRecordsEnabled()) {
-      try { await this.encryptedBookmarks.openExisting(context); }
+      try {
+        await this.encryptedBookmarks.openExisting(context);
+        await this.libraryRepository.activateRangeRecords();
+      }
       catch (_) { /* Record actions fail closed; library and progress remain available. */ }
     }
     this.readerSettings.initialize(context);
@@ -75,27 +82,20 @@ export class ApplicationRuntime {
       new DiagnosticFileExport(new NativeDiagnosticSaveSurface(context), new NativeDiagnosticFileSurface()));
     const managedStore = new ManagedBookStore(context);
     const reconciliation = new LibraryReconciliationService(
-      context, this.libraryRepository, managedStore, this.encryptedBookmarks);
+      context, this.libraryRepository, managedStore, this.encryptedBookmarks, this.readerSettings);
     const library = new LibraryApplication(
       this.libraryRepository,
       new BookImportService(context, this.libraryRepository, managedStore, createProductionImportPolicy()),
-      new BookDeletionService(context, this.libraryRepository, managedStore, this.encryptedBookmarks),
+      new BookDeletionService(context, this.libraryRepository, managedStore, this.encryptedBookmarks, this.readerSettings),
       reconciliation,
       managedStore);
     this.libraryBoundary = library;
     const report = await library.reconcile();
-    let sampleSeed: SampleSeedOutcome | 'failed' = 'failed';
-    try {
-      sampleSeed = await seedBundledSample(context,
-        async (): Promise<boolean> => (await library.listEntries()).length > 0,
-        (uri: string) => library.importBundled(uri));
-    }
-    catch (_) { /* The user can still import their own books. A later launch retries the sample. */ }
     const provider = new BundledDictionaryProvider(context);
     this.dictionaryProvider = provider;
     this.dictionary = new DictionaryService(provider);
     provider.initialize().catch((): void => {});
-    return { reconciliation: report, sampleSeed: sampleSeed };
+    return { reconciliation: report };
   }
 
   library(): LibraryApplication | undefined {

@@ -6,7 +6,8 @@ export type ReaderOpenErrorCategory =
   'reader-command' | 'reader-engine' | 'reader-session' | 'shell-page';
 
 export type ReaderOpenStage =
-  'open_requested' | 'host_created' | 'host_reused' | 'controller_attached' |
+  'open_requested' | 'previous_session_flushed' | 'source_check_started' | 'source_check_ready' |
+  'page_session_bound' | 'shell_layout_ready' | 'host_created' | 'host_reused' | 'controller_attached' |
   'controller_reused' | 'bridge_committed' | 'bridge_reused' | 'shell_committed' |
   'book_response_started' | 'book_response_finished' | 'epub_parsed' |
   'rendition_created' | 'restore_started' | 'first_relocation' |

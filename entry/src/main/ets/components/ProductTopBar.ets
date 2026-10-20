@@ -24,7 +24,7 @@ export struct ProductTopBar {
         .id(this.backId)
         .width($r('app.float.product_target_min'))
         .height($r('app.float.product_target_min'))
-        .type(ButtonType.Normal)
+        .type(ButtonType.Circle)
         .backgroundColor(Color.Transparent)
         .accessibilityText($r('app.string.settings_back'))
         .onClick(() => this.onBack())
@@ -32,8 +32,8 @@ export struct ProductTopBar {
 
       Column({ space: $r('app.float.product_space_4') }) {
         Text(this.title)
-          .fontSize($r('app.float.product_page_title_size'))
-          .fontWeight(FontWeight.Bold)
+          .fontSize(20)
+          .fontWeight(FontWeight.Medium)
           .fontColor(bookshelfOuterText(this.bookshelfTheme, false, this.bookshelfDefaultMode))
           .width('100%')
         if (this.subtitle !== '') {
@@ -52,10 +52,10 @@ export struct ProductTopBar {
             .fontSize($r('app.float.product_section_title_size'))
             .fontColor([bookshelfOuterText(this.bookshelfTheme, false, this.bookshelfDefaultMode)])
         }
-        .id('library-settings')
+        .id('product-topbar-settings')
         .width($r('app.float.product_target_min'))
         .height($r('app.float.product_target_min'))
-        .type(ButtonType.Normal)
+        .type(ButtonType.Circle)
         .backgroundColor(Color.Transparent)
         .accessibilityText($r('app.string.library_settings'))
         .onClick(() => this.onSettings())

@@ -42,7 +42,9 @@ export default class EntryAbility extends UIAbility {
   onCreate(want: Want, launchParam: AbilityConstant.LaunchParam): void {
     try {
       this.context.getApplicationContext().setColorMode(ConfigurationConstant.ColorMode.COLOR_MODE_NOT_SET);
-      this.publishInitialColorMode(this.context.resourceManager.getConfigurationSync().colorMode);
+      // A UIAbility resource manager may carry a local WithTheme override.
+      // The application stays in system mode; read that unscoped source.
+      this.publishInitialColorMode(this.context.getApplicationContext().resourceManager.getConfigurationSync().colorMode);
     } catch (_) {
       SafeLog.error('color-mode');
     }
@@ -170,6 +172,9 @@ export default class EntryAbility extends UIAbility {
 
   onForeground(): void {
     // Ability has brought to foreground
+    try {
+      this.publishInitialColorMode(this.context.getApplicationContext().resourceManager.getConfigurationSync().colorMode);
+    } catch (_) { SafeLog.error('color-mode'); }
     readerApplicationLifecycle.handleForeground();
     SafeLog.event('foreground');
   }

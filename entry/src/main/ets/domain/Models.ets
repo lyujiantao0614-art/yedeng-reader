@@ -65,6 +65,7 @@ export interface BookmarkPoint {
 }
 
 export type TextMarkKind = 'highlight' | 'note';
+export type RangeAnchorStatus = 'unchecked' | 'verified' | 'missing' | 'ambiguous' | 'unavailable';
 
 export interface PageBookmarkExcerpt {
   bookmarkId: string;
@@ -86,6 +87,43 @@ export interface TextMarkRecord {
   chapterTitle: string;
   noteText: string;
   createdAt: number;
+  revision?: number;
+  highlightActive?: boolean;
+  anchorStatus?: RangeAnchorStatus;
+  notes?: NoteEntry[];
+  quoteScope?: 'block' | 'body';
+  highlightAnchors?: TextRangeAnchor[];
+}
+
+export interface NoteEntry {
+  noteId: string;
+  bookId: string;
+  rangeId: string;
+  body: string;
+  createdAt: number;
+  updatedAt: number;
+  revision: number;
+  originalAnchor: TextRangeAnchor;
+  anchorProvenance: NoteAnchorProvenance;
+  anchorStatus: RangeAnchorStatus;
+}
+
+export type NoteAnchorProvenance = 'selection' | 'legacy-record' | 'range-attachment' | 'legacy-group';
+export interface TextRangeAnchor {
+  anchorVersion: number;
+  engine: string;
+  resourceHref: string;
+  cfi: string;
+  exactText: string;
+  prefix: string;
+  suffix: string;
+  quoteScope: 'block' | 'body';
+}
+
+export function copyTextRangeAnchor(value: TextMarkRecord): TextRangeAnchor {
+  return { anchorVersion: value.anchorVersion, engine: value.engine, resourceHref: value.resourceHref,
+    cfi: value.cfi, exactText: value.exactText, prefix: value.prefix, suffix: value.suffix,
+    quoteScope: value.quoteScope ?? 'block' };
 }
 
 export type ReaderTheme = 'light' | 'dark' | 'eye-comfort';
@@ -126,4 +164,5 @@ export interface Chapter {
   id: string;
   href: string;
   label: string;
+  depth?: number;
 }

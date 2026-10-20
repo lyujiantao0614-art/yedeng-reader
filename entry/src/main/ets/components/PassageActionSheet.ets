@@ -68,19 +68,18 @@ export struct PassageActionSheet {
             SymbolGlyph($r('sys.symbol.square_and_square')).fontSize($r('app.float.product_body_size'))
               .fontColor([this.accentColor])
           }.id('reader-passage-copy')
-            .type(ButtonType.Normal).backgroundColor(this.selectedColor)
+            .type(ButtonType.Circle).backgroundColor(Color.Transparent)
             .constraintSize({ minHeight: $r('app.float.product_target_min') })
             .width($r('app.float.product_target_min')).height($r('app.float.product_target_min'))
             .accessibilityText($r('app.string.reader_passage_copy')).onClick(() => this.onCopy())
         }
-        Button($r('app.string.reader_close_glyph')).id('reader-passage-dismiss')
+        Button() { SymbolGlyph($r('sys.symbol.xmark')).fontSize(16).fontColor([this.textSecondaryColor]) }.id('reader-passage-dismiss')
           .type(ButtonType.Normal).fontColor(this.accentColor)
           .fontSize($r('app.float.product_surface_title_size')).backgroundColor(Color.Transparent)
           .width($r('app.float.product_target_min')).height($r('app.float.product_target_min'))
           .accessibilityText($r('app.string.reader_passage_close')).onClick(() => this.onDismiss())
       }.width('100%')
 
-      Divider().color(this.dividerColor)
 
       if (this.status === 'mark-conflict' || this.status === 'mark-unavailable') {
         Column() {
@@ -113,28 +112,18 @@ export struct PassageActionSheet {
           Column({ space: $r('app.float.product_space_8') }) {
             Row({ space: $r('app.float.product_space_8') }) {
               if (this.adjusting) {
-                Button('✓').id('reader-passage-save-range').layoutWeight(1)
+                Button('保存范围').id('reader-passage-save-range').layoutWeight(1)
                   .type(ButtonType.Normal).constraintSize({ minHeight: $r('app.float.product_target_min') })
                   .accessibilityText('保存调整后的标记范围')
                   .fontColor(this.onAccentColor).backgroundColor(this.accentColor)
                   .onClick(() => this.onSaveRange())
               } else {
-                Button() {
-                  Image(this.darkTheme ? $r('app.media.reader_mark_highlight_dark') :
-                    $r('app.media.reader_mark_highlight')).width(26).height(26)
-                }.id('reader-passage-highlight').layoutWeight(1)
-                  .type(ButtonType.Normal).constraintSize({ minHeight: $r('app.float.product_target_min') })
-                  .accessibilityText('高亮所选文字')
-                  .backgroundColor(this.accentColor).borderRadius($r('app.float.product_radius_control'))
-                  .onClick(() => this.onHighlight())
-                Button() {
-                  Image(this.darkTheme ? $r('app.media.reader_mark_note_dark') :
-                    $r('app.media.reader_mark_note')).width(26).height(26)
-                }.id('reader-passage-note').layoutWeight(1)
-                  .type(ButtonType.Normal).constraintSize({ minHeight: $r('app.float.product_target_min') })
-                  .accessibilityText('给所选文字写笔记')
-                  .backgroundColor(this.accentColor).borderRadius($r('app.float.product_radius_control'))
-                  .onClick(() => this.onNote())
+                Button('高亮').id('reader-passage-highlight').layoutWeight(1).height(48)
+                  .buttonStyle(ButtonStyleMode.NORMAL).backgroundColor(this.selectedColor).fontColor(this.accentColor)
+                  .accessibilityText('高亮所选文字').onClick(() => this.onHighlight())
+                Button('写笔记').id('reader-passage-note').layoutWeight(1).height(48)
+                  .buttonStyle(ButtonStyleMode.NORMAL).backgroundColor(this.selectedColor).fontColor(this.accentColor)
+                  .accessibilityText('给所选文字写笔记').onClick(() => this.onNote())
               }
             }.width('100%')
           }.width('100%').padding({ top: $r('app.float.product_space_4'), bottom: $r('app.float.product_space_4') })
@@ -143,8 +132,6 @@ export struct PassageActionSheet {
 
     }
     .id('reader-passage-panel').width('100%').height('100%')
-    .padding($r('app.float.product_space_12')).backgroundColor(this.surfaceColor)
-    .border({ width: 1, color: this.dividerColor })
-    .borderRadius($r('app.float.product_radius_modal'))
+    .padding(16).backgroundColor(this.surfaceColor).borderRadius(24).shadow(ShadowStyle.OUTER_DEFAULT_SM)
   }
 }

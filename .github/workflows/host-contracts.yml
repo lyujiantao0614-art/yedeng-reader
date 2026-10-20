@@ -21,6 +21,8 @@ jobs:
           node-version-file: .node-version
       - name: Verify Node.js runtime
         run: node --version
+      - name: Install pinned host-test dependency
+        run: npm ci --ignore-scripts
       - name: Run source-only product contracts
         run: node tools/run-source-contracts.cjs
 

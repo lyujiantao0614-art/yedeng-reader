@@ -1,4 +1,5 @@
 import { Book } from '../domain/Models';
+import { ROOT_FOLDER } from '../domain/LibraryOrganization';
 import { BookImportService, ImportResult } from '../services/BookImportService';
 import { ImportCancellation } from '../services/ImportCancellation';
 import { VISIBLE_IMPORT_BATCH_LIMIT } from '../services/ProductionImportPolicy';
@@ -24,6 +25,7 @@ export interface BatchImportSnapshot {
   items: BatchImportItemSnapshot[];
   activeIndex: number;
   limit: number;
+  targetFolderId?: string;
   message?: string;
 }
 
@@ -49,6 +51,7 @@ export class BatchImportCoordinator {
   private service: BookImportService;
   private items: BatchImportItem[] = [];
   private phase: BatchImportPhase = 'idle';
+  private targetFolderId: string = ROOT_FOLDER;
   private activeIndex: number = -1;
   private nextId: number = 1;
   private message?: string;
@@ -68,13 +71,14 @@ export class BatchImportCoordinator {
       })),
       activeIndex: this.activeIndex,
       limit: VISIBLE_IMPORT_BATCH_LIMIT,
+      targetFolderId: this.phase === 'idle' ? undefined : this.targetFolderId,
       message: this.message
     };
   }
 
   isRunning(): boolean { return this.phase === 'running'; }
 
-  addSelection(uris: string[]): BatchImportSnapshot {
+  addSelection(uris: string[], targetFolderId: string = ROOT_FOLDER): BatchImportSnapshot {
     if (this.phase !== 'idle' && this.phase !== 'review') return this.snapshot();
     const additions: string[] = [];
     for (const uri of uris) {
@@ -82,10 +86,15 @@ export class BatchImportCoordinator {
         additions.includes(uri)) continue;
       additions.push(uri);
     }
+    if (this.phase === 'review' && additions.length > 0 && targetFolderId !== this.targetFolderId) {
+      this.message = '本批次的导入目录已固定，请返回原目录添加，或取消后重新选择。';
+      return this.snapshot();
+    }
     if (this.items.length + additions.length > VISIBLE_IMPORT_BATCH_LIMIT) {
       this.message = `一次最多添加 ${VISIBLE_IMPORT_BATCH_LIMIT} 本；本次选择未加入。`;
       return this.snapshot();
     }
+    if (this.phase === 'idle' && additions.length > 0) this.targetFolderId = targetFolderId;
     for (const uri of additions) {
       const label = displayName(uri);
       const isTxt = label.toLowerCase().endsWith('.txt');
@@ -100,7 +109,10 @@ export class BatchImportCoordinator {
   remove(id: number): BatchImportSnapshot {
     if (this.phase !== 'review') return this.snapshot();
     this.items = this.items.filter((item: BatchImportItem): boolean => item.id !== id);
-    if (this.items.length === 0) this.phase = 'idle';
+    if (this.items.length === 0) {
+      this.phase = 'idle';
+      this.targetFolderId = ROOT_FOLDER;
+    }
     this.message = undefined;
     return this.snapshot();
   }
@@ -167,6 +179,7 @@ export class BatchImportCoordinator {
   async confirm(observer: BatchImportObserver): Promise<BatchImportSnapshot> {
     if (this.phase !== 'review' || this.items.length === 0 ||
       this.items.some((item: BatchImportItem): boolean => item.txtReady === false)) return this.snapshot();
+    const targetFolderId = this.targetFolderId;
     this.phase = 'running';
     this.activeIndex = -1;
     this.cancelRequested = false;
@@ -183,7 +196,7 @@ export class BatchImportCoordinator {
       observer(this.snapshot());
       const result = await this.service.import(item.uri, control, item.txtEncoding ?? 'auto');
       this.activeControl = undefined;
-      const stop = await this.finishItem(item, result, control);
+      const stop = await this.finishItem(item, result, control, targetFolderId);
       observer(this.snapshot());
       if (stop || this.cancelRequested) { this.markNotStarted(index + 1); break; }
     }
@@ -194,7 +207,7 @@ export class BatchImportCoordinator {
   }
 
   private async finishItem(item: BatchImportItem, result: ImportResult,
-    control: ImportCancellation): Promise<boolean> {
+    control: ImportCancellation, targetFolderId: string): Promise<boolean> {
     if (result.status === 'duplicate') {
       item.status = 'duplicate'; item.book = result.book; return false;
     }
@@ -207,7 +220,7 @@ export class BatchImportCoordinator {
         return !clean;
       }
       try {
-        await this.service.commitPrepared(result.operationId, result.operationKind, result.book);
+        await this.service.commitPrepared(result.operationId, result.operationKind, result.book, targetFolderId);
         item.status = result.status === 'prepared-repair' ? 'restored' : 'stored';
         if (item.status === 'restored') result.book.sourceState = 'available';
         item.book = result.book;
@@ -240,6 +253,7 @@ export class BatchImportCoordinator {
   private clear(): void {
     this.items = [];
     this.phase = 'idle';
+    this.targetFolderId = ROOT_FOLDER;
     this.activeIndex = -1;
     this.message = undefined;
     this.cancelRequested = false;

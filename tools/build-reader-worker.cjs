@@ -19,7 +19,15 @@ const source = 'self.window=self;\n' + parts.join('\n;\n') + '\n;\n' + entry.rep
 const output = 'window.sourceWorkerCode=' + JSON.stringify(source) + ';\n';
 const target = path.join(surface, 'source-worker-bundle.js');
 if (process.argv.includes('--check')) {
-  if (fs.readFileSync(target, 'utf8') !== output) throw new Error('Production Worker bundle is stale');
+  // Git Windows checkout may change source LF to CRLF. Compare the actual
+  // embedded program, not JSON escape spelling or transport line endings.
+  const packaged = fs.readFileSync(target, 'utf8').trim();
+  const prefix = 'window.sourceWorkerCode=';
+  if (!packaged.startsWith(prefix) || !packaged.endsWith(';')) throw new Error('Invalid Worker bundle envelope');
+  const program = JSON.parse(packaged.slice(prefix.length, -1));
+  if (typeof program !== 'string' || program.replace(/\r\n/g, '\n') !== source.replace(/\r\n/g, '\n')) {
+    throw new Error('Production Worker bundle is stale');
+  }
 } else {
   fs.writeFileSync(target, output);
 }

@@ -1,10 +1,11 @@
 import { Book } from '../domain/Models';
+import { LibraryFolder, BookOrganization } from '../domain/LibraryOrganization';
 
 export type LibrarySort = 'recent' | 'title' | 'imported';
 
 export interface LibraryEntry {
   book: Book;
-  percentage: number;
+  percentage?: number;
 }
 
 export function filterAndSortLibrary(entries: LibraryEntry[], query: string, sort: LibrarySort): LibraryEntry[] {
@@ -33,4 +34,19 @@ export function filterAndSortLibrary(entries: LibraryEntry[], query: string, sor
     }
     return comparison !== 0 ? comparison : left.book.bookId.localeCompare(right.book.bookId);
   });
+}
+
+export function filterAndSortLibraryLevel(entries: LibraryEntry[], memberships: BookOrganization[],
+  folderId: string, query: string, sort: LibrarySort): LibraryEntry[] {
+  const byBook = new Map<string, string>();
+  memberships.forEach((item: BookOrganization): void => { byBook.set(item.bookId, item.folderId); });
+  const local = entries.filter((entry: LibraryEntry): boolean => (byBook.get(entry.book.bookId) ?? '') === folderId);
+  return filterAndSortLibrary(local, query, sort);
+}
+export function filterLibraryChildFolders(folders: LibraryFolder[], folderId: string, query: string): LibraryFolder[] {
+  const needle = query.trim().toLocaleLowerCase();
+  return folders.filter((folder: LibraryFolder): boolean => folder.parentId === folderId &&
+    (needle.length === 0 || folder.name.toLocaleLowerCase().includes(needle)))
+    .sort((left: LibraryFolder, right: LibraryFolder): number => left.name.localeCompare(right.name) ||
+      left.folderId.localeCompare(right.folderId));
 }

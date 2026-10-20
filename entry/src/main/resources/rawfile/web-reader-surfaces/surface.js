@@ -4,6 +4,21 @@
   var selectionSignature = '', selectionTouchActive = false, selectionAtPointerStart = false,
     selectionAdjusting = false, selectionChangeRevision = 0;
   var frame = document.querySelector('iframe');
+  var paginationMode = 'scroll', clipWindow, pageOffset = 0, closedPresentation = -1, latestPresentation = -1;
+  function closePresentation(token) {
+    if (Number.isSafeInteger(token)) {
+      closedPresentation = Math.max(closedPresentation, token);
+      latestPresentation = Math.max(latestPresentation, token);
+    }
+    pageOffset = 0;
+  }
+  function pageLeft() { return paginationMode === 'clip' && Surface.state ? Surface.state.unit * Surface.state.viewport : scrollX; }
+  function renderPage(unit) {
+    if (paginationMode === 'clip') {
+      Surface.state.unit = unit;
+      frame.style.transform = 'translateX(' + (-unit * Surface.state.viewport + pageOffset) + 'px)';
+    } else window.scrollTo(unit * innerWidth, 0);
+  }
   var removeBridgeListeners, sourceEpoch = 0;
   var sourceWorker, workerSequence=0, workerPending=new Map(), workerStats;
   var scriptLoads=new Map();
@@ -21,23 +36,62 @@
       pageMarginVp:Math.max(8,Math.min(40,value.pageMarginVp)),
       theme:['light','dark','eye-comfort'].includes(value.theme)?value.theme:'light',
       columnMode:value.columnMode==='single'?'single':'auto'};
-    var canvas=readerSettings.theme==='dark'?'#232e35':
-      readerSettings.theme==='eye-comfort'?'#e8dfc9':'#f4f2e9';
+    applyReaderCanvas();
+  }
+  function applyReaderCanvas() {
+    var canvas=readerSettings.theme==='dark'?'#172029':
+      readerSettings.theme==='eye-comfort'?'#e8dfc9':'#fafbfc';
     document.documentElement.style.backgroundColor=canvas;
     document.body.style.backgroundColor=canvas;
     frame.style.backgroundColor=canvas;
+  }
+  function applyReaderTheme(doc) {
+    var style=doc.getElementById('harmony-reader-theme');
+    if (!style) {style=doc.createElementNS('http://www.w3.org/1999/xhtml','style');
+      style.id='harmony-reader-theme';doc.head.appendChild(style);}
+    var colors=readerSettings.theme==='dark'?['#172029','#eef3f8','#a2caff']:
+      readerSettings.theme==='eye-comfort'?['#e8dfc9','#38392f','#765335']:
+      ['#fafbfc','#18212b','#185bb5'];
+    style.textContent='html,body{background:'+colors[0]+'!important;color:'+colors[1]+'!important}'+
+      'a{color:'+colors[2]+'!important}';
+    var markStyle=doc.getElementById('harmony-reader-mark-style');
+    if (markStyle) markStyle.textContent=markStyle.textContent.replace(
+      /text-decoration-color: (?:#b67423|currentColor);/,
+      'text-decoration-color: '+(readerSettings.theme==='eye-comfort'?'#b67423':'currentColor')+';');
   }
   function applyReaderStyle(doc) {
     var style=doc.getElementById('harmony-reader-settings');
     if (!style) {style=doc.createElementNS('http://www.w3.org/1999/xhtml','style');
       style.id='harmony-reader-settings';doc.head.appendChild(style);}
-    var colors=readerSettings.theme==='dark'?['#232e35','#e8e7df','#e9ba85']:
-      readerSettings.theme==='eye-comfort'?['#e8dfc9','#38392f','#765335']:
-      ['#f4f2e9','#29343b','#805036'];
-    style.textContent='html,body{background:'+colors[0]+'!important;color:'+colors[1]+'!important}'+
-      'body{font-size:'+Math.round(18*readerSettings.fontScale)+'px!important;line-height:'+readerSettings.lineSpacing+
-      '!important;box-sizing:border-box!important}'+
-      'a{color:'+colors[2]+'!important}';
+    style.textContent='body{font-size:'+Math.round(18*readerSettings.fontScale)+'px!important;line-height:'+readerSettings.lineSpacing+
+      '!important;box-sizing:border-box!important}';
+    applyReaderTheme(doc);
+  }
+  function applyBodyTypography(doc) {
+    // Publisher rules on text children do not inherit body typography. Override
+    // ordinary text only; never rewrite the source tree or blanket-style '*'.
+    var view = doc.defaultView;
+    if (view.getComputedStyle(doc.body).writingMode !== 'horizontal-tb') return;
+    var specialTags = /^(h[1-6]|table|pre|code|kbd|samp|svg|math|figure|figcaption)$/i;
+    var specialClass = /(?:^|[\s_-])(?:poem|poetry|verse|stanza|haiku|lyrics)(?:$|[\s_-])/i;
+    function protectedText(element) {
+      for (var node = element; node && node !== doc.body; node = node.parentElement) {
+        if (specialTags.test(node.localName) || specialClass.test(node.getAttribute('class') || '') ||
+          /(?:poem|poetry|verse)/i.test(node.getAttribute('epub:type') || '')) return true;
+        var space = view.getComputedStyle(node).whiteSpace;
+        if (space === 'pre' || space === 'pre-wrap' || space === 'break-spaces') return true;
+      }
+      return false;
+    }
+    Array.prototype.forEach.call(doc.querySelectorAll('p,li,div,span'), function (element) {
+      if (protectedText(element)) return;
+      // A structural div can contain headings or special layouts. Only its
+      // leaf text containers are candidates; paragraphs/lists handle themselves.
+      if (element.localName === 'div' && element.querySelector('p,li,div,h1,h2,h3,h4,h5,h6,table,pre,figure,svg,math')) return;
+      element.style.setProperty('line-height', String(readerSettings.lineSpacing), 'important');
+      element.style.setProperty('font-size', element.localName === 'span' ? 'inherit' :
+        Math.round(18 * readerSettings.fontScale) + 'px', 'important');
+    });
   }
   function installReadableOverflow(doc) {
     // Match the ordinary reader before measuring columns or publishing a CFI.
@@ -102,17 +156,13 @@
     if (!contents || !contents.window.CSS || !contents.window.CSS.highlights || !contents.window.Highlight) return false;
     var css=contents.window.CSS, Highlight=contents.window.Highlight;
     var highlights=[], notes=[];
-    textMarks.forEach(function (value) { (value.kind==='note'?notes:highlights).push(value.range); });
+    textMarks.forEach(function (value) { notes.push(...value.notes);highlights.push(...value.highlights); });
     if (highlights.length) css.highlights.set(highlightName,new Highlight(...highlights));
     else css.highlights.delete(highlightName);
     if (notes.length) css.highlights.set(noteName,new Highlight(...notes));
     else css.highlights.delete(noteName);
     return true;
   }
-  function rangesOverlap(a,b) {
-    return a.compareBoundaryPoints(1,b)>0 && a.compareBoundaryPoints(3,b)<0;
-  }
-
   function firstContentRange(doc) {
     var body = doc.body || doc.documentElement.querySelector('body');
     var walker = doc.createTreeWalker(body, NodeFilter.SHOW_TEXT), node;
@@ -129,18 +179,6 @@
     var range = firstContentRange(doc);
     if (range.startContainer.nodeType === Node.TEXT_NODE) return new ePub.CFI(range, base).toString();
     return new ePub.CFI((doc.body || doc.querySelector('body')).querySelector('img,svg'), base).toString();
-  }
-  function textRangeEvidence(range) {
-    var start=range && range.startContainer, end=range && range.endContainer;
-    if (!range || range.collapsed || !start || !end ||
-      start.nodeType!==Node.TEXT_NODE || end.nodeType!==Node.TEXT_NODE) return null;
-    var block=start.parentElement.closest('p,li,h1,h2,h3,h4,h5,h6,blockquote,pre,figcaption,dt,dd');
-    if (!block || !block.contains(end) || block.textContent.length>8192 ||
-      block.querySelector('script,style')) return null;
-    var before=contents.document.createRange(), after=contents.document.createRange();
-    before.selectNodeContents(block);before.setEnd(start,range.startOffset);
-    after.selectNodeContents(block);after.setStart(end,range.endOffset);
-    return {text:range.toString(),left:before.toString(),right:after.toString()};
   }
   // Pinned Contents registers MediaQueryList callbacks but destroy() never
   // removes them. The iframe Window survives chapter replacement, so those
@@ -176,6 +214,31 @@
     }
   }
   window.Surface = {
+    setPaginationMode: function (mode) {
+      if (!['scroll','clip'].includes(mode) || (contents && mode !== paginationMode)) throw new Error('Invalid pagination mode');
+      if (mode === 'clip' && !clipWindow) {
+        if (!CSS.supports('overflow','clip')) throw new Error('Clipped pagination unavailable');
+        clipWindow = document.createElement('div');
+        clipWindow.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:clip;contain:paint';
+        frame.parentNode.insertBefore(clipWindow,frame);clipWindow.appendChild(frame);
+      }
+      paginationMode = mode;
+    },
+    // Driven only by the existing App Pan/Animator. A completed token cannot
+    // reapply queued frames after settle, cancellation, load or reflow.
+    presentPage: function (unit, offset, token, settled, expectedVersion) {
+      if (paginationMode === 'clip' && this.state &&
+        (token <= closedPresentation || expectedVersion !== undefined && expectedVersion !== this.state.surfaceVersion)) return true;
+      if (paginationMode !== 'clip' || !this.state || !Number.isInteger(unit) || unit < 0 || unit >= this.state.units ||
+        !Number.isFinite(offset) || Math.abs(offset) > this.state.viewport + 2 || !Number.isSafeInteger(token)) return false;
+      if (token <= closedPresentation) return true;
+      if (!settled && unit !== this.state.unit) return false;
+      closedPresentation = Math.max(closedPresentation, token - 1);
+      latestPresentation = Math.max(latestPresentation, token);
+      if (settled) closePresentation(token); else pageOffset = offset;
+      renderPage(unit);
+      return true;
+    },
     exportReady: false,
     exportLocal: async function (url, bounds, token) {
       this.exportFailed=false;
@@ -219,7 +282,7 @@
       this.getPacket(index).then(function(packet){if(epoch===sourceEpoch){Surface.packetResult=packet;Surface.packetDone=true;ChapterBridge.packetDone(token,true);}},function(){if(epoch===sourceEpoch){Surface.packetFailed=true;Surface.packetDone=true;ChapterBridge.packetDone(token,false);}});
     },
     sourceStats: function() {return workerStats;},
-    load: async function (packet, id, wide, resourceRoot, initialAtEnd, session) {
+    load: async function (packet, id, wide, resourceRoot, initialAtEnd, session, surfaceVersion) {
       const epoch=++loadEpoch;
       const valid=()=>{if(epoch!==loadEpoch)throw new Error('Obsolete chapter');};
       cancelResize();
@@ -230,6 +293,7 @@
       selectionAdjusting = false; selectionChangeRevision++;
       this.anchor = null; this.anchorUnit = undefined;
       var stages = {};
+      if (paginationMode === 'clip') { pageOffset = 0; frame.style.transform = 'none'; }
       window.scrollTo(0, 0); frame.style.width = '100%';
       document.body.style.overflow = wide ? 'visible' : 'hidden';
       document.querySelector('meta[name=viewport]').content = wide ? 'width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1' : 'width=device-width,initial-scale=1';
@@ -264,11 +328,14 @@
           }, {once:true});
         });
       });
+      // The iframe Document survives chapter replacement; its text-node map does not.
+      RangeAnchors.invalidate(doc);
       doc.replaceChild(root, doc.documentElement);
       applyReaderStyle(doc);
       this.stage = 'resources';
       await Promise.all(pendingResources);
       valid();
+      applyBodyTypography(doc);
       stages.documentMs = Date.now() - started;
       if (frame.contentDocument !== doc || doc.querySelectorAll('p').length !== packet.paragraphs) throw new Error('Incomplete chapter document');
       installReadableOverflow(doc);
@@ -290,17 +357,19 @@
       var range = firstContentRange(doc);
       var cfi = contentCfi(doc, packet.base), restored = contents.range(cfi);
       firstDocument = doc;
-      this.state = { index: packet.index, href: packet.href, base: packet.base, session:session||0, originalCfi: cfi, units: Math.ceil(measured / width), viewport: width, height: height, complete: true, imageFailures: imageFailures, images: doc.images.length, fontsLoaded: doc.fonts.status === 'loaded', paragraphs: packet.paragraphs, cfiRoundTrip: !!restored && (range.startContainer.nodeType === Node.TEXT_NODE ? restored.toString() === range.toString() : !!doc.body.querySelector('img,svg') && (doc.body.querySelector('img,svg') === restored.startContainer || doc.body.querySelector('img,svg').contains(restored.startContainer))), baseMatches: cfi.indexOf(packet.base) >= 0, originalCfiMatches: cfi === originalCfi, loads: ++commits };
+      this.state = { index: packet.index, href: packet.href, base: packet.base, session:session||0, surfaceVersion:surfaceVersion||0, originalCfi: cfi, units: Math.ceil(measured / width), viewport: width, height: height, complete: true, imageFailures: imageFailures, images: doc.images.length, fontsLoaded: doc.fonts.status === 'loaded', paragraphs: packet.paragraphs, cfiRoundTrip: !!restored && (range.startContainer.nodeType === Node.TEXT_NODE ? restored.toString() === range.toString() : !!doc.body.querySelector('img,svg') && (doc.body.querySelector('img,svg') === restored.startContainer || doc.body.querySelector('img,svg').contains(restored.startContainer))), baseMatches: cfi.indexOf(packet.base) >= 0, originalCfiMatches: cfi === originalCfi, loads: ++commits };
       function publishSelection() {
         var selection = doc.getSelection();
         if (!selection || selection.rangeCount !== 1 || selection.isCollapsed) return;
         var text = selection.toString().trim();
-        if (!text || text.length > 4000) return;
+        if (!text || text.length > RangeAnchors.QUOTE_LIMIT) return;
         var range = selection.getRangeAt(0), cfi = contents.cfiFromRange(range);
         if (!cfi || cfi.length > 4096) return;
         var signature = cfi + ':' + text;
         if (signature === selectionSignature && !selectionAdjusting) return;
-        var rect = range.getBoundingClientRect(), frameRect = frame.getBoundingClientRect();
+        var frameRect = frame.getBoundingClientRect();
+        var rect = Array.from(range.getClientRects()).find(function (item) { return item.width>0 && item.height>0 &&
+          (paginationMode === 'clip' ? item.right+frameRect.left>0 && item.left+frameRect.left<innerWidth : item.left>=0 && item.left<innerWidth); }) || range.getBoundingClientRect();
         selectionSignature = signature;
         selectionAdjusting = false;
         ChapterBridge.selectionEvent(slot, JSON.stringify({text:text,cfi:cfi,
@@ -372,7 +441,7 @@
         var hit=null;
         textMarks.forEach(function (value,id) {
           if (hit) return;
-          for (var rect of value.range.getClientRects()) {
+          for (var rect of value.ranges.flatMap(function(range){return Array.from(range.getClientRects());})) {
             if (event.clientX>=rect.left && event.clientX<rect.right &&
               event.clientY>=rect.top && event.clientY<rect.bottom) {hit={id:id,rect:rect};break;}
           }
@@ -385,7 +454,7 @@
             viewportWidth:innerWidth,viewportHeight:innerHeight}));
           return;
         }
-        var fraction = (event.clientX - window.scrollX) / window.innerWidth;
+        var fraction = (event.clientX - (paginationMode === 'clip' ? pageLeft() : window.scrollX)) / window.innerWidth;
         ChapterBridge.tap(slot, fraction < 0.30 ? -1 : (fraction > 0.70 ? 1 : 0));
       }
       doc.addEventListener('selectionchange', selectionChanged);
@@ -405,8 +474,8 @@
         doc.removeEventListener('click', tapped);
       };
       var initialUnit = initialAtEnd ? this.state.units - 1 : 0;
-      window.scrollTo(initialUnit * width, 0);
-      this.state.unit = Math.round(scrollX / width);
+      renderPage(initialUnit);
+      if (paginationMode !== 'clip') this.state.unit = Math.round(scrollX / width);
       this.state.stages = stages; this.state.visibility = document.visibilityState;
       this.state.preparationStart = started; this.state.preparationEnd = Date.now();
       this.stage = 'complete';
@@ -420,115 +489,42 @@
       selectionChangeRevision++;
     },
     selectionSettled: function () {},
-    selectionContext: function (marks, excludeMarkId) {
+    selectionContext: function (marks, excludeMarkId, bookId) {
       if (!contents || !firstDocument || frame.contentDocument !== firstDocument) return null;
       var selection = firstDocument.getSelection();
       if (!selection || selection.rangeCount !== 1 || selection.isCollapsed) return null;
       var text = selection.toString().trim();
-      if (!text || text.length > 4000) return null;
+      if (!text || text.length > RangeAnchors.QUOTE_LIMIT) return null;
       var range = selection.getRangeAt(0), cfi = contents.cfiFromRange(range);
       if (selectionSignature !== cfi + ':' + text) return null;
       var block = range.startContainer.nodeType === Node.ELEMENT_NODE ? range.startContainer : range.startContainer.parentElement;
       block = block && block.closest('p,li,h1,h2,h3,h4,h5,h6,blockquote,pre,figcaption,dt,dd');
-      var evidence=textRangeEvidence(range), anchor=evidence && evidence.text.length<=512 ?
-        {rangeText:evidence.text,prefix:Array.from(evidence.left).slice(-32).join(''),
-          suffix:Array.from(evidence.right).slice(0,32).join('')} : {};
-      var conflict;
-      if (marks !== undefined) {
-        if (!Array.isArray(marks) || marks.length>150) conflict='unavailable';
-        else for (var mark of marks) {
-          if (!mark || mark.markId===excludeMarkId || mark.resourceHref!==this.state.href) continue;
-          var resolved=this.resolveTextRange(mark,this.state.session);
-          if (resolved.status==='orphaned') continue;
-          try { if (rangesOverlap(range,contents.range(resolved.cfi))) {conflict='overlap';break;} }
-          catch (_) { conflict='unavailable';break; }
-        }
-      }
-      return Object.assign({ text:text,cfi:cfi,markConflict:conflict,
-        currentText:(block ? block.textContent : text).trim().slice(0,2000) },anchor);
+      var anchor = {}, conflict, combined;
+      try {
+        var original = RangeAnchors.anchor(contents,range);
+        anchor = {rangeText:original.exactText,prefix:original.prefix,suffix:original.suffix,quoteScope:original.quoteScope};
+        if (marks !== undefined) combined=RangeAnchors.union(contents,range,marks,this.state.href,this.state.base,bookId,excludeMarkId);
+      } catch (_) { conflict='unavailable'; }
+      return Object.assign({text:text,cfi:cfi,markConflict:conflict,rangeUnion:combined,
+        currentText:(block ? block.textContent : text).trim().slice(0,2000)},anchor);
     },
     verifyTextRange: function (mark) {
-      if (!contents || !this.state || frame.contentDocument !== firstDocument || !mark ||
-        typeof mark.cfi !== 'string' || !mark.cfi.startsWith('epubcfi(') || mark.cfi.length > 4096 ||
-        !mark.cfi.includes(this.state.base + '!') || mark.resourceHref !== this.state.href ||
-        typeof mark.exactText !== 'string' || !mark.exactText || mark.exactText.length > 512 ||
-        typeof mark.prefix !== 'string' || mark.prefix.length > 64 ||
-        typeof mark.suffix !== 'string' || mark.suffix.length > 64) return false;
-      try {
-        var evidence=textRangeEvidence(contents.range(mark.cfi));
-        return !!evidence && evidence.text===mark.exactText &&
-          evidence.left.endsWith(mark.prefix) && evidence.right.startsWith(mark.suffix) &&
-          (mark.prefix.length>0 || evidence.left.length===0) &&
-          (mark.suffix.length>0 || evidence.right.length===0);
-      }catch(_){return false;}
+      return !!contents && !!this.state && frame.contentDocument===firstDocument &&
+        RangeAnchors.verify(contents,mark,this.state.href,this.state.base);
     },
     resolveTextRange: function (mark, expectedSession) {
-      if (!this.state || this.state.session!==expectedSession || !contents ||
-        frame.contentDocument!==firstDocument || !mark ||
-        mark.resourceHref!==this.state.href || typeof mark.cfi!=='string' ||
-        !mark.cfi.startsWith('epubcfi(') || mark.cfi.length>4096 ||
-        !mark.cfi.includes(this.state.base+'!') ||
-        typeof mark.exactText!=='string' || !mark.exactText || mark.exactText.length>512 ||
-        typeof mark.prefix!=='string' || mark.prefix.length>64 ||
-        typeof mark.suffix!=='string' || mark.suffix.length>64) {
+      if (!this.state || this.state.session!==expectedSession || !contents || frame.contentDocument!==firstDocument)
         return {status:'orphaned',reason:'unavailable'};
-      }
-      if (this.verifyTextRange(mark)) return {status:'verified',cfi:mark.cfi};
-      var doc=contents.document, blocks=doc.body.querySelectorAll(
-        'p,li,h1,h2,h3,h4,h5,h6,blockquote,pre,figcaption,dt,dd');
-      if (blocks.length>2048) return {status:'orphaned',reason:'unavailable'};
-      var scanned=0, candidate=null, matches=0, attempts=0;
-      for (var block of blocks) {
-        var value=block.textContent || '';
-        scanned+=value.length;
-        if (scanned>2*1024*1024) return {status:'orphaned',reason:'unavailable'};
-        if (value.length>8192 || value.length<mark.exactText.length ||
-          block.querySelector('script,style')) continue;
-        var nodes=[], walker=doc.createTreeWalker(block,NodeFilter.SHOW_TEXT), node, cursor=0;
-        while ((node=walker.nextNode())) {
-          nodes.push({node:node,start:cursor,end:cursor+node.length}); cursor+=node.length;
-        }
-        if (cursor!==value.length) continue;
-        for (var at=value.indexOf(mark.exactText);at>=0;at=value.indexOf(mark.exactText,at+1)) {
-          if (++attempts>4096) return {status:'orphaned',reason:'unavailable'};
-          var end=at+mark.exactText.length, first=null, last=null;
-          for (var entry of nodes) {
-            if (!first && at>=entry.start && at<entry.end) first=entry;
-            if (end>entry.start && end<=entry.end) {last=entry;break;}
-          }
-          if (!first || !last) continue;
-          var range=doc.createRange();
-          range.setStart(first.node,at-first.start);
-          range.setEnd(last.node,end-last.start);
-          var evidence=textRangeEvidence(range);
-          if (!evidence || evidence.text!==mark.exactText ||
-            !evidence.left.endsWith(mark.prefix) || !evidence.right.startsWith(mark.suffix) ||
-            (!mark.prefix && evidence.left.length>0) ||
-            (!mark.suffix && evidence.right.length>0)) continue;
-          if (candidate && candidate.startContainer===range.startContainer &&
-            candidate.startOffset===range.startOffset &&
-            candidate.endContainer===range.endContainer &&
-            candidate.endOffset===range.endOffset) continue;
-          matches++;
-          if (matches>1) return {status:'orphaned',reason:'ambiguous'};
-          candidate=range;
-        }
-      }
-      if (!candidate) return {status:'orphaned',reason:'missing'};
-      try {
-        var recovered=contents.cfiFromRange(candidate);
-        if (this.verifyTextRange(Object.assign({},mark,{cfi:recovered}))) {
-          return {status:'recovered',cfi:recovered};
-        }
-      }catch(_){}
-      return {status:'orphaned',reason:'unavailable'};
+      return RangeAnchors.resolve(contents,mark,this.state.href,this.state.base);
     },
     drawVerifiedTextMark: function (mark, expectedSession) {
-      if (!mark || typeof mark.markId !== 'string' || !mark.markId || mark.markId.length>96 ||
+      if (!mark || typeof mark.markId !== 'string' || !mark.markId || mark.markId.length>160 ||
         (mark.kind!==undefined && mark.kind!=='highlight' && mark.kind!=='note') ||
         !this.state || this.state.session!==expectedSession ||
-        !this.verifyTextRange(mark) || (textMarks.size>=100 && !textMarks.has(mark.markId))) return false;
+        (textMarks.size>=100 && !textMarks.has(mark.markId))) return false;
       try {
+        var coverage=RangeAnchors.display(contents,mark,this.state.href,this.state.base);
+        if(!coverage.notes.length&&!coverage.highlights.length)return false;
         var css=contents.window.CSS, Highlight=contents.window.Highlight;
         if (!css || !css.highlights || !Highlight) return false;
         var style=contents.document.getElementById('harmony-reader-mark-style');
@@ -537,8 +533,9 @@
           style.id='harmony-reader-mark-style';contents.document.head.appendChild(style);
         }
         style.textContent='::highlight('+highlightName+') { background-color: rgba(227, 166, 67, 0.42); }'+
-          '::highlight('+noteName+') { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; text-decoration-color: #b67423; }';
-        textMarks.set(mark.markId,{range:contents.range(mark.cfi),kind:mark.kind==='note'?'note':'highlight'});
+          '::highlight('+noteName+') { text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 3px; text-decoration-color: '+(readerSettings.theme==='eye-comfort'?'#b67423':'currentColor')+'; }';
+        textMarks.set(mark.markId,{notes:coverage.notes,highlights:coverage.highlights,
+          ranges:coverage.notes.concat(coverage.highlights),kind:mark.kind==='note'?'note':'highlight'});
         return refreshTextMarks();
       }catch(_){textMarks.delete(mark.markId);return false;}
     },
@@ -549,16 +546,22 @@
     textMarkRegistered: function (mark) {
       var registered=textMarks.get(mark.markId);
       return !!contents && !!registered && registered.kind===(mark.kind==='note'?'note':'highlight') &&
-        this.verifyTextRange(mark) &&
+        registered.ranges.length>0 &&
         !!contents.window.CSS && !!contents.window.CSS.highlights &&
         contents.window.CSS.highlights.has(mark.kind==='note'?noteName:highlightName) &&
         !!contents.document.getElementById('harmony-reader-mark-style');
     },
-    startLoad: function (packet, id, wide, resourceRoot, token, settings, concealUntilRestored, initialAtEnd, session) {
+    noteAnchorResolutions: function (mark,expectedSession) {
+      if(!this.state||this.state.session!==expectedSession||!contents||frame.contentDocument!==firstDocument)return [];
+      return RangeAnchors.display(contents,mark,this.state.href,this.state.base).resolutions;
+    },
+    startLoad: function (packet, id, wide, resourceRoot, token, settings, concealUntilRestored, initialAtEnd, session, mode, presentationToken, surfaceVersion) {
+      this.setPaginationMode(mode || 'scroll');
+      if (paginationMode === 'clip') closePresentation(presentationToken);
       this.loadDone = false; this.loadResult = null;
       setReaderSettings(settings);
       frame.style.visibility = concealUntilRestored ? 'hidden' : 'visible';
-      const task=this.load(packet,id,wide,resourceRoot,initialAtEnd,session), epoch=loadEpoch;
+      const task=this.load(packet,id,wide,resourceRoot,initialAtEnd,session,surfaceVersion), epoch=loadEpoch;
       task.then(function (state) { if(epoch===loadEpoch){Surface.loadResult=state; Surface.loadDone=true;ChapterBridge.loadDone(id,token,!!state.complete);} }, function () { if(epoch===loadEpoch){Surface.loadResult={complete:false}; Surface.loadDone=true;ChapterBridge.loadDone(id,token,false);} });
     },
     captureAnchor: function (unit) {
@@ -605,6 +608,7 @@
       if (!contents || frame.contentDocument !== firstDocument) throw new Error('Chapter identity lost');
       var width = innerWidth, height = innerHeight, geometry = columnGeometry(width);
       contents.document.getSelection().removeAllRanges();
+      if (paginationMode === 'clip') { pageOffset = 0; frame.style.transform = 'none'; }
       window.scrollTo(0, 0); frame.style.width = '100%';
       contents.columns(width, height, geometry.width, geometry.gap, 'ltr');
       var units = Math.ceil(contents.textWidth() / width);
@@ -618,11 +622,19 @@
       }
       this.state.viewport = width; this.state.height = height; this.state.units = units; this.state.layoutRevision = revision;
       if (restoreAnchor) { this.anchorUnit = target; this.anchorRevision = revision; } else { this.anchor = null; this.anchorUnit = undefined; }
-      window.scrollTo(target * width, 0);
+      renderPage(target);
       var actual = this.inspect();
       actual.anchorMatches = anchorMatches;
-      actual.anchorVisible = !restoreAnchor || (range.getBoundingClientRect().right > scrollX && range.getBoundingClientRect().left < scrollX + width);
+      actual.anchorVisible = !restoreAnchor || (range.getBoundingClientRect().right > pageLeft() && range.getBoundingClientRect().left < pageLeft() + width);
       return actual;
+    },
+    applyTheme: function (theme) {
+      if (!['light','dark','eye-comfort'].includes(theme)) throw new Error('Invalid reader theme');
+      readerSettings.theme=theme;
+      applyReaderCanvas();
+      var doc=frame.contentDocument;
+      if (doc && doc.head) applyReaderTheme(doc);
+      return true;
     },
     configure: function (settings, cfi, revision) {
       this.configureFailureCode = 0;
@@ -632,6 +644,7 @@
         phase = 2;
         if (!contents || !this.state) { this.configureFailureCode = phase; return null; }
         applyReaderStyle(contents.document);
+        applyBodyTypography(contents.document);
         phase = 3;
         this.relayout(false,revision);
         phase = 4;
@@ -645,16 +658,25 @@
         throw _;
       }
     },
-    beginConfigure: function (settings, cfi, revision, width, height, token) {
+    beginConfigure: function (settings, cfi, revision, width, height, token, presentationToken, expectedVersion) {
       this.configureFailureCode = 0;
+      if (paginationMode === 'clip' && expectedVersion !== undefined &&
+        (!this.state || this.state.surfaceVersion !== expectedVersion)) {
+        ChapterBridge.layoutDone(slot, token, false); return;
+      }
       if (token < latestConfigureToken) {
         ChapterBridge.layoutDone(slot, token, false);
         return;
       }
       latestConfigureToken = token;
+      if (paginationMode === 'clip') closePresentation(presentationToken);
       cancelResize(); this.configureResult = null; this.configureResultToken = 0;
       var check = function () {
         if (token !== latestConfigureToken) return;
+        if (paginationMode === 'clip' && expectedVersion !== undefined &&
+          (!Surface.state || Surface.state.surfaceVersion !== expectedVersion)) {
+          cancelResize(); ChapterBridge.layoutDone(slot, token, false); return;
+        }
         if (Math.abs(innerWidth - width) > 2 || Math.abs(innerHeight - height) > 2) return;
         cancelResize();
         try { Surface.configureResult = Surface.configure(settings, cfi, revision); }
@@ -667,7 +689,7 @@
     checkAnchor: function () {
       if (!this.anchor) return false;
       var range = contents.range(this.anchor), box = range.getBoundingClientRect();
-      return range.toString() === this.anchorText && box.right > scrollX && box.left < scrollX + innerWidth;
+      return range.toString() === this.anchorText && box.right > pageLeft() && box.left < pageLeft() + innerWidth;
     },
     releaseChapter: function(){
       this.cancelLoad();
@@ -677,9 +699,11 @@
       if(contents){contents.destroy();contents=null;}
       var doc=frame.contentDocument;
       var empty=new DOMParser().parseFromString('<html xmlns="http://www.w3.org/1999/xhtml"><head/><body/></html>','application/xhtml+xml');
+      RangeAnchors.invalidate(doc);
       doc.replaceChild(doc.importNode(empty.documentElement,true),doc.documentElement);
       applyReaderStyle(doc);
       firstDocument=null;this.state=null;this.loadResult=null;this.anchor=null;
+      if (paginationMode === 'clip') { pageOffset = 0; frame.style.transform = 'none'; }
       frame.style.width='100%';window.scrollTo(0,0);
     },
     closeSourceForMemory: function(){
@@ -687,9 +711,14 @@
       workerStats=null;this.packetResult=null;
       return {workerClosed:!sourceWorker,pending:workerPending.size};
     },
-    seek: function (unit) {
+    seek: function (unit, presentationToken, expectedVersion) {
+      if (paginationMode === 'clip' && expectedVersion !== undefined &&
+        (!this.state || this.state.surfaceVersion !== expectedVersion)) throw new Error('Obsolete surface position');
+      if (paginationMode === 'clip' && Number.isSafeInteger(presentationToken) &&
+        presentationToken < latestPresentation) throw new Error('Obsolete presentation position');
       if (!this.state || unit < 0 || unit >= this.state.units) throw new Error('Unit outside layout');
-      window.scrollTo(unit * innerWidth, 0);
+      if (paginationMode === 'clip') { this.clearSelection(); closePresentation(presentationToken); }
+      renderPage(unit);
       return this.inspect();
     },
     revealRestored: function (unit) {
@@ -781,9 +810,13 @@
       var lastRange = last && contents.document.createRange();
       if (lastRange) lastRange.selectNodeContents(last);
       var lastBox = lastRange && lastRange.getBoundingClientRect();
+      var box=frame.getBoundingClientRect();
+      var valid=paginationMode!=='clip'||(!this.state||Math.abs(scrollX)<=2&&
+        Math.abs(frame.contentWindow.scrollX)<=2&&Math.abs(box.left+this.state.unit*this.state.viewport-pageOffset)<=2);
       return Object.assign({}, this.state, { retained: frame.contentDocument === firstDocument, selected: contents ? !contents.document.getSelection().isCollapsed : false,
-        scrollX: scrollX, unit: Math.round(scrollX / innerWidth), viewport: innerWidth,
-        lastInViewport: !!lastBox && lastBox.left - scrollX >= -1 && lastBox.left - scrollX < innerWidth,
+        scrollX: scrollX, unit: paginationMode==='clip'&&this.state?this.state.unit:Math.round(scrollX / innerWidth), viewport: innerWidth,
+        paginationMode:paginationMode,contentOffsetX:box.left,positionValid:valid,
+        lastInViewport: !!lastBox && lastBox.left - pageLeft() >= -1 && lastBox.left - pageLeft() < innerWidth,
         lastLeft: lastBox ? lastBox.left : 0, lastRight: lastBox ? lastBox.right : 0,
         notePresent: !!last, noteRects: last ? last.getClientRects().length : 0,
         noteDisplay: last ? contents.window.getComputedStyle(last).display : 'missing',

@@ -1,4 +1,5 @@
 import { ImportCancellation } from '../services/ImportCancellation';
+import { ROOT_FOLDER } from '../domain/LibraryOrganization';
 import { Book, LibraryOperationKind, ReadingProgress, ReconciliationReport } from '../domain/Models';
 import { LibraryRepository } from '../repositories/LibraryRepository';
 import { BookDeletionService } from '../services/BookDeletionService';
@@ -14,6 +15,7 @@ interface PendingLibraryOperation {
   kind: LibraryOperationKind;
   bookId: string;
   sessionId: number;
+  targetFolderId: string;
 }
 
 class LibraryOpenControl extends ImportCancellation {}
@@ -57,15 +59,15 @@ export class LibraryApplication {
     const entries: LibraryEntry[] = [];
     for (const book of books) {
       const progress = await this.repository.getProgress(book.bookId);
-      entries.push({ book: book, percentage: progress?.location.percentage ?? 0 });
+      entries.push({ book: book, percentage: progress?.location.percentage });
     }
     return entries;
   }
 
-  async import(uri?: string): Promise<ImportResult> {
+  async import(uri?: string, targetFolderId: string = ROOT_FOLDER): Promise<ImportResult> {
     if (this.batch.isRunning()) return { status: 'io_error', message: '批量导入正在进行，请稍候。' };
     const result = await this.importService.import(uri);
-    this.rememberPrepared(result);
+    this.rememberPrepared(result, targetFolderId);
     return result;
   }
 
@@ -76,14 +78,15 @@ export class LibraryApplication {
     return result;
   }
 
-  private rememberPrepared(result: ImportResult): void {
+  private rememberPrepared(result: ImportResult, targetFolderId: string = ROOT_FOLDER): void {
     if (result.book === undefined || result.operationId === undefined || result.operationKind === undefined ||
       (result.status !== 'prepared-new' && result.status !== 'prepared-repair')) return;
     this.pending = {
       operationId: result.operationId,
       kind: result.operationKind,
       bookId: result.book.bookId,
-      sessionId: 0
+      sessionId: 0,
+      targetFolderId: targetFolderId
     };
   }
 
@@ -98,7 +101,7 @@ export class LibraryApplication {
   async commitPrepared(sessionId: number, book: Book): Promise<boolean> {
     const pending = this.pending;
     if (pending === undefined || pending.sessionId !== sessionId || pending.bookId !== book.bookId) return false;
-    await this.importService.commitPrepared(pending.operationId, pending.kind, book);
+    await this.importService.commitPrepared(pending.operationId, pending.kind, book, pending.targetFolderId);
     this.pending = undefined;
     return true;
   }
@@ -121,18 +124,10 @@ export class LibraryApplication {
     return true;
   }
 
-  async importBundled(uri: string): Promise<ImportResult> {
-    if (this.batch.isRunning()) return { status: 'io_error' };
-    const result = await this.importService.import(uri);
-    if ((result.status === 'prepared-new' || result.status === 'prepared-repair') && result.operationId !== undefined &&
-      result.operationKind !== undefined && result.book !== undefined) {
-      await this.importService.commitPrepared(result.operationId, result.operationKind, result.book);
-    }
-    return result;
-  }
-
   batchState(): BatchImportSnapshot { return this.batch.snapshot(); }
-  addBatchSelection(uris: string[]): BatchImportSnapshot { return this.batch.addSelection(uris); }
+  addBatchSelection(uris: string[], targetFolderId: string = ROOT_FOLDER): BatchImportSnapshot {
+    return this.batch.addSelection(uris, targetFolderId);
+  }
   checkBatchTextEncoding(): Promise<BatchImportSnapshot> { return this.batch.checkTextEncoding(); }
   previewBatchText(id: number, encoding: TxtEncodingChoice): Promise<TxtPreview> {
     return this.batch.previewText(id, encoding);

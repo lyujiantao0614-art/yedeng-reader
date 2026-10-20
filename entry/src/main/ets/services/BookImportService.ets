@@ -7,6 +7,7 @@ import { EpubInputError } from './EpubInputPolicy';
 import { FileZipSource, extractBoundedZip } from './BoundedZipExtractor';
 import { ZipLimits, ZipEntry, validateZipLimits } from './EpubZipIndex';
 import { common } from '@kit.AbilityKit';
+import { ROOT_FOLDER } from '../domain/LibraryOrganization';
 import { zlib } from '@kit.BasicServicesKit';
 import { Book, LibraryOperation, LibraryOperationKind } from '../domain/Models';
 import { LibraryRepository } from '../repositories/LibraryRepository';
@@ -359,9 +360,11 @@ export class BookImportService {
     return result;
   }
 
-  async commitPrepared(operationId: string, kind: LibraryOperationKind, book: Book): Promise<void> {
+  async commitPrepared(operationId: string, kind: LibraryOperationKind, book: Book,
+    targetFolderId: string = ROOT_FOLDER): Promise<void> {
     if (kind === 'import') {
-      await measureImportStage(this.policy?.observer, 'commit', (): Promise<void> => this.repository.commitPreparedImport(operationId, book));
+      await measureImportStage(this.policy?.observer, 'commit', (): Promise<void> =>
+        this.repository.commitPreparedImport(operationId, book, targetFolderId));
     } else if (kind === 'repair') {
       await measureImportStage(this.policy?.observer, 'commit', (): Promise<void> => this.repository.commitPreparedRepair(operationId, book.bookId));
     } else {

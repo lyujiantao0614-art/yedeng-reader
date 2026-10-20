@@ -1,5 +1,8 @@
 import {
   ReaderMotionPreference,
+  BookLayoutOverrides,
+  ReaderLayoutParameter,
+  resolveBookLayout,
   ReaderThemePreference,
   SystemColorMode,
   resolveReaderSettings,
@@ -8,6 +11,7 @@ import {
 import { ReaderSettings, ReaderTheme } from '../domain/Models';
 import { SystemColorModeHandler, SystemColorModeLifecycle } from '../reader/SystemColorModeLifecycle';
 import { ReaderSettingsRepository } from '../repositories/ReaderSettingsRepository';
+import { observeSystemMotion } from '../platform/SystemMotionSignal';
 
 export class ReaderAppearanceApplication {
   private repository: ReaderSettingsRepository;
@@ -18,14 +22,23 @@ export class ReaderAppearanceApplication {
     this.systemColorMode = systemColorMode;
   }
 
-  loadSettings(): ReaderSettings {
-    return resolveReaderSettings(this.repository.loadDefaults(), this.systemColorMode.mode());
+  loadSettings(bookId?: string): ReaderSettings {
+    const defaults = resolveReaderSettings(this.repository.loadDefaults(), this.systemColorMode.mode());
+    return bookId === undefined ? defaults : resolveBookLayout(defaults, this.bookLayoutOverrides(bookId));
   }
+
+  bookLayoutOverrides(bookId: string): BookLayoutOverrides { return this.repository.loadBookLayoutOverrides(bookId); }
+  saveBookLayoutParameter(bookId: string, parameter: ReaderLayoutParameter, value: number): void {
+    this.repository.saveBookLayoutParameter(bookId, parameter, value);
+  }
+  clearBookLayoutOverrides(bookId: string): void { this.repository.clearBookLayoutOverrides(bookId); }
 
   persistentPreference(): ReaderThemePreference {
     return this.repository.loadThemePreference();
   }
 
+  // Historical storage access for compatibility fixtures. Production motion
+  // no longer reads or writes this preference; preserve the original value.
   motionPreference(): ReaderMotionPreference {
     return this.repository.loadMotionPreference();
   }
@@ -40,6 +53,14 @@ export class ReaderAppearanceApplication {
 
   saveShowControlsButton(enabled: boolean): void {
     this.repository.saveShowControlsButton(enabled);
+  }
+
+  hideControlsButton(): boolean {
+    return this.repository.loadHideControlsButton();
+  }
+
+  saveHideControlsButton(enabled: boolean): void {
+    this.repository.saveHideControlsButton(enabled);
   }
 
   resolveTheme(): ReaderTheme {
@@ -70,5 +91,8 @@ export class ReaderAppearanceApplication {
 
   subscribeSystemColorMode(handler: SystemColorModeHandler): () => void {
     return this.systemColorMode.subscribe(handler);
+  }
+  subscribeSystemMotion(handler: (reduced: boolean | undefined) => void): () => void {
+    return observeSystemMotion(handler);
   }
 }

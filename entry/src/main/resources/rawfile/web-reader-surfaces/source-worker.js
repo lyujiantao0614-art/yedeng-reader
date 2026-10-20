@@ -41,11 +41,11 @@ async function run(message){
   });
   const catalog=Object.values(book.packaging.manifest).map(item=>({path:decodeURIComponent(book.resolve(item.href).replace(/^\/+/,'')),type:item.type}));
   const toc=[];
-  const stack=[...(book.navigation.toc||[])].reverse();
+  const stack=(book.navigation.toc||[]).map(item=>({item,depth:0})).reverse();
   while(stack.length && toc.length<2000){
-   const item=stack.pop();
-   toc.push({id:String(item.id||item.href||toc.length),href:String(item.href||''),label:String(item.label||'Untitled')});
-   if(Array.isArray(item.subitems))for(let i=item.subitems.length-1;i>=0;i--)stack.push(item.subitems[i]);
+   const {item,depth}=stack.pop();
+   toc.push({id:String(item.id||item.href||toc.length),href:String(item.href||''),label:String(item.label||'Untitled'),depth});
+   if(Array.isArray(item.subitems))for(let i=item.subitems.length-1;i>=0;i--)stack.push({item:item.subitems[i],depth:depth+1});
   }
   return {stats:stats(),catalog,toc};
  }

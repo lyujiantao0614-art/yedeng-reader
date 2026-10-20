@@ -36,9 +36,20 @@ export interface ReaderTextMark extends ReadingRangeCandidate {
   anchorVersion: number;
   engine: string;
   kind?: 'highlight' | 'note';
+  revision?: number;
+  highlightActive?: boolean;
+  noteAnchors?: ReaderNoteAnchor[];
+  highlightAnchors?: ReadingRangeCandidate[];
+}
+
+export interface ReaderNoteAnchor extends ReadingRangeCandidate {
+  noteId: string;
+  revision: number;
+  provenance: string;
 }
 
 export interface ReaderTextMarkResolution {
+  revision?: number;
   status: 'verified' | 'recovered' | 'orphaned';
   cfi?: string;
   reason?: 'missing' | 'ambiguous' | 'unavailable';
@@ -49,6 +60,13 @@ export type ReaderFatalErrorCategory = 'reader-session' | 'shell-page' | 'reader
   'book-response' | 'navigation';
 
 export interface ReaderEngineCallbacks {
+  onSelectionAction?: (sessionId: number, action: 'copy' | 'note' | 'translate', selectionToken: string,
+    selectedText: string, locator: string, complete?: () => void) => void;
+  onSelectionMarkContext?: (sessionId: number, context: ReadingSelectionContext) => void;
+  onNoteAnchorResolution?: (sessionId: number,noteId: string,revision: number,resolution: ReaderTextMarkResolution) => void;
+  onFirstReadable?: (sessionId: number) => void;
+  onPreparationState?: (sessionId: number, queued: number, active: number) => void;
+  onContactState?: (sessionId: number, state: 'active' | 'cancelled') => void;
   onReady: (sessionId: number) => void;
   onTableOfContents: (sessionId: number, chapters: Chapter[]) => void;
   onLocation: (sessionId: number, location: ReadingLocation, cause: ReaderLocationCause) => void;
@@ -58,7 +76,7 @@ export interface ReaderEngineCallbacks {
   onSelectionContext: (sessionId: number, context: ReadingSelectionContext) => void;
   onSelectionContextRejected: (sessionId: number, selectionToken: string, reason: string) => void;
   onSelectionRejected: (sessionId: number, reason: string, characterCount?: number) => void;
-  onSelectionCleared: (sessionId: number) => void;
+  onSelectionCleared: (sessionId: number, cause?: 'cancel' | 'presentation') => void;
   onSelectionGeometryChanged: (sessionId: number, selectionToken: string,
     geometry: ReaderSelectionGeometry) => void;
   onControlsToggle: (sessionId: number) => void;

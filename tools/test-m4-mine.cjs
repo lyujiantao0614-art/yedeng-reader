@@ -1,0 +1,26 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const vm = require('node:vm');
+const ts = require('typescript');
+const source = fs.readFileSync('entry/src/main/ets/application/MineLibraryProjection.ets', 'utf8');
+const resultExports = {};
+vm.runInNewContext(ts.transpileModule(source, { compilerOptions: { module: ts.ModuleKind.CommonJS } }).outputText,
+  { exports: resultExports, require: () => ({}), Number });
+const project = resultExports.projectMineLibrary;
+const book = (id, lastOpenedAt, sourceState = 'available') => ({ book: { bookId: id, title: id, lastOpenedAt, sourceState } });
+assert.equal(project([]).recentBook, undefined);
+assert.equal(project([book('unopened')]).openedBookCount, 0);
+const entries = [book('new-import'), book('old', 100), book('recent', 200)];
+const before = JSON.stringify(entries);
+assert.equal(project(entries).recentBook.bookId, 'recent');
+assert.equal(project(entries).bookCount, 3);
+assert.equal(project(entries).openedBookCount, 2);
+assert.equal(JSON.stringify(entries), before);
+assert.equal(project([book('b', 10), book('a', 10)]).recentBook.bookId, 'a');
+assert.equal(project([book('invalid', NaN), book('zero', 0), book('negative', -1)]).openedBookCount, 0);
+const missing = project([book('old', 1), book('missing', 2, 'missing')]);
+assert.equal(missing.recentBook.sourceState, 'missing');
+assert.equal(missing.openedBookCount, 2);
+assert.equal(project(entries.filter(entry => entry.book.bookId !== 'recent')).recentBook.bookId, 'old');
+console.log('M4-C metadata projection passed: empty/unopened/latest/counts/ties/invalid/missing/deletion; no input mutation.');

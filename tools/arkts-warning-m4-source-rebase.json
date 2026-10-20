@@ -1,0 +1,25 @@
+{
+  "reason": "M4 target26 DEFAULT prompt audit: API12 opaque background/text on existing Toast calls; exact original warning/category/count retained, no allowance growth.",
+  "entries": [
+    {
+      "previousFingerprint": "10dd8c75bc27f2c23a7db0f608e98a512edfc1f0bb317ece8d64c6aa930656bb",
+      "source": "this.getUIContext().getPromptAction().showToast({ backgroundColor: this.shellColor('surface'), textColor: this.shellColor('text'), message: '复制失败，请重试。' });"
+    },
+    {
+      "previousFingerprint": "91c2428957db148631ee877f68646fd7daafc7d29d096691ef0137cafdad366b",
+      "source": "this.getUIContext().getPromptAction().showToast({ backgroundColor: this.shellColor('surface'), textColor: this.shellColor('text'), message: '当前选区无法保存，请缩短选区。' });"
+    },
+    {
+      "previousFingerprint": "44e3e2a983e82c8af90c56ad124b95bc19b581675f393d5edf1e0d6293a35343",
+      "source": "this.getUIContext().getPromptAction().showToast({ backgroundColor: this.shellColor('surface'), textColor: this.shellColor('text'), message: '选区已经变化，请重新选择单词。' });"
+    },
+    {
+      "previousFingerprint": "7232739f3b23f5a7388623833884065bd3ec5cd1130f39df360f3720e846f8f2",
+      "source": "this.getUIContext().getPromptAction().showToast({ backgroundColor: this.shellColor('surface'), textColor: this.shellColor('text'), message: message });"
+    },
+    {
+      "previousFingerprint": "61d0ec48b0e7d79a16e0008adb720c2dabfcd70726d9450fca4568163a2465ed",
+      "source": "this.getUIContext().getPromptAction().showToast({ backgroundColor: this.shellColor('surface'), textColor: this.shellColor('text'), message: this.bookmarkMessage });"
+    }
+  ]
+}

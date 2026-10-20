@@ -69,23 +69,3 @@ The pinned source hash and deterministic rebuild instructions are recorded in
 - A future software dependency, dataset, font, icon, model or media asset must
   have its source, version, license, required attribution, integrity value and
   package impact reviewed before distribution.
-
-## Artwork
-
-The three optional image themes use public-domain-marked artwork copies or a
-NASA photograph in modified compositions:
-
-- Starry Night: Vincent van Gogh; Wikimedia Commons,
-  https://commons.wikimedia.org/wiki/File:Vincent_van_Gogh_Starry_Night.jpg
-- Travelers Among Mountains and Streams: Fan Kuan; Wikimedia Commons,
-  https://commons.wikimedia.org/wiki/File:Fan_Kuan_-_Travelers_Among_Mountains_and_Streams_-_Google_Art_Project.jpg
-  The application composition retains the reference at its center and extends
-  the sides with generated and revised artwork.
-- Earthrise: NASA / William Anders,
-  https://science.nasa.gov/resource/image-earthrise/
-  The application composition moves the Earth within the image; it is not the
-  unaltered documentary photograph. NASA does not endorse this project.
-
-Additional context is in `docs/ARTWORK.md`. These source images retain their
-own rights status and are not relicensed by the project's Apache-2.0 source
-license.

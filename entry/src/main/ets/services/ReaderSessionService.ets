@@ -1,5 +1,6 @@
 import { ReadingLocation, ReadingProgress } from '../domain/Models';
 import { LibraryRepository } from '../repositories/LibraryRepository';
+import { PublicationTextSession } from '../application/PublicationTextSession';
 
 interface PendingSessionProgress {
   sessionId: number;
@@ -7,6 +8,7 @@ interface PendingSessionProgress {
 }
 
 export class ReaderSessionService {
+  readonly publication: PublicationTextSession = new PublicationTextSession();
   private repository?: LibraryRepository;
   private pending?: PendingSessionProgress;
   private timer: number = -1;
@@ -29,6 +31,7 @@ export class ReaderSessionService {
     this.cancelTimer();
     this.pending = undefined;
     this.activeBookId = '';
+    this.publication.close(sessionId);
   }
 
   update(sessionId: number, bookId: string, location: ReadingLocation): void {

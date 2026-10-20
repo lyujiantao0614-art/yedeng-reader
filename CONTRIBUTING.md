@@ -1,7 +1,18 @@
 # Contributing
 
-请先运行 `node tools/run-source-contracts.cjs`，并在提交中说明改动、验证及未验证的设备行为。涉及 ArkUI、存储、导入或阅读位置的改动，还需在受影响的 HarmonyOS 设备上验证。
+This repository is a reviewed public source snapshot of 页灯 / Yedeng
+(`com.yedeng.reader`). Read [AGENTS](AGENTS.md), the [documentation index](docs/index.md),
+[current status](docs/project-status.md) and [compatibility scope](docs/m4-e-compatibility-readiness.md).
 
-保持本地优先、EPUB 优先；不要加入后端、账号、云书库、遥测或未经讨论的网络功能。请勿提交用户书籍、私人测试数据、签名材料或构建产物。
+- HarmonyOS native ArkTS/ArkUI, local-first, minimum API21; ordinary reading and dictionary remain offline.
+- Preserve existing EPUB/TXT IDs, locators, note bodies, progress, saved preferences and failure isolation.
+- Folder deletion recursively removes managed contents only after explicit confirmation; never delete external originals.
+- Keep dependencies directed UI → application services → domain → infrastructure. Avoid unrelated engine or navigation rewrites.
+- Record source tests, controlled SQLite tests, SDK builds, isolated UI hosts, real Entry/device checks and human acceptance separately.
+- Do not infer API21/25, tablet or foldable support from a phone screenshot or source contract. Do not reopen accepted M4 visual design.
+- Never commit credentials, certificates, local signing/configuration, user books/records, binaries, logs or private historical evidence.
+- Do not import the private development history. Public updates are curated commits based on public main.
 
-新引入的代码、词典、字体、图片和其他资产必须记录来源、许可、归属和修改情况。除另有书面约定，主动提交到本仓库的项目源码依 Apache License 2.0 提供；第三方材料不因此改用该许可。
+Use the pinned host test dependency with `npm ci --ignore-scripts`, then `npm test`.
+Use matching official SDK tools and your own ignored signing profile for native builds.
+Source contributions use Apache 2.0; retain third-party provenance and licensing.

@@ -1,33 +1,49 @@
 /node_modules/
 /oh_modules/
+/entry/src/ohosTest/resources/rawfile/m1-generated/
+/entry/src/ohosTest/resources/rawfile/m2-generated/
+/entry/src/ohosTest/ets/generated/
+**/local.properties
 /.idea/
 /.hvigor/
-/.appanalyzer/
 **/build/
-**/local.properties
-/.test/
-__pycache__/
-*.pyc
-*.log
-*.tmp
+**/.test/
+/.appanalyzer/
+.cxx/
+.clangd/
+.clang-format
+.clang-tidy
 
-# Signing and machine-local configuration.
+# Machine-local HarmonyOS signing configuration.
 /build-profile.json5
 *.p12
 *.p7b
 *.cer
 *.keystore
-*.pem
-*.key
 
-# Generated packages and imported books.
+# Generated packages and local diagnostics.
 *.hap
 *.app
-*.epub
-!/entry/src/main/resources/rawfile/demo/under-the-lamp.epub
+*.log
+*.tmp
+/test-data/reader-kit/generated/
+/test-data/phase-1a/generated/
+/test-data/phase-3-m3-0-baseline/generated/
+/test-data/phase-3-m3-2d-reader-ui/generated/
+/test-data/*.epub
 
-# Local diagnostics and editor files.
-.cxx/
-.clangd/
-.DS_Store
-Thumbs.db
+/test-data/phase-3-m3-4/generated/
+/test-data/phase-3-m3-6/generated/
+
+/entry/src/ohosTest/resources/rawfile/phase34-generated/
+/entry/src/ohosTest/resources/rawfile/i2-generated/
+/entry/src/ohosTest/resources/rawfile/m3-generated/
+/entry/src/ohosTest/resources/rawfile/i2-delivery/
+__pycache__/
+*.pyc
+
+# Temporary connector transfer fragments.
+/.tmp.driveupload/
+
+# Owner-requested local source snapshots; never packaged or committed.
+/.local-archives/
