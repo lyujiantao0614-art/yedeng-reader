@@ -24,16 +24,22 @@ const Harness=run('export class Harness { '+
  method(index,'  private closeReadingRecords(', '  private resolvedInterfaceMode(')+
  ' openRecords(kind:any) {'+body+'} }').Harness;
 const h=new Harness();let begun=0, resets=0, animations=0;
-h.destination='mine';h.checkingBook=false;h.importing=false;
+let destination='mine', animationActive=false;
+Object.defineProperty(h,'destination',{get:()=>destination,set(value){
+ // A newly mounted Settings subtree must not inherit a global property animation.
+ if(value==='settings')assert.equal(animationActive,false,'Settings creation must stay outside animateTo');
+ destination=value;
+}});
+h.checkingBook=false;h.importing=false;
 h.runtime={readingRecords:{begin(){begun++;}}};h.entries=[];
 h.settingsPageController={resetToRoot(){resets++;}};h.updateShellBars=()=>{};
 // The native animation has started but its completion callback never runs.
 // Routing must still be immediate, repeatable and independent of that callback.
-h.animateShell=(_,duration,action)=>{assert.ok(duration<=200);animations++;action();};
+h.animateShell=(_,duration,action)=>{assert.ok(duration<=200);animations++;animationActive=true;try{action();}finally{animationActive=false;}};
 h.openRecords('notes');h.openRecords('notes');assert.equal(begun,1);assert.equal(h.destination,'records');
 h.closeReadingRecords();assert.equal(h.destination,'mine');h.openLibrarySettings();
 h.openLibrarySettings();assert.equal(resets,1);assert.equal(h.destination,'settings');
-h.closeReadingRecords();assert.equal(h.destination,'settings');assert.equal(animations,3);
+h.closeReadingRecords();assert.equal(h.destination,'settings');assert.equal(animations,2);
 const settings=read('entry/src/main/ets/pages/SettingsPage.ets');
 const Settings=run('export class Settings {'+method(settings,'  private changeRoute(', '  private async loadLegal(')+'}').Settings;
 for(const reduced of [true,false,undefined]) {

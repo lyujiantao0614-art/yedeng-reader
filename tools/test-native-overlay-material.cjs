@@ -18,7 +18,7 @@ assert.ok(!script.diagnostics.some(d => d.category === ts.DiagnosticCategory.Err
 
 async function run() {
   for (const [api, available, supported, enabled] of [
-    [21, true, true, false], [25, true, true, false],
+    [21, true, true, false], [24, true, true, false], [25, true, true, false],
     [26, false, true, false], [26, true, false, false], [26, true, true, true]
   ]) {
     let loads = 0, calls = 0;
@@ -57,6 +57,6 @@ async function run() {
       assert.equal(Object.hasOwn(exports[name](undefined, {}), 'systemMaterial'), false);
     }
   }
-  console.log('Native overlay adapter PASS: API21/25 no module import or new native call; API26 unavailable/unsupported fallback; supported styles and callbacks preserved. SDK/device separate.');
+  console.log('Native overlay adapter PASS: API21/24/25 no module import or new native call; API26 unavailable/unsupported fallback; supported styles and callbacks preserved. SDK/device separate.');
 }
 run().catch(error => { console.error(error); process.exitCode = 1; });

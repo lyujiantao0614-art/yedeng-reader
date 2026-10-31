@@ -19,7 +19,8 @@ const contracts=[
   "test-reader-panel-hit-test-contract.cjs",
   "test-reader-default-route-contract.cjs",
   "test-local-only-route-contract.cjs",
-  "test-current-arkui-api-contract.cjs"
+  "test-current-arkui-api-contract.cjs",
+  "test-m4-e1-tablet-fixes.cjs"
 ];
 for(const name of contracts){
  console.log('RUN '+name);
