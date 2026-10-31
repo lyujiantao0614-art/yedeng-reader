@@ -174,6 +174,8 @@ export struct SettingsPage {
       this.focusAfterReturn = this.route === 'project-license' ? 'settings-project-license' : 'settings-third-party-notices';
       this.legalRequest += 1; this.changeRoute('about', 160); return true;
     }
+    // In the two-pane layout all five sections are peers. Only legal pages above are children.
+    if (this.wide()) return false;
     if (this.entrySection !== undefined && this.route === this.entrySection) return false;
     if (this.route !== 'root') {
       this.focusAfterReturn = 'settings-section-' + this.route;

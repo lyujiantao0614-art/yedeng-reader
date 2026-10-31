@@ -663,7 +663,8 @@ struct Index {
     this.settingsFromReader = false;
     this.settingsReturnDestination = 'mine';
     this.settingsPageController.resetToRoot();
-    this.animateShell('destination', 200, (): void => { this.destination = 'settings'; });
+    // Animate the page transition, not the initial backgrounds of newly mounted Buttons.
+    this.destination = 'settings';
     this.updateShellBars();
   }
 
@@ -1114,7 +1115,11 @@ struct Index {
               pageController: this.settingsPageController,
               onExit: (source: SettingsEntrySource): void => this.closeSettings(source)
             }).transition(this.settingsFromReader ? TransitionEffect.OPACITY :
-              nonReadingPageTransition(this.systemReducedMotion))
+              TransitionEffect.asymmetric(
+                nonReadingPageTransition(this.systemReducedMotion).animation({
+                  duration: this.systemReducedMotion === true ? 0 : 200, curve: Curve.EaseOut }),
+                nonReadingPageTransition(this.systemReducedMotion).animation({
+                  duration: this.systemReducedMotion === true ? 0 : 160, curve: Curve.EaseOut })))
           } else if (this.batchState.phase !== 'idle') {
             BatchImportPage({ defaultMode: this.resolvedInterfaceMode(),
               menuMaterial: this.overlayMaterials.menu, panelMaterial: this.overlayMaterials.panel,

@@ -1601,6 +1601,20 @@ export struct ReaderPage {
     this.finishNoteEditor();
   }
 
+  private forgetCommittedNote(noteId: string, sessionId: number): void {
+    const retained: TextMarkRecord[] = [];
+    for (const mark of this.savedTextMarks) {
+      const previous = mark.notes ?? [];
+      const notes = previous.filter((entry: NoteEntry): boolean => entry.noteId !== noteId);
+      if (notes.length === previous.length) { retained.push(mark); continue; }
+      if (notes.length === 0 && (mark.highlightAnchors?.length ?? 0) === 0) {
+        // reloadTextMarks must not lose the Web id when the UI drops its last note.
+        this.controller.removeTextMark(mark.markId, sessionId);
+      } else { mark.notes = notes; retained.push(mark); }
+    }
+    this.savedTextMarks = retained;
+  }
+
   private async deleteEditingNote(): Promise<void> {
     const note = this.editingNoteSnapshot;
     if (!note || !this.textMarks || this.bookmarkBusy || this.noteCommitKind !== 'none') return;
@@ -1618,10 +1632,7 @@ export struct ReaderPage {
     }
     if (sessionId !== this.currentSessionId || generation !== this.noteEditorGeneration) return;
     this.noteCommitKind = 'deleted';
-    this.savedTextMarks = this.savedTextMarks.map((item: TextMarkRecord): TextMarkRecord => {
-      item.notes = (item.notes ?? []).filter((entry: NoteEntry): boolean => entry.noteId !== note.noteId);
-      return item;
-    }).filter((item: TextMarkRecord): boolean => (item.notes?.length ?? 0) > 0 || (item.highlightAnchors?.length ?? 0) > 0);
+    this.forgetCommittedNote(note.noteId, sessionId);
     this.noteReturnRowId = 'reader-mark-detail-close';
     this.bookmarkBusy = false;
     await this.refreshCommittedNote(sessionId, generation);
@@ -1643,10 +1654,7 @@ export struct ReaderPage {
     }
     if (sessionId !== this.currentSessionId) return;
     // Remove the committed entry from the UI immediately, so refresh failure cannot expose another delete attempt.
-    this.savedTextMarks = this.savedTextMarks.map((mark: TextMarkRecord): TextMarkRecord => {
-      mark.notes = (mark.notes ?? []).filter((entry: NoteEntry): boolean => entry.noteId !== note.noteId);
-      return mark;
-    }).filter((mark: TextMarkRecord): boolean => (mark.notes?.length ?? 0) > 0 || (mark.highlightAnchors?.length ?? 0) > 0);
+    this.forgetCommittedNote(note.noteId, sessionId);
     try { await this.reloadTextMarks(sessionId); }
     catch (_) {
       if (sessionId === this.currentSessionId) this.noteFeedback = '该条笔记已删除，列表刷新失败；请重试刷新。';
