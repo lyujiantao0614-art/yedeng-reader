@@ -1,20 +1,15 @@
-# M4-E compatibility preparation
+# M4-E compatibility evidence boundary — 2026-10-31
 
-Date: 2026-10-20. This is a plan and read-only inventory, not a passed runtime matrix.
-The current agreed phone acceptance remains in [status](project-status.md).
+This replaces the old preparation-only routing; [status](project-status.md) owns completion and next action. M4's agreed representative range has owner acceptance. No repeated E1/E2/E3 manual checklist is pending.
 
-| Order | Verification | Existing facilities / environment needs |
+| Environment | Evidence actually obtained | Limits retained |
 | --- | --- | --- |
-| 1 | Pin source/package/API/ROM and isolated book/record/preferences baseline; verify data failure isolation | Public host/controlled SQLite tests and native build audit; private owner data and historical test folders must remain untouched |
-| 2 | API21 then API25 ordinary reading, native overlays, soft-keyboard notes, library/records/settings and fallback | Actual low-version targets preferred; official emulators may supplement install/startup/window checks but are separately labeled |
-| 3 | API26 official THICK/ULTRA_THICK material support, unavailable/unsupported fallback, dismissal and theme pairing | Reuse scoped phone evidence where unchanged; source-injected unsupported conditions do not prove a device's native rendering |
-| 4 | Tablet portrait/landscape/split/resize, actual usable widths around 600/840vp, Grid, Reader panels, records and settings | Tablet hardware required; applicable foldable device/emulator separately recorded. A phone rotated screenshot is not tablet evidence |
-| 5 | Representative cross-page routes and restart persistence on available device/API combinations | Real Entry/four-ArkWeb paths plus isolated storage/failure checks; missing rows stay unverified |
+| Mate60 Pro API26 | Prior D4 normal phone acceptance; E1 affected note/highlight/settings paths and normal settings navigation | Original packages remain separate; new E4 Release was not installed; KI-016/SIGABRT not closed |
+| MatePad Pro API24 | Native fallback, Reader/library/records/settings/IME representative operation; three targeted repairs owner retested | Portrait about960vp can correctly keep two columns; not every window ratio or a new final-package all-suite run |
+| API21 emulator | Isolated original data tests; owner normal system picker EPUB/TXT import/read and process restart, semantic position/per-book settings persistence | Not API21 physical hardware; old normal Entry selectors/ready marker Errors preserved |
+| Mate X5 fold emulator (API21) | Real system fold status and dimensions change; settings/records automation 2 Pass, remaining representative paths owner checked | Original 5 Error retained. Unfolded width about711.68vp does not test840vp sidebar; no physical occlusion or half-fold acceptance |
+| API25 / physical hinge | Controlled fallback policy only for API25; no physical hinge evidence | Runtime unverified, no inferred pass |
 
-Three routes are enough to begin: (a) scrolled library → EPUB/TXT → notes/bookmarks → centralized records → Reader/back/reopen; (b) isolated tree/import/move/mixed recursive deletion with cancel/failure/retry; (c) book overrides/global settings/theme and window changes → Reader return with saved position/preferences.
+Private destructive/failure tests used isolated UUID RDB/preferences/managed fixtures, not real user databases. Historical fixture directories were not cleaned and shared fixture limits were not raised. The original invalid synthetic EPUB failed; a compliant replacement was separately supplied and manually accepted. Source, host contract, native isolated test, normal Entry, emulator and physical/manual evidence remain distinct.
 
-Currently only an API26 phone was online at preparation. API21/25 runtimes, tablet hardware and applicable fold/window targets must be supplied before their rows can pass. The installed API21 SDK inventory is not a runtime; keep compile/target26 with compatible21 rather than downgrading the toolchain.
-
-The public repository includes portable host tests; private Hypium/device probes and generated fixtures are excluded. Do not assume a default startup-smoke runner settles M4-E or clear real data to satisfy old fixture guards. Reuse individual existing lab cases after checking their assumptions; keep source, controlled tests, emulator, physical device and owner evidence distinct.
-
-Standard-font ordinary touch, text-field focus/soft keyboard, reading continuity and data safety are required. External keyboard/mouse, screen readers, max/nonstandard fonts and system-animation toggle experiments remain optional. KI-016 and historical SIGABRT are retained, not reopened for a broad diagnostic campaign here. No visual redesign, new global framework, engine rewrite, M5/M6/M7 implementation or release is authorized by this plan.
+The private35 Pass / 2 Fail host settlement and public selected portable gate are different sets. Current production keeps the existing four-ArkWeb ReaderEngine, records/migration/deletion protections and local-only boundary. No compatibility result authorizes UI redesign, a global window framework, KI-015/KI-016 long-term diagnosis or M5 implementation. See [final settlement](m4-e4-final-settlement-20261031.md) and [next-stage preparation](m5-search-preparation.md).

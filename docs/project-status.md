@@ -1,30 +1,32 @@
-# Project status — 2026-10-20
+# Project status — 2026-10-31
 
 ## Accepted scope
 
-**M4-D4, including D4-4, is complete for the agreed Mate60 Pro/API26 phone scope.**
-The owner personally operated the final installed candidate and confirmed the reported issues were repaired and the experience was normal. Earlier reading, records, appearance, management and settings did not show a confirmed new regression in that acceptance.
+**M4 is formally owner-accepted and complete within the agreed scope:** standard system font, ordinary settings/touch, Mate60 Pro/API26, MatePad Pro/API24, API21 emulator and the representative Mate X5 foldable emulator. This is not acceptance of API25, a physical folding hinge or every device/window combination.
 
-- Book deletion publishes Grid changes; success uses an expiring native toast and partial failure is dismissible/retryable.
-- Books and folders support mixed selection. Confirmed folder deletion recursively deletes managed imported copies and their records, deduplicates descendants, and leaves external original files unchanged. Failed/nonempty/changed trees are not prematurely removed.
-- Mine has one reading-records entry; native note/bookmark Tabs support click/swipe without custom gesture simulation.
-- Returning from Reader revalidates centralized bookmark data while retaining the visit and reasonable tab/page/scroll state; stale requests and failed reads do not clear committed records.
-- Accepted native details, reading panels, appearance and settings retain existing storage and engine semantics.
+The owner approved the M4-E4 settlement and confirmed that E1/E2/E3 manual results remain valid; do not request those checks again. The next stage is **M5 full-text search preparation only**. No M5 implementation was started by this source sync.
+
+Final active behavior includes EPUB/TXT reading and resume, library organization, explicitly confirmed mixed recursive deletion of managed copies/records with external originals preserved, dismissible partial-failure feedback, centralized reading records with native note/bookmark Tabs, bookmark revalidation and reasonable return state, five Settings categories and per-book overrides.
+
+## Final E1 repairs
+
+- Reader retires the deleted note's Web mark after successful storage commit and session/generation validation; remaining notes and independent highlights survive. No forced book reopen or data-format change.
+- In wide two-column Settings, top-level categories are peers: native/system Back exits to the original source. Legal details still return to their matching category; narrow-screen hierarchy is retained.
+- Mine → Settings mounts outside the global property animation, with the existing transition confined to the destination. Native press feedback and Reader entry are retained.
+
+The private accepted documentation commit is `d839fde8d6b7d0a5f88d1f27a93ecc0cf41aac5b`, local-only tag `m4-accepted-20261031`. Production source tree: `db4756604f246555506e486db258f965b5787392`; the last production change remains `66dabb31c1d48610296493da0ebc227ab5e04d86`. This public tree is a separate descendant of the previous public main, with its own tag `m4-public-snapshot-20261031`; private history and the private tag are not pushed.
 
 ## Evidence boundaries
 
-The private accepted development baseline is `9f3cf4f228801d406a24b4975626fb29813c3c05`.
-Its local phone tag is `m4-d4-phone-accepted-20261020`; it is intentionally not pushed because it reaches private history. This public snapshot uses `m4-d4-public-snapshot-20261020` instead.
+- Private E4 host checks remain **35 Pass / 2 Fail out of 37**. The two retained failures are obsolete literal-color and delete-button-radius visual oracles, inconsistent with accepted current behavior. They were not fixed by changing production UI and are not called a fully green aggregate gate.
+- Private SDK26 Development main/test and Release forced rebuilds and production audits passed at 319 warnings/201 fingerprints. New E4 HAPs were not installed; the Release build is not owner/device acceptance or publishing approval.
+- API24 three repairs and other actually checked tablet paths have owner acceptance; API26 directed regressions and prior D4 phone acceptance retain their original package scope.
+- E2 original automation is **2 Pass / 5 Error**; owner manual checks cover the remaining library/input/Grid/settings, TOC/semantic resume and draft/IME fold routes. Errors are not rewritten as passes; no physical hinge occlusion was proved.
+- E3 original five isolated native data cases passed. The owner separately confirmed normal API21 compliant EPUB/TXT picker import/reading and process-exit/reopen semantic position/per-book settings persistence. The first synthetic EPUB was correctly rejected because its mimetype entry was compressed; the separately corrected file and its later manual acceptance do not erase that failure.
+- Public-only validation is recorded in [snapshot scope](public-source-snapshot.md). It has a different portable test selection and no private ohosTest target; do not equate its results with the private 37-entry gate or device tests.
 
-- Private baseline: Development main/test builds and production audit passed with 319 warnings/201 fingerprints; 11 directed host entries passed at closeout.
-- Exact private candidate device evidence: two normal Entry/Reader record-return cases and two isolated production-component cases passed. The actually scrolled page-2 bookmark return measured 0px relative displacement; these four are not one all-app end-to-end suite.
-- Owner phone acceptance is separate from automated results. Historical fixture/input/assertion Errors remain recorded privately; they were not converted to passes.
-- Public snapshot validation is recorded in [scope/verification](public-source-snapshot.md). It does not imply the public build was installed or independently accepted on every device.
+## Risks and next action
 
-## Remaining M4 work
+API25 runtime, API21 physical hardware, physical fold/hinge/half-fold coverage, every wide-window/theme ratio and arbitrary historical public-data upgrade remain unverified. KI-015 tri-fold resize/gesture recovery, KI-016 stale-chapter flash, historical unlocated SIGABRT, deferred uppercase-ID synthetic samples and old fixture/selector Errors retain their real status. Manual normal behavior does not prove their root causes fixed. Missing API25/hinge environments do not reopen the already accepted representative M4 scope.
 
-**M4 overall is not complete. M4-E compatibility verification is next; only read-only preparation has occurred.** API21/25 runtime behavior, tablets, wide windows and applicable foldable scenarios remain unverified for this candidate. SDK26/compatible21 declarations and controlled material tests are not device evidence.
-
-KI-016 stale-chapter flash, historical unlocated SIGABRT, and deferred uppercase-ID legacy sample behavior remain unresolved within their original scope. A few initial record screenshots had transient icon/title observations; later frames were normal and the owner accepted actual use. No separate root-cause repair is claimed for those observations.
-
-Next action: establish the exact package/isolated data baseline, then follow [M4-E sequence](m4-e-compatibility-readiness.md). Do not reopen accepted visual design, develop M5/M6/M7, publish an App release, uninstall or clear real/old test data as part of this source sync.
+Next: [M5 search preparation](m5-search-preparation.md), under a new execution request. Retain local/offline reading and dictionary, EPUB/TXT identity, encrypted records, per-book preferences, sequential migrations and deletion journal/recovery. Do not clear real books/records, legacy credentials or historical test folders to satisfy tests. This source sync creates no GitHub Release, publishes no App and installs no new Release package.
